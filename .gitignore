@@ -1,0 +1,18 @@
+# envs
+.env
+
+# IDEs
+.idea/
+.vscode/
+
+# npm
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# rust
+Cargo.lock
+debug/
+target/
+
