@@ -10,10 +10,14 @@
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
+    "localforage": "^1.10.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.1"
   },
   "devDependencies": {
+    "@swc/plugin-emotion": "^2.5.41",
+    "@types/node": "^18.14.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react-swc": "^3.0.0",
