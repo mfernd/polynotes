@@ -3,15 +3,12 @@ import { Button } from '@components/Button';
 import { Center } from '@components/Center';
 import logoLarge from '@assets/logo-large.svg';
 
-export function LandingPage() {
+export const LandingPage = () => {
   const maxWidth = 750;
 
   return (
     <Center>
-      <div css={{
-        paddingBottom: '4rem',
-        maxWidth: `${maxWidth}px`,
-      }}>
+      <div css={containerCss(maxWidth)}>
         < header css={headerCss}>
           <img src={logoLarge} alt="PolyNotes large logo"/>
         </header>
@@ -44,22 +41,25 @@ export function LandingPage() {
         </main>
       </div>
     </Center>
-  )
-    ;
-}
+  );
+};
 
-const headerCss = css
-  `
-    margin-bottom: 1.5rem;
+const containerCss = (maxWidth: number) => css`
+  padding-bottom: 4rem;
+  max-width: ${maxWidth}px;
+`;
 
-    display: flex;
-    justify-content: center;
+const headerCss = css`
+  margin-bottom: 1.5rem;
 
-    img {
-      width: 100%;
-      max-width: 400px;
-    }
-  `;
+  display: flex;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    max-width: 400px;
+  }
+`;
 
 const mainCss = css`
   display: flex;
