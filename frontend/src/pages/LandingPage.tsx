@@ -2,20 +2,23 @@ import { css } from '@emotion/react';
 import { Button } from '@components/Button';
 import { Center } from '@components/Center';
 import logoLarge from '@assets/logo-large.svg';
+import { useTitle } from 'react-use';
+import { appName } from '@/main';
+import { Card } from '@components/Card';
 
 export const LandingPage = () => {
+  useTitle(`Welcome - ${appName}`);
   const maxWidth = 750;
 
   return (
     <Center>
       <div css={containerCss(maxWidth)}>
-        < header css={headerCss}>
+        <header css={headerCss}>
           <img src={logoLarge} alt="PolyNotes large logo"/>
         </header>
 
         <main css={mainCss}>
-          <article>
-            <h1>Manifesto!</h1>
+          <Card title={'Manifesto!'}>
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea eveniet numquam optio placeat quo sapiente
               voluptates? Accusantium aut blanditiis eveniet itaque laborum nostrum officia repellat repudiandae
               temporibus totam. Id, voluptate!
@@ -33,7 +36,7 @@ export const LandingPage = () => {
               itaque laboriosam maxime, molestias neque numquam praesentium quis reprehenderit tempora tempore tenetur
               veniam voluptatem. Cumque, perspiciatis rem.
             </p>
-          </article>
+          </Card>
 
           <div css={css`transform: translateY(-50%);`}>
             <Button>START</Button>
@@ -46,6 +49,7 @@ export const LandingPage = () => {
 
 const containerCss = (maxWidth: number) => css`
   padding-bottom: 4rem;
+  width: 100%;
   max-width: ${maxWidth}px;
 `;
 
@@ -57,7 +61,8 @@ const headerCss = css`
 
   img {
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
+    image-rendering: pixelated;
   }
 `;
 
@@ -66,19 +71,4 @@ const mainCss = css`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  article {
-    cursor: default;
-    padding: 1rem 2rem;
-
-    background-color: #fafbfb;
-    border: 1px solid #d8d8d8;
-    border-radius: 4px;
-    box-shadow: 0 3px 0 #d8d8d8;
-
-    h1, p {
-      margin: 0.75rem;
-      text-align: justify;
-    }
-  }
 `;

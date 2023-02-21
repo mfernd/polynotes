@@ -1,15 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital@0;1&display=swap");
-
 :root {
   box-sizing: border-box;
 
-  font-family: "Noto Sans", Helvetica, sans-serif;
+  font-family: Helvetica, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  color: #242424;
+  color: #202124;
   background-color: #fff;
 }
 
@@ -19,4 +17,10 @@ body {
 
 #app {
   min-height: 100vh;
+}
+
+h1 {
+  font-weight: 900;
+  font-size: 2rem;
+  margin: 1rem 0 1.5rem;
 }
