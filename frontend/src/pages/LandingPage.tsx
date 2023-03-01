@@ -1,12 +1,14 @@
 import { css } from '@emotion/react';
+import { useTitle } from 'react-use';
+import { useNavigate } from 'react-router-dom';
+import { appName } from '@/main';
 import { Button } from '@components/Button';
 import { Center } from '@components/Center';
-import logoLarge from '@assets/logo-large.svg';
-import { useTitle } from 'react-use';
-import { appName } from '@/main';
 import { Card } from '@components/Card';
+import logoLarge from '@assets/logo-large.svg';
 
 export const LandingPage = () => {
+  const navigate = useNavigate();
   useTitle(`Welcome - ${appName}`);
   const maxWidth = 750;
 
@@ -39,7 +41,7 @@ export const LandingPage = () => {
           </Card>
 
           <div css={css`transform: translateY(-50%);`}>
-            <Button>START</Button>
+            <Button onClick={() => navigate('/login')}>START</Button>
           </div>
         </main>
       </div>
@@ -61,7 +63,7 @@ const headerCss = css`
 
   img {
     width: 100%;
-    max-width: 350px;
+    max-width: 450px;
     image-rendering: pixelated;
   }
 `;

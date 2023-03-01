@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { LandingPage } from '@pages/LandingPage';
 import { LoginPage } from '@pages/LoginPage';
+import { RegisterPage } from '@pages/RegisterPage';
 import '@assets/main.css';
 
 export const appName = 'POLYNOTES';
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage/>,
+  },
+  {
+    path: '/register',
+    element: <RegisterPage/>,
   },
 ]);
 

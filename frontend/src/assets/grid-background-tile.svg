@@ -1,0 +1,20 @@
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g id="__grid_src" clip-path="url(#clip0_0_1014)">
+        <rect width="1280" height="720" transform="matrix(2 0 0 2 -52 -28)" fill="none"/>
+        <g id="Group 2" opacity="0.6">
+            <g id="Group">
+                <path id="Line 2 Copy 105" d="M59 -28V1410" stroke="#B5C1CE" stroke-linecap="square"
+                      stroke-dasharray="3 3"/>
+            </g>
+            <g id="Group Copy">
+                <path id="Line 2 Copy 43" d="M2510 59L-52 59" stroke="#B5C1CE" stroke-linecap="square"
+                      stroke-dasharray="3 3"/>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <clipPath id="clip0_0_1014">
+            <rect width="1280" height="720" fill="white" transform="matrix(2 0 0 2 -52 -28)"/>
+        </clipPath>
+    </defs>
+</svg>

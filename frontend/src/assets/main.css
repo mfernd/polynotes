@@ -8,7 +8,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   color: #202124;
-  background-color: #fff;
+  background: url("grid-background-tile.svg") #fff repeat;
 }
 
 body {
