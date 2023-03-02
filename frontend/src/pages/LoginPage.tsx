@@ -1,11 +1,11 @@
 import { useTitle } from 'react-use';
 import { appName } from '@/main';
-import { Button } from '@components/Button';
-import { Center } from '@components/Center';
-import { Card } from '@components/Card';
+import { Button } from '@components/ui/Button';
+import { Center } from '@components/ui/Center';
+import { Card } from '@components/ui/Card';
 import { useState } from 'react';
-import { Form } from '@components/Form';
-import { InputText } from '@components/InputText';
+import { Form } from '@components/ui/Form';
+import { InputText } from '@components/ui/InputText';
 
 export const LoginPage = () => {
   useTitle(`Login - ${appName}`);

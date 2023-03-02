@@ -1,12 +1,12 @@
 import { useTitle } from 'react-use';
 import { appName } from '@/main';
 import { useState } from 'react';
-import { Center } from '@components/Center';
-import { Card } from '@components/Card';
-import { Button } from '@components/Button';
-import { Form } from '@components/Form';
-import { InputText } from '@components/InputText';
-import { InputCheckbox } from '@components/InputCheckbox';
+import { Center } from '@components/ui/Center';
+import { Card } from '@components/ui/Card';
+import { Button } from '@components/ui/Button';
+import { Form } from '@components/ui/Form';
+import { InputText } from '@components/ui/InputText';
+import { InputCheckbox } from '@components/ui/InputCheckbox';
 
 export const RegisterPage = () => {
   useTitle(`Register - ${appName}`);

@@ -3,7 +3,7 @@ import { ChangeEventHandler } from 'react';
 
 type InputTextProps = {
   type: string;
-  labelTitle: string;
+  labelTitle?: string;
   value: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   autoComplete?: string;
@@ -14,7 +14,7 @@ type InputTextProps = {
 export const InputText = (props: InputTextProps) => {
   return (
     <label css={labelCss}>
-      <span>{props.labelTitle}</span>
+      {props.labelTitle ? <span>{props.labelTitle}</span> : null}
       <input type={props.type}
              value={props.value}
              onChange={props.onChange}
@@ -28,6 +28,7 @@ export const InputText = (props: InputTextProps) => {
 };
 
 const labelCss = css`
+  width: 100%;
   display: flex;
   flex-direction: column;
 `;

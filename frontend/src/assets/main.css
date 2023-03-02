@@ -1,6 +1,4 @@
 :root {
-  box-sizing: border-box;
-
   font-family: Helvetica, sans-serif;
   line-height: 1.5;
   font-weight: 500;
@@ -9,6 +7,10 @@
 
   color: #202124;
   background: url("grid-background-tile.svg") #fff repeat;
+}
+
+:root * {
+  box-sizing: border-box;
 }
 
 body {

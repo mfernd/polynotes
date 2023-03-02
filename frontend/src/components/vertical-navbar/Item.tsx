@@ -14,8 +14,9 @@ export const Item = (props: ItemProps) => {
         ? <button css={collapsibleCss}><FiChevronRight/></button>
         : null}
       <span css={center}>{props.icon}</span>
-      <span css={css`${center};
-        flex-grow: 1`}>{props.title}</span>
+      <span css={css`
+        ${center};
+        flex-grow: 1;`}>{props.title}</span>
     </div>
   );
 };

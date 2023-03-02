@@ -16,7 +16,7 @@ export const InputCheckbox = (props: InputCheckboxProps) => {
                onChange={props.onChange}/>
         <span></span>
       </div>
-      <span css={css`user-select: none`}>{props.labelTitle}</span>
+      <span css={css`user-select: none;`}>{props.labelTitle}</span>
     </label>
   );
 };

@@ -2,9 +2,9 @@ import { css } from '@emotion/react';
 import { useTitle } from 'react-use';
 import { useNavigate } from 'react-router-dom';
 import { appName } from '@/main';
-import { Button } from '@components/Button';
-import { Center } from '@components/Center';
-import { Card } from '@components/Card';
+import { Button } from '@components/ui/Button';
+import { Center } from '@components/ui/Center';
+import { Card } from '@components/ui/Card';
 import logoLarge from '@assets/logo-large.svg';
 
 export const LandingPage = () => {
