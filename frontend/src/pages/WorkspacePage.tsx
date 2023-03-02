@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { FaUserCircle } from 'react-icons/all';
 import { InputText } from '@components/ui/InputText';
 import { useState } from 'react';
+import { MyWorkspace } from '@components/workspace/MyWorkspace';
 
 export const WorkspacePage = () => {
   const [searchBar, setSearchBar] = useState('');
@@ -25,7 +26,9 @@ export const WorkspacePage = () => {
             <FaUserCircle css={accountButtonCss}/>
           </div>
         </header>
-        <main></main>
+        <main>
+          <MyWorkspace/>
+        </main>
       </div>
     </div>
   );
@@ -44,6 +47,8 @@ const frameCss = css`
 
   & > main {
     flex-grow: 1;
+    color: #5f6368;
+    padding: 1rem 1.5rem 0;
   }
 `;
 

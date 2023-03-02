@@ -13,8 +13,10 @@ export const ItemNav = (props: ItemNavProps) => {
   return (
     <nav css={pageSelectorCss}>
       <ul>
-        {props.items.map((item) => <li>
-          <Item icon={item.icon} title={item.title} isCollapsible={item.isCollapsible}/></li>)}
+        {props.items.map((item, index) =>
+          <li key={`item-${index}`}>
+            <Item icon={item.icon} title={item.title} isCollapsible={item.isCollapsible}/>
+          </li>)}
       </ul>
     </nav>
   );
