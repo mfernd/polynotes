@@ -16,7 +16,7 @@ export const LandingPage = () => {
     <Center>
       <div css={containerCss(maxWidth)}>
         <header css={headerCss}>
-          <img src={logoLarge} alt="PolyNotes large logo"/>
+          <img src={logoLarge} alt={'PolyNotes large logo'}/>
         </header>
 
         <main css={mainCss}>

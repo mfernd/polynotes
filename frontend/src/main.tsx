@@ -5,6 +5,7 @@ import { LandingPage } from '@pages/LandingPage';
 import { LoginPage } from '@pages/LoginPage';
 import { RegisterPage } from '@pages/RegisterPage';
 import '@assets/main.css';
+import { WorkspacePage } from '@pages/WorkspacePage';
 
 export const appName = 'POLYNOTES';
 
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <RegisterPage/>,
+  },
+  {
+    path: '/workspace',
+    element: <WorkspacePage/>,
   },
 ]);
 

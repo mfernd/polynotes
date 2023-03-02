@@ -6,29 +6,48 @@ type ButtonProps = {
   onClick?: MouseEventHandler<HTMLButtonElement>;
   isSubmit?: boolean;
   customCss?: SerializedStyles;
+  buttonProperties?: ButtonProperties;
 };
 
-export const Button = ({ children = 'NONE', onClick, isSubmit }: ButtonProps) => {
-  const btn = buttonCss('#fff', '#fe0096', '#e40087',5, 3);
+type ButtonProperties = {
+  color?: string;
+  bgColor?: string;
+  hoverBgColor?: string;
+  initHeight?: number;
+  addHeight?: number;
+  padding?: string;
+  isFullWidth?: boolean;
+};
+
+export const Button = (props: ButtonProps) => {
+  const btnCss = buttonCss({ ...props.buttonProperties });
 
   return (
-    <button type={isSubmit ? 'submit': undefined} onClick={onClick} css={btn}>
-      {children}
+    <button type={props.isSubmit ? 'submit' : undefined}
+            onClick={props.onClick}
+            css={css`
+              ${props.customCss};
+              ${btnCss};`}>
+      {props.children}
     </button>
   );
 };
 
 const buttonCss = (
-  color: string,
-  bgColor: string,
-  hoverBgColor: string,
-  initHeight: number,
-  addHeight: number,
+  {
+    color = '#fff',
+    bgColor = '#fe0096',
+    hoverBgColor = '#e40087',
+    initHeight = 5,
+    addHeight = 3,
+    padding = '10px 30px',
+    isFullWidth = true,
+  }: ButtonProperties,
 ) => css`
-  width: 100%;
+  ${isFullWidth ? 'width: 100%;' : ''}
   cursor: pointer;
   text-decoration: none;
-  padding: 10px 30px;
+  padding: ${padding};
 
   background-color: ${bgColor};
   color: ${color};
