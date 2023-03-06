@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { Tile } from '@components/ui/Tile';
 import { MainFrame } from '@components/MainFrame';
+import { ulid } from 'ulid';
 
 export const WorkspacePage = () => {
   const tiles = [];
@@ -8,7 +9,8 @@ export const WorkspacePage = () => {
     tiles.push(
       <Tile key={i} imageUrl={`https://picsum.photos/25${i}/25${i}`}
             title={'PolyNotes - Projet Promotion 2022-23'}
-            modifiedDate={new Date()}/>);
+            modifiedDate={new Date()}
+            link={`/page/${ulid()}`}/>);
   }
 
   return (

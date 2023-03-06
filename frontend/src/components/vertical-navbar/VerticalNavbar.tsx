@@ -3,7 +3,7 @@ import { Button } from '@components/ui/Button';
 import { FiClock, FiDatabase, FiPlus, FiStar, FiTrash2, MdPeopleAlt, MdWorkspaces } from 'react-icons/all';
 import { css } from '@emotion/react';
 import { ItemNav } from '@components/vertical-navbar/ItemNav';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ulid } from 'ulid';
 
 export const VerticalNavbar = () => {
@@ -12,7 +12,9 @@ export const VerticalNavbar = () => {
 
   return (
     <aside css={navbarCss}>
-      <img src={logoLarge} alt={'PolyNotes large logo'}/>
+      <Link to={'/workspace'} css={css`width: 100%;`}>
+        <img src={logoLarge} alt={'Polynotes large logo'}/>
+      </Link>
       <Button buttonProperties={{ initHeight: 1, addHeight: 1, isFullWidth: false }}
               onClick={() => navigate(`/page/${ulid()}`)}>
         <FiPlus/>
@@ -23,6 +25,7 @@ export const VerticalNavbar = () => {
           icon: <MdWorkspaces/>,
           title: 'Mon espace de travail',
           isCollapsible: true,
+          link: '/workspace',
         },
         {
           icon: <MdPeopleAlt/>,
@@ -37,7 +40,7 @@ export const VerticalNavbar = () => {
         {
           icon: <FiPlus/>,
           title: 'Ajouter une page',
-          isCollapsible: true,
+          isCollapsible: false,
         },
       ]}/>
       <ItemNav items={[

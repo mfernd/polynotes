@@ -1,23 +1,35 @@
 import { css } from '@emotion/react';
+import { NavLink } from 'react-router-dom';
 
 type TileProps = {
   imageUrl: string;
   title: string;
   modifiedDate: Date;
+  link?: string;
 };
 
 export const Tile = (props: TileProps) => {
-  return (
-    <div css={tileCss}>
+  const tileBody = (
+    <>
       <div css={previewSectionCss}>
         <img src={props.imageUrl}
              alt={`"${props.title}" tile image`}/>
       </div>
       <div css={detailsSectionCss}>
         <h1>{props.title}</h1>
-        <p>Modifié le{` ${props.modifiedDate.toLocaleDateString('fr', {dateStyle: 'medium'})}`}</p>
+        <p>Modifié le{` ${props.modifiedDate.toLocaleDateString('fr', { dateStyle: 'medium' })}`}</p>
       </div>
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      {props.link ?
+        <div css={tileCss} title={props.title}>
+          <NavLink to={props.link}>{tileBody}</NavLink>
+        </div>
+        : <div css={tileCss} title={props.title}>{tileBody}</div>}
+    </>
   );
 };
 
@@ -25,9 +37,15 @@ const tileCss = css`
   cursor: pointer;
   min-width: 250px;
   max-width: 250px;
-  
+
   border: 1px solid #dadce0;
   border-radius: 6px;
+  
+  a {
+    border-radius: inherit;
+    text-decoration: none;
+    color: unset;
+  }
 `;
 
 const previewSectionCss = css`
@@ -38,7 +56,7 @@ const previewSectionCss = css`
   background-color: #f5f5f5;
   overflow: hidden;
   padding: 6% 6% 0;
-  
+
   img {
     box-shadow: 0 0 4px 0 rgba(0 0 0 / 20%);
     margin: 0;
