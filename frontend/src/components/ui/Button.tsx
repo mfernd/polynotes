@@ -45,6 +45,8 @@ const buttonCss = (
   }: ButtonProperties,
 ) => css`
   ${isFullWidth ? 'width: 100%;' : ''}
+  display: flex;
+  gap: 5px;
   cursor: pointer;
   text-decoration: none;
   padding: ${padding};

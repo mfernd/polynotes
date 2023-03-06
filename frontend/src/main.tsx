@@ -4,10 +4,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { LandingPage } from '@pages/LandingPage';
 import { LoginPage } from '@pages/LoginPage';
 import { RegisterPage } from '@pages/RegisterPage';
-import '@assets/main.css';
 import { WorkspacePage } from '@pages/WorkspacePage';
+import { EditorPage } from '@pages/EditorPage';
+import '@assets/main.css';
 
-export const appName = 'POLYNOTES';
+export const appName = 'Polynotes';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: '/workspace',
     element: <WorkspacePage/>,
+  },
+  {
+    path: '/page/:pageId',
+    element: <EditorPage/>,
   },
 ]);
 

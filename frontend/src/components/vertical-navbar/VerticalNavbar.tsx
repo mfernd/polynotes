@@ -3,12 +3,18 @@ import { Button } from '@components/ui/Button';
 import { FiClock, FiDatabase, FiPlus, FiStar, FiTrash2, MdPeopleAlt, MdWorkspaces } from 'react-icons/all';
 import { css } from '@emotion/react';
 import { ItemNav } from '@components/vertical-navbar/ItemNav';
+import { useNavigate } from 'react-router-dom';
+import { ulid } from 'ulid';
 
 export const VerticalNavbar = () => {
+  const navigate = useNavigate();
+
+
   return (
     <aside css={navbarCss}>
       <img src={logoLarge} alt={'PolyNotes large logo'}/>
-      <Button buttonProperties={{ initHeight: 1, addHeight: 1, isFullWidth: false }}>
+      <Button buttonProperties={{ initHeight: 1, addHeight: 1, isFullWidth: false }}
+              onClick={() => navigate(`/page/${ulid()}`)}>
         <FiPlus/>
         <span>Créer</span>
       </Button>
