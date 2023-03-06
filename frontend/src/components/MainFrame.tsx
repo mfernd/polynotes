@@ -46,6 +46,7 @@ const containerCss = css`
 `;
 
 const frameCss = css`
+  width: 0;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -53,6 +54,8 @@ const frameCss = css`
 `;
 
 const mainCss = css`
+  width: 100%;
+  overflow-x: clip;
   flex-grow: 1;
   color: #000;
   padding: 1rem 1.5rem 0;

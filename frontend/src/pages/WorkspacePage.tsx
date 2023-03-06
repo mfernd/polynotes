@@ -3,25 +3,22 @@ import { Tile } from '@components/ui/Tile';
 import { MainFrame } from '@components/MainFrame';
 
 export const WorkspacePage = () => {
+  const tiles = [];
+  for (let i = 0; i < 20; i++) {
+    tiles.push(
+      <Tile key={i} imageUrl={`https://picsum.photos/25${i}/25${i}`}
+            title={'PolyNotes - Projet Promotion 2022-23'}
+            modifiedDate={new Date()}/>);
+  }
+
   return (
     <MainFrame titlePage={'Workspace'}>
       <h1 css={css`margin: 0;`}>Mon espace de travail</h1>
 
       <section css={recentTilesSectionCss}>
         <h2>Récents</h2>
-        <div>
-          <Tile imageUrl={'https://picsum.photos/250/250'}
-                title={'PolyNotes - Projet Promotion 2022-23'}
-                modifiedDate={new Date()}/>
-          <Tile imageUrl={'https://picsum.photos/251/251'}
-                title={'PolyNotes - Projet Promotion 2022-23'}
-                modifiedDate={new Date()}/>
-          <Tile imageUrl={'https://picsum.photos/252/252'}
-                title={'PolyNotes - Projet Promotion 2022-23'}
-                modifiedDate={new Date()}/>
-          <Tile imageUrl={'https://picsum.photos/253/253'}
-                title={'PolyNotes - Projet Promotion 2022-23'}
-                modifiedDate={new Date()}/>
+        <div css={tilesCss}>
+          {tiles}
         </div>
       </section>
     </MainFrame>
@@ -29,16 +26,23 @@ export const WorkspacePage = () => {
 };
 
 const recentTilesSectionCss = css`
+  max-width: 100%;
+
   & > h2 {
     cursor: default;
     font-size: 1.1rem;
     font-weight: 400;
     margin-bottom: 0.75rem;
   }
+`;
 
-  & > div {
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
+const tilesCss = css`
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  overflow-x: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 `;
