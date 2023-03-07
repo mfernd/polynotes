@@ -1,21 +1,40 @@
 import { MainFrame } from '@components/MainFrame';
 import { useParams } from 'react-router-dom';
 import { css } from '@emotion/react';
-import { DragHandle } from '@components/editor/DragHandle';
+import { EditorBlock } from '@components/editor/EditorBlock';
+import { useCallback, useRef, useState } from 'react';
+import { BlockData } from '@/typings/editor.type';
+import { ulid } from 'ulid';
 
 export const EditorPage = () => {
   const { pageId } = useParams();
 
+  const [editor, setEditor] = useState<BlockData[]>([
+    { blockId: ulid(), type: 'text' },
+  ]);
+
+  const addBlock = useCallback(() => {
+    setEditor(prevState => [...prevState, { blockId: ulid(), type: 'text' }]);
+  }, [editor]);
+
+  const removeBlock = useCallback((blockId: string) => {
+    if (0 === editor.length - 1) return;
+    setEditor(prevState => prevState.filter((block) => block.blockId !== blockId));
+  }, [editor]);
+
   return (
     <MainFrame>
-      <h1>Page "{pageId}"</h1>
-      <div css={editorContainerCss}>
-        <div css={cellContainerCss}>
-          <div css={cellCss}
-               contentEditable
-               placeholder={'Appuyez sur / pour afficher les commandes…'}>
-          </div>
-          <DragHandle/>
+      <div css={css`padding-left: 2.5rem;`}>
+        <h1>Nouvelle page</h1>
+
+        <div css={editorContainerCss}>
+          {editor.map((block, id) => (
+            <EditorBlock key={id} blockId={block.blockId}
+                         type={block.type}
+                         addBlock={addBlock}
+                         removeBlock={removeBlock}
+                         placeholder={id === editor.length - 1 ? 'Appuyez sur / pour afficher les commandes…' : undefined}/>
+          ))}
         </div>
       </div>
     </MainFrame>
@@ -24,38 +43,13 @@ export const EditorPage = () => {
 
 const editorContainerCss = css`
   cursor: text;
-  width: 100%;
-  padding-left: 3rem;
   padding-bottom: 30vh;
 
-  color: #37352F;
+  color: rgb(55, 53, 47);
   caret-color: rgb(55, 53, 47);
 
   font-size: 16px;
   font-weight: 400;
   white-space: pre-wrap;
   word-break: break-word;
-`;
-
-const cellContainerCss = css`
-  position: relative;
-  
-  &:hover .drag-handle, div:focus + .drag-handle {
-    transition: opacity 50ms ease-in;
-    visibility: visible;
-    opacity: 1;
-  }
-`;
-
-const cellCss = css`
-  padding: 3px 2px;
-
-  &:empty:after {
-    content: attr(placeholder);
-    color: #777;
-  }
-
-  &:focus {
-    //outline: none;
-  }
 `;

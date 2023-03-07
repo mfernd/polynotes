@@ -71,14 +71,13 @@ const headerNavbarCss = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   box-shadow: rgba(0 0 0 / 5%) 0px -1px 0px 0px inset;
 
   .left-column, .right-column {
     height: 100%;
     display: flex;
     align-items: center;
-    padding: 10px 0;
   }
 
   .left-column {
@@ -89,7 +88,11 @@ const headerNavbarCss = css`
 
 const accountButtonCss = css`
   cursor: pointer;
-  height: 100%;
+  height: 40px;
   width: auto;
   aspect-ratio: 1;
+  
+  &:active {
+    color: rgba(25, 23, 17, 0.5);
+  }
 `;

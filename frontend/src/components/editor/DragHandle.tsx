@@ -1,11 +1,16 @@
 import { RxDragHandleDots2, RxPlus } from 'react-icons/all';
 import { css } from '@emotion/react';
 import { IconContext } from 'react-icons';
+import { MouseEvent } from 'react';
 
-export const DragHandle = () => {
+type DragHandleProps = {
+  onPlusClick?: (event?: MouseEvent<HTMLDivElement>) => void;
+};
+
+export const DragHandle = (props: DragHandleProps) => {
   return (
     <div className={'drag-handle'} css={dragHandleCss}>
-      <div css={squareIcon}>
+      <div css={squareIcon} onClick={props.onPlusClick}>
         <IconContext.Provider value={{ className: 'plus' }}>
           <RxPlus/>
         </IconContext.Provider>
@@ -22,7 +27,7 @@ export const DragHandle = () => {
 const dragHandleCss = css`
   position: absolute;
   left: 0;
-  top: 1px;
+  top: 2px;
   transform: translateX(-100%);
 
   display: flex;
@@ -31,7 +36,6 @@ const dragHandleCss = css`
 `;
 
 const buttonCss = css`
-  cursor: grab;
   user-select: none;
   display: flex;
   align-items: center;
@@ -47,22 +51,24 @@ const buttonCss = css`
 
 const squareIcon = css`
   ${buttonCss};
-  width: 28px;
-  height: 28px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
 
   .plus {
-    width: 20px;
-    height: 100%;
+    width: 22px;
+    height: 22px;
   }
 `;
 
 const dragIcon = css`
   ${buttonCss};
+  cursor: grab;
   width: 22px;
-  height: 28px;
+  height: 24px;
 
   .handle {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: auto;
   }
 `;

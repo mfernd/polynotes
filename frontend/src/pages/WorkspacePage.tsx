@@ -5,7 +5,7 @@ import { ulid } from 'ulid';
 
 export const WorkspacePage = () => {
   const tiles = [];
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 10; i++) {
     tiles.push(
       <Tile key={i} imageUrl={`https://picsum.photos/25${i}/25${i}`}
             title={'PolyNotes - Projet Promotion 2022-23'}
