@@ -6,6 +6,8 @@ import { LoginPage } from '@pages/LoginPage';
 import { RegisterPage } from '@pages/RegisterPage';
 import { WorkspacePage } from '@pages/WorkspacePage';
 import { EditorPage } from '@pages/EditorPage';
+import { Provider } from 'react-redux';
+import { store } from '@/store';
 import '@assets/main.css';
 
 export const appName = 'Polynotes';
@@ -35,6 +37,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.querySelector('#app') as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router}/>
+    <Provider store={store}>
+      <RouterProvider router={router}/>
+    </Provider>
   </React.StrictMode>,
 );

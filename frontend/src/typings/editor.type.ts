@@ -1,12 +1,13 @@
-export type BlockData = {
-  blockId: string;
-  type: BlockType;
+export type NodeData = {
+  id: string;
+  type: NodeType;
 };
 
-export type BlockType =
+export type NodeType =
   | 'text' // default
   | 'header'
   | 'image'
   | 'table' // views -> kanban, to-do
   | 'bulleted-list'
-  | 'numbered-list';
+  | 'numbered-list'
+  | 'column';
