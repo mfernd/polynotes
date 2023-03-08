@@ -1,44 +1,32 @@
-import { MainFrame } from '@components/MainFrame';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { css } from '@emotion/react';
+import { MainFrame } from '@components/MainFrame';
 import { EditorNode } from '@components/editor/EditorNode';
-import { Dispatch, RootState } from '@/store';
-import { connect } from 'react-redux';
+import { RootState } from '@/store';
 
-const mapState = (state: RootState) => ({
-  editorNode: state.editorNode,
-});
-
-const mapDispatch = (dispatch: Dispatch) => ({
-  addBottomNode: dispatch.editorNode.addBottomNode,
-  removeNode: dispatch.editorNode.removeNode,
-});
-
-type EditorPageProps = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
-
-export const EditorPage = connect(mapState, mapDispatch)((props: EditorPageProps) => {
+export const EditorPage = () => {
   const { pageId } = useParams();
+  const editor = useSelector((state: RootState) => state.editor);
 
   return (
     <MainFrame>
       <div css={css`padding-left: 2.5rem;`}>
-        <h1>Nouvelle page <small css={css`font-size: 0.75rem`}>{pageId}</small></h1>
+        <h1>Nouvelle page <small>{pageId}</small></h1>
 
         <div css={editorContainerCss}>
-          {props.editorNode?.nodes.map((node, id) => (
+          {editor.nodes.map((node, id) => (
             <EditorNode key={id}
                         id={node.id}
                         type={node.type}
-                        isFocused={id === props.editorNode?.focusIndex}
-                        placeholder={id === props.editorNode?.nodes.length - 1
-                          ? 'Appuyez sur / pour afficher les commandes…'
-                          : undefined}/>
+                        isLastNode={id === editor.nodes.length - 1}
+                        isFocused={id === editor.focusIndex}/>
           ))}
         </div>
       </div>
     </MainFrame>
   );
-});
+};
 
 const editorContainerCss = css`
   cursor: text;

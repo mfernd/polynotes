@@ -1,50 +1,42 @@
-import { DragHandle } from '@components/editor/DragHandle';
+import React, { KeyboardEvent, useCallback, useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
-import { KeyboardEvent, useCallback, useEffect, useRef } from 'react';
-import { Dispatch, RootState } from '@/store';
+import { useDispatch } from 'react-redux';
+import { DragHandle } from '@components/editor/DragHandle';
 import { NodeData } from '@/typings/editor.type';
-import { connect } from 'react-redux';
+import { addBottomNode } from '@/features/editorSlice';
+import { TextBlock } from '@components/editor/TextBlock';
 
-const mapState = (state: RootState) => ({
-  editorNode: state.editorNode,
-});
-
-const mapDispatch = (dispatch: Dispatch) => ({
-  addBottomNode: dispatch.editorNode.addBottomNode,
-  removeNode: dispatch.editorNode.removeNode,
-});
-
-type EditorNodeProps = ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch> &
-  NodeData & {
+type EditorNodeProps = NodeData & {
   isFocused?: boolean;
-  placeholder?: string;
+  isLastNode?: boolean;
 };
 
-export const EditorNode = connect(mapState, mapDispatch)((props: EditorNodeProps) => {
+export const EditorNode = (props: EditorNodeProps) => {
+  const dispatch = useDispatch();
+
   const nodeRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (props.isFocused)
       nodeRef.current?.focus();
-  }, [nodeRef]);
+  }, [nodeRef, props.isFocused]);
 
   const kbdListener = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      props.addBottomNode(props.id);
+      dispatch(addBottomNode(props.id));
     }
   }, []);
 
   return (
     <div data-node-id={props.id} css={nodeContainerCss}>
-      <div ref={nodeRef} contentEditable
-           placeholder={props.placeholder}
-           onKeyDown={kbdListener}
-           css={nodeCss}></div>
-      <DragHandle onPlusClick={() => props.addBottomNode(props.id)}/>
+      <TextBlock ref={nodeRef}
+                 nodeId={props.id}
+                 isLastBlock={props.isLastNode}
+                 kbdListener={kbdListener}/>
+      <DragHandle onPlusClick={() => dispatch(addBottomNode(props.id))}/>
     </div>
   );
-});
+};
 
 const nodeContainerCss = css`
   position: relative;
@@ -53,19 +45,5 @@ const nodeContainerCss = css`
     transition: opacity 200ms ease-in;
     visibility: visible;
     opacity: 1;
-  }
-`;
-
-const nodeCss = css`
-  padding: 3px 7px;
-
-  &:empty:after {
-    content: attr(placeholder);
-    color: rgba(55, 53, 47, 0.5);
-    font-size: 16px;
-  }
-
-  &:focus {
-    outline: none;
   }
 `;
