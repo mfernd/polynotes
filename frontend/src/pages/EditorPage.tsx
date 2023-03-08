@@ -9,7 +9,7 @@ export const EditorPage = () => {
   return (
     <MainFrame>
       <div css={css`padding-left: 2.5rem;`}>
-        <h1>Nouvelle page <small>{pageId}</small></h1>
+        <h1 css={css`padding-left: 7px;`}>Nouvelle page <small>{pageId}</small></h1>
 
         <div css={editorContainerCss}>
           <EditorManager/>
