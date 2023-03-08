@@ -1,6 +1,7 @@
-export type NodeData = {
+export type Node = {
   id: string;
   type: NodeType;
+  data: any;
 };
 
 export type NodeType =
@@ -11,3 +12,6 @@ export type NodeType =
   | 'bulleted-list'
   | 'numbered-list'
   | 'column';
+
+export type NodeTextContent = string;
+export type NodeHeaderContent = string;

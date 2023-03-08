@@ -1,16 +1,16 @@
-import { ulid } from 'ulid';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NodeData } from '@/typings/editor.type';
+import { Node, NodeTextContent } from '@/typings/editor.type';
+import { v4 as uuidv4 } from 'uuid';
 
 export type NodeState = {
   focusIndex: number;
-  nodes: NodeData[];
+  nodes: Node[];
 };
 
 const initialState: NodeState = {
   focusIndex: 0,
   nodes: [
-    { id: ulid(), type: 'text' },
+    { id: uuidv4(), type: 'text', data: '' },
   ],
 };
 
@@ -18,18 +18,31 @@ export const editorSlice = createSlice({
   name: 'editorNode',
   initialState,
   reducers: {
-    changeFocus: (state, nodeId: PayloadAction<string>) => {
+    updateFocus: (state, nodeId: PayloadAction<string>) => {
       state.focusIndex = state.nodes.findIndex((node) => node.id === nodeId.payload);
     },
-    addBottomNode: (state, nodeId: PayloadAction<string>) => {
-      const nodeIndex = state.nodes.findIndex((node) => node.id === nodeId.payload);
-      if (nodeIndex === -1) return state;
-
-      state.focusIndex = nodeIndex + 1;
-      state.nodes.push({ id: ulid(), type: 'text' });
+    onArrow: (state, isUp: PayloadAction<boolean>) => {
+      if (isUp.payload && state.focusIndex > 0)
+        state.focusIndex -= 1;
+      if (!isUp.payload && state.focusIndex < state.nodes.length - 1)
+        state.focusIndex += 1;
+    },
+    setData: (state, newData: PayloadAction<NodeTextContent>) => {
+      state.nodes[state.focusIndex].data = newData.payload;
+    },
+    addBottomNode: (state) => {
+      const index = state.focusIndex;
+      state.nodes.splice(index + 1, 0, { id: uuidv4(), type: 'text', data: '' });
+      state.focusIndex = index + 1;
+    },
+    deleteNode: (state) => {
+      if (state.nodes.length === 1) return;
+      const index = state.focusIndex;
+      state.nodes.splice(index, 1);
+      state.focusIndex = index - 1;
     },
   },
 });
 
-export const { changeFocus, addBottomNode } = editorSlice.actions;
+export const { updateFocus, onArrow, setData, addBottomNode, deleteNode } = editorSlice.actions;
 export default editorSlice.reducer;

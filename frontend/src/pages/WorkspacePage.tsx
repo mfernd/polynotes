@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
+import { v4 as uuidv4 } from 'uuid';
 import { Tile } from '@components/ui/Tile';
 import { MainFrame } from '@components/MainFrame';
-import { ulid } from 'ulid';
 
 export const WorkspacePage = () => {
   const tiles = [];
@@ -10,7 +10,7 @@ export const WorkspacePage = () => {
       <Tile key={i} imageUrl={`https://picsum.photos/25${i}/25${i}`}
             title={'PolyNotes - Projet Promotion 2022-23'}
             modifiedDate={new Date()}
-            link={`/page/${ulid()}`}/>);
+            link={`/page/${uuidv4()}`}/>);
   }
 
   return (

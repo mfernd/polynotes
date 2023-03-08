@@ -1,11 +1,13 @@
 import { ForwardedRef, forwardRef, KeyboardEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { css } from '@emotion/react';
-import { changeFocus } from '@/features/editorSlice';
+import { updateFocus } from '@/features/editorSlice';
+import { NodeTextContent } from '@/typings/editor.type';
 
 type TextBlockProps = {
   nodeId: string;
-  isLastBlock?: boolean;
+  data: NodeTextContent;
+  placeholder?: string;
   kbdListener: (e: KeyboardEvent<HTMLDivElement>) => void;
 };
 
@@ -15,10 +17,13 @@ export const TextBlock = forwardRef((props: TextBlockProps, ref: ForwardedRef<HT
   return (
     <div ref={ref}
          contentEditable
-         placeholder={props.isLastBlock ? 'Appuyez sur / pour afficher les commandes…' : undefined}
-         onFocus={() => dispatch(changeFocus(props.nodeId))}
+         placeholder={props.placeholder}
+         onFocus={() => dispatch(updateFocus(props.nodeId))}
          onKeyDown={props.kbdListener}
-         css={nodeCss}></div>
+         css={nodeCss}
+         suppressContentEditableWarning>
+      {props.data}
+    </div>
   );
 });
 

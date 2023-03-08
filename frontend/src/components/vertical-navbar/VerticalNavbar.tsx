@@ -1,14 +1,13 @@
-import logoLarge from '@assets/logo-large.svg';
-import { Button } from '@components/ui/Button';
-import { FiClock, FiDatabase, FiPlus, FiStar, FiTrash2, MdPeopleAlt, MdWorkspaces } from 'react-icons/all';
-import { css } from '@emotion/react';
-import { ItemNav } from '@components/vertical-navbar/ItemNav';
 import { Link, useNavigate } from 'react-router-dom';
-import { ulid } from 'ulid';
+import { css } from '@emotion/react';
+import { FiClock, FiDatabase, FiPlus, FiStar, FiTrash2, MdPeopleAlt, MdWorkspaces } from 'react-icons/all';
+import { v4 as uuidv4 } from 'uuid';
+import { Button } from '@components/ui/Button';
+import { ItemNav } from '@components/vertical-navbar/ItemNav';
+import logoLarge from '@assets/logo-large.svg';
 
 export const VerticalNavbar = () => {
   const navigate = useNavigate();
-
 
   return (
     <aside css={navbarCss}>
@@ -16,7 +15,7 @@ export const VerticalNavbar = () => {
         <img src={logoLarge} alt={'Polynotes large logo'}/>
       </Link>
       <Button buttonProperties={{ initHeight: 1, addHeight: 1, isFullWidth: false }}
-              onClick={() => navigate(`/page/${ulid()}`)}>
+              onClick={() => navigate(`/page/${uuidv4()}`)}>
         <FiPlus/>
         <span>Créer</span>
       </Button>
