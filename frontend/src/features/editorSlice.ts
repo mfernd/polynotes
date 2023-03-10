@@ -26,7 +26,7 @@ export const editorSlice = createSlice({
     },
     updateCursor: (state, previousCursorIndex: PayloadAction<number>) => {
       // TODO: problem with ArrowRight and ArrowLeft, one entry late (repeat the action to do it...
-      console.log('cursor:', previousCursorIndex.payload);
+      // console.log('cursor:', previousCursorIndex.payload);
       state.cursorIndex = previousCursorIndex.payload;
     },
     updateData: (state, newData: PayloadAction<any>) => {
@@ -60,7 +60,6 @@ export const editorSlice = createSlice({
       const index = state.nodes.findIndex((node) => node.id === state.focusedNode);
       if (index === -1) return;
 
-      console.log('delete index:', index  );
       if (index === 0)
         state.focusedNode = state.nodes[index + 1].id;
       else

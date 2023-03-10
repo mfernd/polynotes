@@ -13,11 +13,13 @@ import { updateFocus } from '@/features/editorSlice';
 import { KeyboardEvent, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
+import { css } from '@emotion/react';
 
 type TextBlockProps = {
   id: string;
   data: string;
   onInput: (event: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => void;
+  showPlaceholder?: boolean;
 };
 
 export const TextBlock = (props: TextBlockProps) => {
@@ -37,11 +39,7 @@ export const TextBlock = (props: TextBlockProps) => {
       Dropcursor,
       Gapcursor,
       History,
-      Placeholder.configure({
-        placeholder: ({ editor }) => {
-          return /*editor.isFocused ?*/ 'Appuyez sur / pour afficher les commandes…' /*: ''*/;
-        },
-      }),
+      Placeholder,
     ],
     onFocus: () => dispatch(updateFocus(props.id)),
     content: props.data,
@@ -53,5 +51,34 @@ export const TextBlock = (props: TextBlockProps) => {
       editor?.commands.focus(editorState.cursorIndex);
   }, [editorState, editor]);
 
-  return <EditorContent editor={editor} onKeyDown={(e) => props.onInput(e, editor)}/>;
+  return (
+    <div css={css`
+      ${textBlockCss};
+      ${(props.showPlaceholder && !editor?.isFocused) || (editor?.isFocused && editor.isEmpty) ? placeholderCss : undefined};
+    `}>
+      <EditorContent editor={editor} onKeyDown={(e) => props.onInput(e, editor)}/>
+    </div>
+  );
 };
+
+const textBlockCss = css`
+  .ProseMirror {
+    padding: 3px 7px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+`;
+
+const placeholderCss = css`
+  [contenteditable]:before {
+    margin: 0;
+    content: 'Appuyez sur / pour afficher les commandes…';
+    color: rgba(55, 53, 47, 0.5);
+    font-size: 16px;
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+`;

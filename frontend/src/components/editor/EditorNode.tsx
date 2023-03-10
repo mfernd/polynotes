@@ -1,4 +1,4 @@
-import { KeyboardEvent, useCallback } from 'react';
+import { KeyboardEvent, useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { css } from '@emotion/react';
 import { addBottomNode, deleteNode, onArrow, updateCursor, updateData } from '@/features/editorSlice';
@@ -7,8 +7,9 @@ import { DragHandle } from '@components/editor/DragHandle';
 import { TextBlock } from '@components/editor/blocks/TextBlock';
 import { Editor } from '@tiptap/react';
 
-export const EditorNode = (props: Node) => {
+export const EditorNode = (props: Node & { isLastNode?: boolean }) => {
   const dispatch = useDispatch();
+  const [focused, setFocused] = useState(false);
 
   const kbdListener = useCallback((e: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => {
     if (e.shiftKey) return;
@@ -31,19 +32,25 @@ export const EditorNode = (props: Node) => {
       if (!editor) return;
       dispatch(updateData(editor.getHTML()));
     }
+    dispatch(updateCursor(selection?.anchorOffset || 0));
   }, []);
 
   let blockRendered: JSX.Element | undefined;
   switch (props.type) {
     case 'text':
-      blockRendered = <TextBlock id={props.id} data={props.data} onInput={kbdListener}/>;
+      blockRendered = <TextBlock id={props.id} data={props.data} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
       break;
   }
 
   return (
-    <div data-node-id={props.id} css={nodeContainerCss}>
+    <div data-node-id={props.id}
+         css={nodeContainerCss}
+         onFocus={() => setFocused(true)}
+         onBlur={() => setFocused(false)}
+         onMouseEnter={() => setFocused(true)}
+         onMouseLeave={() => setFocused(false)}>
       {blockRendered}
-      <DragHandle onPlusClick={() => dispatch(addBottomNode(props.id))}/>
+      <DragHandle show={focused} onPlusClick={() => dispatch(addBottomNode(props.id))}/>
     </div>
   );
 };
@@ -53,32 +60,4 @@ const nodeContainerCss = css`
   background-color: rgba(0 0 0 / 2%);
   border-bottom: 1px solid #505050;
   border-radius: .5rem;
-
-  &:hover .drag-handle /*, & > :focus + .drag-handle*/ {
-    transition: opacity 200ms ease-in;
-    visibility: visible;
-    opacity: 1;
-  }
-
-  .ProseMirror {
-    padding: 3px 7px;
-
-    p {
-      margin: 0;
-
-      &.is-editor-empty:before {
-        margin: 0;
-        content: attr(data-placeholder);
-        color: rgba(55, 53, 47, 0.5);
-        font-size: 16px;
-        float: left;
-        height: 0;
-        pointer-events: none;
-      }
-    }
-
-    &:focus {
-      outline: none;
-    }
-  }
 `;

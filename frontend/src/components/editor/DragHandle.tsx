@@ -4,12 +4,16 @@ import { IconContext } from 'react-icons';
 import { MouseEvent } from 'react';
 
 type DragHandleProps = {
+  show: boolean;
   onPlusClick?: (event?: MouseEvent<HTMLDivElement>) => void;
 };
 
 export const DragHandle = (props: DragHandleProps) => {
   return (
-    <div className={'drag-handle'} css={dragHandleCss}>
+    <div className={'drag-handle'} css={css`
+      ${dragHandleCss};
+      ${props.show ? showDragHandle : undefined};
+    `}>
       <div css={squareIcon} onClick={props.onPlusClick}>
         <IconContext.Provider value={{ className: 'plus' }}>
           <RxPlus/>
@@ -26,13 +30,22 @@ export const DragHandle = (props: DragHandleProps) => {
 
 const dragHandleCss = css`
   position: absolute;
-  left: 0;
+  left: -4px;
   top: 2px;
   transform: translateX(-100%);
-
   display: flex;
-  visibility: hidden;
   opacity: 0;
+
+  // on hover
+  &:hover {
+    transition: opacity 200ms ease-in;
+    opacity: 1;
+  }
+`;
+
+const showDragHandle = css`
+  transition: opacity 200ms ease-in;
+  opacity: 1;
 `;
 
 const buttonCss = css`
