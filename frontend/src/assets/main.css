@@ -9,7 +9,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   color: #202124;
-  background: url("grid-background-tile.svg") #fff repeat;
+  background: url("images/grid-background-tile.svg") #fff repeat;
 }
 
 :root * {

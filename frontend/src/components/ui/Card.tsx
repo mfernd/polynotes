@@ -1,23 +1,26 @@
 import { ReactNode } from 'react';
-import { css } from '@emotion/react';
-import logo from '@assets/logo.png';
+import { css, SerializedStyles } from '@emotion/react';
+import logo from '@assets/images/logo.png';
 
 type CardProps = {
   children?: ReactNode;
   title?: string;
   showLogo?: boolean;
+  cardContentCss?: SerializedStyles;
 };
 
-export const Card = ({ children, title, showLogo }: CardProps) => {
+export const Card = (props: CardProps) => {
   const buildedCss = css`
     ${cardCss};
-    ${showLogo ? logoCss : ''};
+    ${props.showLogo ? logoCss : ''};
   `;
 
   return (
     <article css={buildedCss}>
-      {title && <h1 css={cardTitleCss}>{title}</h1>}
-      {children}
+      {props.title && <h1 css={cardTitleCss}>{props.title}</h1>}
+      <div css={props.cardContentCss}>
+        {props.children}
+      </div>
     </article>
   );
 };
@@ -25,7 +28,7 @@ export const Card = ({ children, title, showLogo }: CardProps) => {
 const cardCss = css`
   position: relative;
   cursor: default;
-  padding: 1.25rem 2rem;
+  padding: 1.25rem 2rem 2.5rem 2rem;
 
   background-color: #fafbfb;
   border: 1px solid #d8d8d8;

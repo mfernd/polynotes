@@ -5,7 +5,8 @@ import { appName } from '@/main';
 import { Button } from '@components/ui/Button';
 import { Center } from '@components/ui/Center';
 import { Card } from '@components/ui/Card';
-import logoLarge from '@assets/logo-large.svg';
+import logoLarge from '@assets/images/logo-large.svg';
+import manifestoTxt from '@assets/texts/manifesto.txt?raw';
 
 export const LandingPage = () => {
   const navigate = useNavigate();
@@ -20,24 +21,9 @@ export const LandingPage = () => {
         </header>
 
         <main css={mainCss}>
-          <Card title={'Manifesto!'}>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea eveniet numquam optio placeat quo sapiente
-              voluptates? Accusantium aut blanditiis eveniet itaque laborum nostrum officia repellat repudiandae
-              temporibus totam. Id, voluptate!
-            </p>
-            <p>Esse est, excepturi maiores odio quis sunt temporibus veniam. Accusantium, aut beatae culpa dolore
-              dolores ex facilis in incidunt ipsum minus possimus repellat suscipit ut vero voluptates? Architecto,
-              obcaecati repellat.
-            </p>
-            <p>Eos harum illo nihil praesentium. Accusantium architecto blanditiis delectus distinctio exercitationem
-              facere harum illo natus non numquam odio optio quam quidem quos ratione repellendus saepe, sunt unde ut
-              vel
-              voluptatibus?
-            </p>
-            <p>Ad adipisci commodi consectetur consequuntur delectus dicta eos est eveniet expedita fugiat inventore
-              itaque laboriosam maxime, molestias neque numquam praesentium quis reprehenderit tempora tempore tenetur
-              veniam voluptatem. Cumque, perspiciatis rem.
-            </p>
+          <Card title={'Manifesto!'}
+                cardContentCss={cardContentCss}>
+            {manifestoTxt}
           </Card>
 
           <div css={css`transform: translateY(-50%);`}>
@@ -73,4 +59,14 @@ const mainCss = css`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+`;
+
+const cardContentCss = css`
+  white-space: break-spaces;
+  max-height: 400px;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;

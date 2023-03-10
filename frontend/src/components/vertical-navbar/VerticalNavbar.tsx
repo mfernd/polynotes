@@ -4,7 +4,7 @@ import { FiClock, FiDatabase, FiPlus, FiStar, FiTrash2, MdPeopleAlt, MdWorkspace
 import { v4 as uuidv4 } from 'uuid';
 import { Button } from '@components/ui/Button';
 import { ItemNav } from '@components/vertical-navbar/ItemNav';
-import logoLarge from '@assets/logo-large.svg';
+import logoLarge from '@assets/images/logo-large.svg';
 
 export const VerticalNavbar = () => {
   const navigate = useNavigate();
