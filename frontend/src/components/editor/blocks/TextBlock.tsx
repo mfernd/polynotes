@@ -1,4 +1,4 @@
-import { Editor, EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import { Document } from '@tiptap/extension-document';
 import { Text } from '@tiptap/extension-text';
 import { HardBreak } from '@tiptap/extension-hard-break';
@@ -10,19 +10,14 @@ import { Gapcursor } from '@tiptap/extension-gapcursor';
 import { History } from '@tiptap/extension-history';
 import { Placeholder } from '@tiptap/extension-placeholder';
 import { updateFocus } from '@/features/editorSlice';
-import { KeyboardEvent, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { css } from '@emotion/react';
+import { DefaultBlockProps } from '@/typings/editor.type';
+import { shouldShowPlaceholder } from '@/utils/shouldShowPlaceholder';
 
-type TextBlockProps = {
-  id: string;
-  data: string;
-  onInput: (event: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => void;
-  showPlaceholder?: boolean;
-};
-
-export const TextBlock = (props: TextBlockProps) => {
+export const TextBlock = (props: DefaultBlockProps) => {
   const editorState = useSelector((state: RootState) => state.editor);
   const dispatch = useDispatch();
 
@@ -54,7 +49,9 @@ export const TextBlock = (props: TextBlockProps) => {
   return (
     <div css={css`
       ${textBlockCss};
-      ${(props.showPlaceholder && !editor?.isFocused) || (editor?.isFocused && editor.isEmpty) ? placeholderCss : undefined};
+      ${shouldShowPlaceholder(props.showPlaceholder, editor?.isFocused, editor?.isEmpty)
+              ? placeholderCss
+              : undefined};
     `}>
       <EditorContent editor={editor} onKeyDown={(e) => props.onInput(e, editor)}/>
     </div>

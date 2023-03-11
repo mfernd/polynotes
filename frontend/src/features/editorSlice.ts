@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export type NodeState = {
   focusedNode: string;
-  cursorIndex: number;
+  cursorIndex: number | 'start' | 'end';
   nodes: Node[];
 };
 
@@ -12,7 +12,7 @@ const initialState: NodeState = {
   focusedNode: '',
   cursorIndex: 0,
   nodes: [
-    { id: uuidv4(), type: 'text', data: '' },
+    { id: uuidv4(), type: 'header', data: '' },
   ],
 };
 
@@ -21,13 +21,7 @@ export const editorSlice = createSlice({
   initialState,
   reducers: {
     updateFocus: (state, nodeId: PayloadAction<string>) => {
-      const index = state.nodes.findIndex((node) => node.id === nodeId.payload);
       state.focusedNode = nodeId.payload;
-    },
-    updateCursor: (state, previousCursorIndex: PayloadAction<number>) => {
-      // TODO: problem with ArrowRight and ArrowLeft, one entry late (repeat the action to do it...
-      // console.log('cursor:', previousCursorIndex.payload);
-      state.cursorIndex = previousCursorIndex.payload;
     },
     updateData: (state, newData: PayloadAction<any>) => {
       const index = state.nodes.findIndex((node) => node.id === state.focusedNode);
@@ -35,14 +29,17 @@ export const editorSlice = createSlice({
 
       state.nodes[index].data = newData.payload;
     },
-    onArrow: (state, isUp: PayloadAction<{ orientation: 'up' | 'down', cursorIndex: number }>) => {
+    onArrow: (state, action: PayloadAction<{ orientation: 'up' | 'down', cursorIndex?: number | 'start' | 'end' }>) => {
       const index = state.nodes.findIndex((node) => node.id === state.focusedNode);
       if (index === -1) return;
 
-      if (isUp.payload.orientation === 'up' && index > 0)
+      if (action.payload.orientation === 'up' && index > 0)
         state.focusedNode = state.nodes[index - 1].id;
-      if (isUp.payload.orientation === 'down' && index < state.nodes.length - 1)
+      if (action.payload.orientation === 'down' && index < state.nodes.length - 1)
         state.focusedNode = state.nodes[index + 1].id;
+
+      if (undefined !== action.payload.cursorIndex)
+        state.cursorIndex = action.payload.cursorIndex;
     },
     addBottomNode: (state, nodeId: PayloadAction<string>) => {
       const index = state.nodes.findIndex((node) => node.id === state.focusedNode);
@@ -69,5 +66,5 @@ export const editorSlice = createSlice({
   },
 });
 
-export const { updateFocus, updateCursor, updateData, onArrow, addBottomNode, deleteNode } = editorSlice.actions;
+export const { updateFocus, updateData, onArrow, addBottomNode, deleteNode } = editorSlice.actions;
 export default editorSlice.reducer;
