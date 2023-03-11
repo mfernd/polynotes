@@ -12,7 +12,10 @@ const initialState: NodeState = {
   focusedNode: '',
   cursorIndex: 0,
   nodes: [
-    { id: uuidv4(), type: 'header', data: '' },
+    { id: uuidv4(), type: 'header-1', data: undefined },
+    { id: uuidv4(), type: 'header-2', data: undefined },
+    { id: uuidv4(), type: 'header-3', data: undefined },
+    { id: uuidv4(), type: 'text', data: undefined },
   ],
 };
 

@@ -3,14 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { Document } from '@tiptap/extension-document';
+import { Paragraph } from '@tiptap/extension-paragraph';
 import { Text } from '@tiptap/extension-text';
 import { Heading } from '@tiptap/extension-heading';
 import { updateFocus } from '@/features/editorSlice';
-import { useEffect } from 'react';
 import { css } from '@emotion/react';
+import { useEffect } from 'react';
 import { shouldShowPlaceholder } from '@/utils/shouldShowPlaceholder';
 
-export const HeadingBlock = (props: DefaultBlockProps) => {
+type HeadingBlockProps = DefaultBlockProps & {
+  level?: 1 | 2 | 3;
+};
+
+export const HeadingBlock = (props: HeadingBlockProps) => {
   const editorState = useSelector((state: RootState) => state.editor);
   const dispatch = useDispatch();
 
@@ -24,12 +29,13 @@ export const HeadingBlock = (props: DefaultBlockProps) => {
         levels: [1, 2, 3],
       }),
     ],
-    onFocus: () => dispatch(updateFocus(props.id)),
-    content: props.data,
+    onFocus: () => dispatch(updateFocus(props.block.id)),
+    onCreate: ({ editor }) => editor.commands.setHeading({ level: props.level ?? 1 }),
+    content: props.block.data,
   });
 
   useEffect(() => {
-    const isFocused = props.id === editorState.focusedNode;
+    const isFocused = props.block.id === editorState.focusedNode;
     if (isFocused)
       editor?.commands.focus(editorState.cursorIndex);
   }, [editorState, editor]);
@@ -37,8 +43,8 @@ export const HeadingBlock = (props: DefaultBlockProps) => {
   return (
     <div css={css`
       ${headingBlockCss};
-      ${shouldShowPlaceholder(true, editor?.isFocused, editor?.isEmpty)
-              ? placeholderCss(1)
+      ${shouldShowPlaceholder(true, editor?.isFocused, editor?.getText().length === 0)
+              ? placeholderCss(props.level ?? 1)
               : undefined};
     `}>
       <EditorContent editor={editor} onKeyDown={(e) => props.onInput(e, editor)}/>
@@ -46,14 +52,39 @@ export const HeadingBlock = (props: DefaultBlockProps) => {
   );
 };
 
-const headingBlockCss = css`
-  margin-top: 2em;
-  margin-bottom: 4px;
+
+const h1Css = css`
+  font-size: 2rem;
+  font-weight: 800;
+`;
+const h2Css = css`
+  font-size: 1.9rem;
+  font-weight: 700;
+`;
+const h3Css = css`
+  font-size: 1.8rem;
+  font-weight: 600;
+`;
+
+const headingBlockCss = css`;
+  position: relative;
+
+  h1, h2, h3 {
+    margin: 0;
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
+  }
   
   h1 {
-    margin: 0;
-    font-size: 1.875em;
-    font-weight: 700;
+    ${h1Css};
+  }
+  
+  h2 {
+    ${h2Css};
+  }
+  
+  h3 {
+    ${h3Css};
   }
 `;
 
@@ -61,10 +92,14 @@ const placeholderCss = (level: number) => css`
   [contenteditable]:before {
     content: 'Titre ${level}';
     color: rgba(38, 37, 34, 0.4);
-    font-size: 1.875em;
-    font-weight: 700;
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
 
-    float: left;
+    ${level === 1 ? h1Css : undefined};
+    ${level === 2 ? h2Css : undefined};
+    ${level === 3 ? h3Css : undefined};
+
+    position: absolute;
     height: 0;
     pointer-events: none;
   }

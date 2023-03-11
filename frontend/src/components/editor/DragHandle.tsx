@@ -1,20 +1,23 @@
 import { RxDragHandleDots2, RxPlus } from 'react-icons/all';
 import { css } from '@emotion/react';
 import { IconContext } from 'react-icons';
-import { MouseEvent } from 'react';
+import { addBottomNode } from '@/features/editorSlice';
+import { useDispatch } from 'react-redux';
 
 type DragHandleProps = {
+  nodeId: string;
   show: boolean;
-  onPlusClick?: (event?: MouseEvent<HTMLDivElement>) => void;
 };
 
 export const DragHandle = (props: DragHandleProps) => {
+  const dispatch = useDispatch();
+
   return (
     <div className={'drag-handle'} css={css`
       ${dragHandleCss};
       ${props.show ? showDragHandle : undefined};
     `}>
-      <div css={squareIcon} onClick={props.onPlusClick}>
+      <div css={squareIcon} onClick={() => dispatch(addBottomNode(props.nodeId))}>
         <IconContext.Provider value={{ className: 'plus' }}>
           <RxPlus/>
         </IconContext.Provider>

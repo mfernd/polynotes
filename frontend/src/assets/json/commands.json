@@ -1,0 +1,64 @@
+{
+  "commands": [
+    {
+      "type": "Blocs de base",
+      "title": "Texte",
+      "info": "Écrivez du texte. Tout simplement.",
+      "img": ""
+    },
+    {
+      "type": "Blocs de base",
+      "title": "Titre 1",
+      "info": "Titre de grande taille.",
+      "img": ""
+    },
+    {
+      "type": "Blocs de base",
+      "title": "Titre 2",
+      "info": "Titre de taille moyenne.",
+      "img": ""
+    },
+    {
+      "type": "Blocs de base",
+      "title": "Titre 3",
+      "info": "Titre de petite taille.",
+      "img": ""
+    },
+    {
+      "type": "Blocs de base",
+      "title": "Liste à puces",
+      "info": "Créez une liste à puces.",
+      "img": ""
+    },
+    {
+      "type": "Blocs de base",
+      "title": "Liste numérotée",
+      "info": "Créez une liste numérotée.",
+      "img": ""
+    },
+    {
+      "type": "Blocs de base",
+      "title": "Citation",
+      "info": "Affichez une citation.",
+      "img": ""
+    },
+    {
+      "type": "Blocs de base",
+      "title": "Séparateur",
+      "info": "Séparer visuellement les blocks.",
+      "img": ""
+    },
+    {
+      "type": "Média",
+      "title": "Image",
+      "info": "Intégrez une image avec un lien.",
+      "img": ""
+    },
+    {
+      "type": "Média",
+      "title": "Code",
+      "info": "Affichez un extrait de code.",
+      "img": ""
+    }
+  ]
+}

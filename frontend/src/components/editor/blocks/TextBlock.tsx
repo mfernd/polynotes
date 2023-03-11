@@ -8,7 +8,6 @@ import { Strike } from '@tiptap/extension-strike';
 import { Dropcursor } from '@tiptap/extension-dropcursor';
 import { Gapcursor } from '@tiptap/extension-gapcursor';
 import { History } from '@tiptap/extension-history';
-import { Placeholder } from '@tiptap/extension-placeholder';
 import { updateFocus } from '@/features/editorSlice';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -34,14 +33,13 @@ export const TextBlock = (props: DefaultBlockProps) => {
       Dropcursor,
       Gapcursor,
       History,
-      Placeholder,
     ],
-    onFocus: () => dispatch(updateFocus(props.id)),
-    content: props.data,
+    onFocus: () => dispatch(updateFocus(props.block.id)),
+    content: props.block.data,
   });
 
   useEffect(() => {
-    const isFocused = props.id === editorState.focusedNode;
+    const isFocused = props.block.id === editorState.focusedNode;
     if (isFocused)
       editor?.commands.focus(editorState.cursorIndex);
   }, [editorState, editor]);

@@ -9,9 +9,7 @@ export const EditorManager = () => {
     <>
       {editor.nodes.map((node, index) => (
         <EditorNode key={node.id}
-                    id={node.id}
-                    type={node.type}
-                    data={node.data}
+                    block={node}
                     isLastNode={index === editor.nodes.length - 1}/>
       ))}
     </>

@@ -7,8 +7,14 @@ import { DragHandle } from '@components/editor/DragHandle';
 import { TextBlock } from '@components/editor/blocks/TextBlock';
 import { Editor } from '@tiptap/react';
 import { HeadingBlock } from '@components/editor/blocks/HeadingBlock';
+import { CommandManager } from '@components/editor/commands/CommandManager';
 
-export const EditorNode = (props: Node & { isLastNode?: boolean }) => {
+type EditorNodeProps = {
+  block: Node;
+  isLastNode?: boolean;
+};
+
+export const EditorNode = (props: EditorNodeProps) => {
   const dispatch = useDispatch();
   const [focused, setFocused] = useState(false);
 
@@ -19,7 +25,7 @@ export const EditorNode = (props: Node & { isLastNode?: boolean }) => {
 
     if (e.key === 'Enter') {
       e.preventDefault();
-      dispatch(addBottomNode(props.id));
+      dispatch(addBottomNode(props.block.id));
     } else if (['Backspace', 'Delete'].includes(e.key) && editor.isEmpty) {
       e.preventDefault();
       dispatch(deleteNode());
@@ -39,24 +45,31 @@ export const EditorNode = (props: Node & { isLastNode?: boolean }) => {
   }, []);
 
   let blockRendered: JSX.Element | undefined;
-  switch (props.type) {
+  switch (props.block.type) {
     case 'text':
-      blockRendered = <TextBlock id={props.id} data={props.data} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
+      blockRendered = <TextBlock block={props.block} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
       break;
-    case 'header':
-      blockRendered = <HeadingBlock id={props.id} data={props.data} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
+    case 'header-1':
+      blockRendered = <HeadingBlock block={props.block} level={1} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
+      break;
+    case 'header-2':
+      blockRendered = <HeadingBlock block={props.block} level={2} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
+      break;
+    case 'header-3':
+      blockRendered = <HeadingBlock block={props.block} level={3} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
       break;
   }
 
   return (
-    <div data-node-id={props.id}
+    <div data-node-id={props.block.id}
          css={nodeContainerCss}
          onFocus={() => setFocused(true)}
          onBlur={() => setFocused(false)}
          onMouseEnter={() => setFocused(true)}
          onMouseLeave={() => setFocused(false)}>
       {blockRendered}
-      <DragHandle show={focused} onPlusClick={() => dispatch(addBottomNode(props.id))}/>
+      <DragHandle nodeId={props.block.id} show={focused}/>
+      <CommandManager nodeId={props.block.id} query={'test'} show={true}/>
     </div>
   );
 };

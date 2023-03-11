@@ -4,24 +4,22 @@ import { Editor } from '@tiptap/react';
 export type Node = {
   id: string;
   type: NodeType;
-  data: any;
+  data?: string;
 };
 
 export type NodeType =
   | 'text' // default
-  | 'header'
+  | 'header-1'
+  | 'header-2'
+  | 'header-3'
   | 'image'
   | 'table' // views -> kanban, to-do
   | 'bulleted-list'
   | 'numbered-list'
   | 'column';
 
-export type NodeTextContent = string;
-export type NodeHeaderContent = string;
-
 export type DefaultBlockProps = {
-  id: string;
-  data: string;
+  block: Node;
   onInput: (event: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => void;
   showPlaceholder?: boolean;
 };

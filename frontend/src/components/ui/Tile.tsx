@@ -12,8 +12,7 @@ export const Tile = (props: TileProps) => {
   const tileBody = (
     <>
       <div css={previewSectionCss}>
-        <img src={props.imageUrl}
-             alt={`"${props.title}" tile image`}/>
+        <img src={props.imageUrl} alt={`"${props.title}" tile image`}/>
       </div>
       <div css={detailsSectionCss}>
         <h1>{props.title}</h1>
