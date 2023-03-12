@@ -5,6 +5,7 @@ import { HardBreak } from '@tiptap/extension-hard-break';
 import { Bold } from '@tiptap/extension-bold';
 import { Italic } from '@tiptap/extension-italic';
 import { Strike } from '@tiptap/extension-strike';
+import { Code } from '@tiptap/extension-code';
 import { Dropcursor } from '@tiptap/extension-dropcursor';
 import { Gapcursor } from '@tiptap/extension-gapcursor';
 import { History } from '@tiptap/extension-history';
@@ -30,6 +31,11 @@ export const TextBlock = (props: DefaultBlockProps) => {
       Bold,
       Italic,
       Strike,
+      Code.configure({
+        HTMLAttributes: {
+          spellcheck :false,
+        },
+      }),
       Dropcursor,
       Gapcursor,
       History,
@@ -57,6 +63,16 @@ export const TextBlock = (props: DefaultBlockProps) => {
 };
 
 const textBlockCss = css`
+  code {
+    font-family: Consolas, monospace;
+    color: #fe0096;
+    font-size: 85%;
+
+    background: rgba(135, 131, 120, 0.15);
+    border-radius: 3px;
+    padding: 0.2rem 0.4rem;
+  }
+
   .ProseMirror {
     padding: 3px 7px;
 

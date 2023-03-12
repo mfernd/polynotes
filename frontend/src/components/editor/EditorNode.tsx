@@ -1,5 +1,5 @@
 import { KeyboardEvent, useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { css } from '@emotion/react';
 import { addBottomNode, deleteNode, onArrow, updateData } from '@/features/editorSlice';
 import { Node } from '@/typings/editor.type';
@@ -69,7 +69,7 @@ export const EditorNode = (props: EditorNodeProps) => {
          onMouseLeave={() => setFocused(false)}>
       {blockRendered}
       <DragHandle nodeId={props.block.id} show={focused}/>
-      <CommandManager nodeId={props.block.id} query={'test'} show={true}/>
+      <CommandManager nodeId={props.block.id} query={'test'} show={props.isLastNode}/>
     </div>
   );
 };

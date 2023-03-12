@@ -1,64 +1,74 @@
 {
   "commands": [
     {
-      "type": "Blocs de base",
+      "type": "base",
       "title": "Texte",
       "info": "Écrivez du texte. Tout simplement.",
-      "img": ""
+      "img": "/blocks/text.svg",
+      "blockName": "text"
     },
     {
-      "type": "Blocs de base",
+      "type": "base",
       "title": "Titre 1",
       "info": "Titre de grande taille.",
-      "img": ""
+      "img": "/blocks/h1.svg",
+      "blockName": "header-1"
     },
     {
-      "type": "Blocs de base",
+      "type": "base",
       "title": "Titre 2",
       "info": "Titre de taille moyenne.",
-      "img": ""
+      "img": "/blocks/h2.svg",
+      "blockName": "header-2"
     },
     {
-      "type": "Blocs de base",
+      "type": "base",
       "title": "Titre 3",
       "info": "Titre de petite taille.",
-      "img": ""
+      "img": "/blocks/h3.svg",
+      "blockName": "header-3"
     },
     {
-      "type": "Blocs de base",
+      "type": "base",
       "title": "Liste à puces",
       "info": "Créez une liste à puces.",
-      "img": ""
+      "img": "/blocks/bulleted-list.svg",
+      "blockName": "bulleted-list"
     },
     {
-      "type": "Blocs de base",
+      "type": "base",
       "title": "Liste numérotée",
       "info": "Créez une liste numérotée.",
-      "img": ""
+      "img": "/blocks/numbered-list.svg",
+      "blockName": "numbered-list"
     },
     {
-      "type": "Blocs de base",
+      "type": "base",
       "title": "Citation",
       "info": "Affichez une citation.",
-      "img": ""
+      "img": "/blocks/quote.svg",
+      "blockName": "quote"
     },
     {
-      "type": "Blocs de base",
+      "type": "base",
       "title": "Séparateur",
       "info": "Séparer visuellement les blocks.",
-      "img": ""
+      "img": "/blocks/horizontal-rule.svg",
+      "blockName": "horizontal-rule"
     },
     {
-      "type": "Média",
+      "type": "media",
       "title": "Image",
       "info": "Intégrez une image avec un lien.",
-      "img": ""
+      "img": "/blocks/image.svg",
+      "blockName": "image"
     },
     {
-      "type": "Média",
+      "type": "media",
       "title": "Code",
       "info": "Affichez un extrait de code.",
-      "img": ""
+      "img": "/blocks/code.svg",
+      "blockName": "code"
     }
   ]
 }

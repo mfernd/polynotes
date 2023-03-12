@@ -3,9 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { Document } from '@tiptap/extension-document';
-import { Paragraph } from '@tiptap/extension-paragraph';
 import { Text } from '@tiptap/extension-text';
 import { Heading } from '@tiptap/extension-heading';
+import { History } from '@tiptap/extension-history';
+import { Bold } from '@tiptap/extension-bold';
+import { Italic } from '@tiptap/extension-italic';
+import { Strike } from '@tiptap/extension-strike';
+import { Code } from '@tiptap/extension-code';
 import { updateFocus } from '@/features/editorSlice';
 import { css } from '@emotion/react';
 import { useEffect } from 'react';
@@ -28,6 +32,15 @@ export const HeadingBlock = (props: HeadingBlockProps) => {
       Heading.configure({
         levels: [1, 2, 3],
       }),
+      Bold,
+      Italic,
+      Strike,
+      Code.configure({
+        HTMLAttributes: {
+          spellcheck: false,
+        },
+      }),
+      History,
     ],
     onFocus: () => dispatch(updateFocus(props.block.id)),
     onCreate: ({ editor }) => editor.commands.setHeading({ level: props.level ?? 1 }),
@@ -74,17 +87,26 @@ const headingBlockCss = css`;
     padding-top: 1rem;
     padding-bottom: 0.5rem;
   }
-  
+
   h1 {
     ${h1Css};
   }
-  
+
   h2 {
     ${h2Css};
   }
-  
+
   h3 {
     ${h3Css};
+  }
+
+  code {
+    font-family: Consolas, monospace;
+    color: #f30290;
+
+    background: rgba(135, 131, 120, 0.15);
+    border-radius: 3px;
+    padding: 0.2rem 0.4rem;
   }
 `;
 

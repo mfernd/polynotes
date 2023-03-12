@@ -31,24 +31,23 @@ export const DragHandle = (props: DragHandleProps) => {
   );
 };
 
+const showDragHandle = css`
+  transition: opacity 100ms ease-in;
+  opacity: 1;
+`;
+
 const dragHandleCss = css`
   position: absolute;
   left: -4px;
-  top: 2px;
-  transform: translateX(-100%);
+  top: 50%;
+  transform: translateX(-100%) translateY(-50%);
   display: flex;
   opacity: 0;
 
   // on hover
   &:hover {
-    transition: opacity 200ms ease-in;
-    opacity: 1;
+    ${showDragHandle};
   }
-`;
-
-const showDragHandle = css`
-  transition: opacity 200ms ease-in;
-  opacity: 1;
 `;
 
 const buttonCss = css`
