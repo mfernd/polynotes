@@ -33,19 +33,19 @@ export const TextBlock = (props: DefaultBlockProps) => {
       Strike,
       Code.configure({
         HTMLAttributes: {
-          spellcheck :false,
+          spellcheck: false,
         },
       }),
       Dropcursor,
       Gapcursor,
       History,
     ],
-    onFocus: () => dispatch(updateFocus(props.block.id)),
-    content: props.block.data,
+    onFocus: () => dispatch(updateFocus(props.node.id)),
+    content: props.node.data,
   });
 
   useEffect(() => {
-    const isFocused = props.block.id === editorState.focusedNode;
+    const isFocused = props.node.id === editorState.focusedNode;
     if (isFocused)
       editor?.commands.focus(editorState.cursorIndex);
   }, [editorState, editor]);
@@ -57,7 +57,9 @@ export const TextBlock = (props: DefaultBlockProps) => {
               ? placeholderCss
               : undefined};
     `}>
-      <EditorContent editor={editor} onKeyDown={(e) => props.onInput(e, editor)}/>
+      <EditorContent editor={editor}
+                     onKeyDown={(e) => props.onBeforeInput && props.onBeforeInput(e, editor)}
+                     onKeyUp={props.onAfterInput}/>
     </div>
   );
 };

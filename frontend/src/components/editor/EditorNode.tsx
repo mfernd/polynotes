@@ -1,13 +1,13 @@
 import { KeyboardEvent, useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { css } from '@emotion/react';
 import { addBottomNode, deleteNode, onArrow, updateData } from '@/features/editorSlice';
-import { Node } from '@/typings/editor.type';
-import { DragHandle } from '@components/editor/DragHandle';
-import { TextBlock } from '@components/editor/blocks/TextBlock';
+import { Command, Node } from '@/typings/editor.type';
 import { Editor } from '@tiptap/react';
-import { HeadingBlock } from '@components/editor/blocks/HeadingBlock';
+import { DragHandle } from '@components/editor/DragHandle';
 import { CommandManager } from '@components/editor/commands/CommandManager';
+import { commands } from '@assets/json/commands.json';
+import { getEditorNodeFromType } from '@/utils/getEditorNodeFromType';
 
 type EditorNodeProps = {
   block: Node;
@@ -17,22 +17,23 @@ type EditorNodeProps = {
 export const EditorNode = (props: EditorNodeProps) => {
   const dispatch = useDispatch();
   const [focused, setFocused] = useState(false);
+  const [commandManager, setCommandManager] = useState({ show: false, commands: commands as Command[] });
 
-  const kbdListener = useCallback((e: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => {
+  const beforeInput = useCallback((e: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => {
     if (e.shiftKey) return;
     if (null === editor) return;
     const selection = window.getSelection();
 
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !commandManager.show) {
       e.preventDefault();
       dispatch(addBottomNode(props.block.id));
     } else if (['Backspace', 'Delete'].includes(e.key) && editor.isEmpty) {
       e.preventDefault();
       dispatch(deleteNode());
-    } else if (e.key === 'ArrowUp' && selection?.isCollapsed) {
+    } else if (e.key === 'ArrowUp' && selection?.isCollapsed && !commandManager.show) {
       e.preventDefault();
       dispatch(onArrow({ orientation: 'up', cursorIndex: selection.anchorOffset }));
-    } else if (e.key === 'ArrowDown' && selection?.isCollapsed) {
+    } else if (e.key === 'ArrowDown' && selection?.isCollapsed && !commandManager.show) {
       e.preventDefault();
       dispatch(onArrow({ orientation: 'down', cursorIndex: selection.anchorOffset }));
     } else if (e.key === 'ArrowLeft' && selection?.isCollapsed && selection?.anchorOffset === 0) {
@@ -42,23 +43,28 @@ export const EditorNode = (props: EditorNodeProps) => {
     } else {
       dispatch(updateData(editor.getHTML()));
     }
-  }, []);
+  }, [commandManager]);
 
-  let blockRendered: JSX.Element | undefined;
-  switch (props.block.type) {
-    case 'text':
-      blockRendered = <TextBlock block={props.block} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
-      break;
-    case 'header-1':
-      blockRendered = <HeadingBlock block={props.block} level={1} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
-      break;
-    case 'header-2':
-      blockRendered = <HeadingBlock block={props.block} level={2} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
-      break;
-    case 'header-3':
-      blockRendered = <HeadingBlock block={props.block} level={3} onInput={kbdListener} showPlaceholder={props.isLastNode}/>;
-      break;
-  }
+  const afterInput = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === '/') {
+      setCommandManager({ ...commandManager, show: !commandManager.show });
+    }
+    if (!commandManager.show) return;
+
+    const textContent = (e.target as HTMLDivElement).textContent;
+    if (null === textContent) return;
+
+    const query = textContent.substring(textContent.indexOf('/') + 1);
+    const commandsFiltered = commands.filter((command) => command.title.toLowerCase().startsWith(query.toLowerCase())) as Command[];
+    if (commandsFiltered.length === 0) {
+      setCommandManager({ ...commandManager, commands: [] });
+      setTimeout(() => {
+        setCommandManager({ ...commandManager, show: false });
+      }, 500);
+    } else {
+      setCommandManager({ ...commandManager, commands: commandsFiltered });
+    }
+  }, [commandManager]);
 
   return (
     <div data-node-id={props.block.id}
@@ -67,9 +73,11 @@ export const EditorNode = (props: EditorNodeProps) => {
          onBlur={() => setFocused(false)}
          onMouseEnter={() => setFocused(true)}
          onMouseLeave={() => setFocused(false)}>
-      {blockRendered}
+      {/* Node */}
+      {getEditorNodeFromType(props.block, props.isLastNode, beforeInput, afterInput)}
+      {/* ---- */}
       <DragHandle nodeId={props.block.id} show={focused}/>
-      <CommandManager nodeId={props.block.id} query={'test'} show={props.isLastNode}/>
+      {commandManager.show ? <CommandManager nodeId={props.block.id} commands={commandManager.commands}/> : null}
     </div>
   );
 };

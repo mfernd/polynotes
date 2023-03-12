@@ -42,13 +42,13 @@ export const HeadingBlock = (props: HeadingBlockProps) => {
       }),
       History,
     ],
-    onFocus: () => dispatch(updateFocus(props.block.id)),
+    onFocus: () => dispatch(updateFocus(props.node.id)),
     onCreate: ({ editor }) => editor.commands.setHeading({ level: props.level ?? 1 }),
-    content: props.block.data,
+    content: props.node.data,
   });
 
   useEffect(() => {
-    const isFocused = props.block.id === editorState.focusedNode;
+    const isFocused = props.node.id === editorState.focusedNode;
     if (isFocused)
       editor?.commands.focus(editorState.cursorIndex);
   }, [editorState, editor]);
@@ -57,10 +57,12 @@ export const HeadingBlock = (props: HeadingBlockProps) => {
     <div css={css`
       ${headingBlockCss};
       ${shouldShowPlaceholder(true, editor?.isFocused, editor?.getText().length === 0)
-              ? placeholderCss(props.level ?? 1)
+              ? placeholderCss(editor?.getAttributes('heading').level ?? 1)
               : undefined};
     `}>
-      <EditorContent editor={editor} onKeyDown={(e) => props.onInput(e, editor)}/>
+      <EditorContent editor={editor}
+                     onKeyDown={(e) => props.onBeforeInput && props.onBeforeInput(e, editor)}
+                     onKeyUp={props.onAfterInput}/>
     </div>
   );
 };
@@ -71,11 +73,11 @@ const h1Css = css`
   font-weight: 800;
 `;
 const h2Css = css`
-  font-size: 1.9rem;
+  font-size: 1.75rem;
   font-weight: 700;
 `;
 const h3Css = css`
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 600;
 `;
 

@@ -19,7 +19,16 @@ export type NodeType =
   | 'column';
 
 export type DefaultBlockProps = {
-  block: Node;
-  onInput: (event: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => void;
+  node: Node;
+  onBeforeInput?: (event: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => void;
+  onAfterInput?: (event: KeyboardEvent<HTMLDivElement>) => void;
   showPlaceholder?: boolean;
+};
+
+export type Command = {
+  type: 'base' | 'media';
+  title: string;
+  info: string;
+  img?: string;
+  blockName: string;
 };
