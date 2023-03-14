@@ -27,7 +27,7 @@ export const editorSlice = createSlice({
     updateFocus: (state, nodeId: PayloadAction<string>) => {
       state.focusedNode = nodeId.payload;
     },
-    updateData: (state, newData: PayloadAction<any>) => {
+    updateData: (state, newData: PayloadAction<string | undefined>) => {
       const index = state.nodes.findIndex((node) => node.id === state.focusedNode);
       if (index === -1) return;
 

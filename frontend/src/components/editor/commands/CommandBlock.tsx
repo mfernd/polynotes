@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { useEffect, useRef } from 'react';
 
 type CommandBlockProps = {
   img?: string;
@@ -9,13 +10,20 @@ type CommandBlockProps = {
 };
 
 export const CommandBlock = (props: CommandBlockProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (props.isSelected) {
+      ref.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [props.isSelected]);
+
   return (
-    <div
-      onClick={props.onClick}
-      css={css`
-        ${commandCss};
-        ${props.isSelected ? commandSelectedCss : undefined};
-      `}>
+    <div ref={ref} onClick={props.onClick}
+         css={css`
+           ${commandCss};
+           ${props.isSelected ? commandSelectedCss : undefined};
+         `}>
       <div css={leftColumnCss}>
         {props.img ? <img src={props.img} alt={`${props.title} image preview`}/> : null}
       </div>
