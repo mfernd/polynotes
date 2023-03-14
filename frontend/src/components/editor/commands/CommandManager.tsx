@@ -1,23 +1,28 @@
 import { css } from '@emotion/react';
 import { CommandBlock } from '@components/editor/commands/CommandBlock';
-import { Command } from '@/typings/editor.type';
+import { Command, NodeType } from '@/typings/editor.type';
 
 type CommandManagerProps = {
   nodeId: string;
   commands: Command[];
+  selected: number;
+  onCommandClick?: (blockName: NodeType) => void;
 };
 
 export const CommandManager = (props: CommandManagerProps) => {
-  // const dispatch = useDispatch();
-
   const baseCommands = props.commands.filter((c) => c.type === 'base');
   const mediaCommands = props.commands.filter((c) => c.type === 'media');
+
   const baseCommandsRender = (
     <div css={commandTypeCss}>
       <div css={headingCss}>Blocs de base</div>
       <div css={commandsCss}>
         {baseCommands.map((command, index) => (
-          <CommandBlock key={index} img={command.img} title={command.title} info={command.info} isSelected={index === 0}/>
+          <CommandBlock key={index} img={command.img}
+                        title={command.title}
+                        info={command.info}
+                        isSelected={index === props.selected}
+                        onClick={() => props.onCommandClick && props.onCommandClick(command.blockName)}/>
         ))}
       </div>
     </div>
@@ -27,7 +32,11 @@ export const CommandManager = (props: CommandManagerProps) => {
       <div css={headingCss}>Média</div>
       <div css={commandsCss}>
         {mediaCommands.map((command, index) => (
-          <CommandBlock key={index} img={command.img} title={command.title} info={command.info} isSelected={false}/>
+          <CommandBlock key={index} img={command.img}
+                        title={command.title}
+                        info={command.info}
+                        isSelected={index === props.selected - baseCommands.length}
+                        onClick={() => props.onCommandClick && props.onCommandClick(command.blockName)}/>
         ))}
       </div>
     </div>
@@ -37,7 +46,10 @@ export const CommandManager = (props: CommandManagerProps) => {
     <div css={commandBlockCss(20)}>
       <div>
         {props.commands.length === 0
-          ? <div css={commandTypeCss}><div css={textHeaderCss}>Pas de résultats...</div></div>
+          ? (
+            <div css={commandTypeCss}>
+              <div css={textHeaderCss}>Pas de résultats...</div>
+            </div>)
           : null}
         {baseCommands.length > 0 ? baseCommandsRender : null}
         {mediaCommands.length > 0 ? mediaCommandsRender : null}

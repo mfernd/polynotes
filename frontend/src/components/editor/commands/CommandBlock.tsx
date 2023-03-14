@@ -5,11 +5,17 @@ type CommandBlockProps = {
   title: string;
   info: string;
   isSelected?: boolean;
+  onClick?: () => void;
 };
 
 export const CommandBlock = (props: CommandBlockProps) => {
   return (
-    <div css={css`${commandCss}; ${props.isSelected ? commandSelectedCss : undefined};`}>
+    <div
+      onClick={props.onClick}
+      css={css`
+        ${commandCss};
+        ${props.isSelected ? commandSelectedCss : undefined};
+      `}>
       <div css={leftColumnCss}>
         {props.img ? <img src={props.img} alt={`${props.title} image preview`}/> : null}
       </div>
@@ -31,6 +37,14 @@ const commandCss = css`
   font-size: 14px;
   border-radius: 3px;
   padding: 5px 10px;
+
+  :hover {
+    background: rgba(55, 53, 47, 0.06);
+  }
+
+  :active {
+    background: rgba(55, 53, 47, 0.1);
+  }
 `;
 
 const commandSelectedCss = css`
@@ -44,7 +58,7 @@ const leftColumnCss = css`
   border-radius: 3px;
   background-color: #fff;
   box-shadow: rgba(15, 15, 15, 0.1) 0 0 0 1px;
-  
+
   img {
     width: 100%;
     height: 100%;

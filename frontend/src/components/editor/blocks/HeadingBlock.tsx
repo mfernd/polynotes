@@ -62,7 +62,7 @@ export const HeadingBlock = (props: HeadingBlockProps) => {
     `}>
       <EditorContent editor={editor}
                      onKeyDown={(e) => props.onBeforeInput && props.onBeforeInput(e, editor)}
-                     onKeyUp={props.onAfterInput}/>
+                     onKeyUp={(e) => props.onAfterInput && props.onAfterInput(e, editor)}/>
     </div>
   );
 };

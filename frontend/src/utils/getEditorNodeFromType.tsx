@@ -1,4 +1,4 @@
-import {KeyboardEvent} from 'react';
+import { KeyboardEvent } from 'react';
 import { Editor } from '@tiptap/react';
 import { DefaultBlockProps, Node } from '@/typings/editor.type';
 import { TextBlock } from '@components/editor/blocks/TextBlock';
@@ -7,8 +7,8 @@ import { HeadingBlock } from '@components/editor/blocks/HeadingBlock';
 export const getEditorNodeFromType = (
   node: Node,
   isLastNode?: boolean,
-  beforeInput?: (event: KeyboardEvent<HTMLDivElement>, editor: (Editor | null)) => void,
-  afterInput?: (event: KeyboardEvent<HTMLDivElement>) => void,
+  beforeInput?: (event: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => void,
+  afterInput?: (event: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => void,
 ): JSX.Element => {
   const defaultProps: DefaultBlockProps = {
     node: node,

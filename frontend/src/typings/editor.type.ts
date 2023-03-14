@@ -21,7 +21,7 @@ export type NodeType =
 export type DefaultBlockProps = {
   node: Node;
   onBeforeInput?: (event: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => void;
-  onAfterInput?: (event: KeyboardEvent<HTMLDivElement>) => void;
+  onAfterInput?: (event: KeyboardEvent<HTMLDivElement>, editor: Editor | null) => void;
   showPlaceholder?: boolean;
 };
 
@@ -30,5 +30,5 @@ export type Command = {
   title: string;
   info: string;
   img?: string;
-  blockName: string;
+  blockName: NodeType;
 };
