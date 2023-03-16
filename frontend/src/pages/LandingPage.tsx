@@ -21,13 +21,13 @@ export const LandingPage = () => {
         </header>
 
         <main css={mainCss}>
-          <Card title={'Manifesto!'}
-                cardContentCss={cardContentCss}>
+          <Card title={'Manifesto!'} cardContentCss={cardContentCss}>
             {manifestoTxt}
           </Card>
 
-          <div css={css`transform: translateY(-50%);`}>
-            <Button onClick={() => navigate('/login')}>START</Button>
+          <div css={css`transform: translateY(-50%); display: flex; gap: 4rem;`}>
+            <Button buttonProperties={{isFullWidth: false}} onClick={() => navigate('/login')}>SE CONNECTER</Button>
+            <Button buttonProperties={{isFullWidth: false}} onClick={() => navigate('/register')}>S'INSCRIRE</Button>
           </div>
         </main>
       </div>
@@ -36,7 +36,6 @@ export const LandingPage = () => {
 };
 
 const containerCss = (maxWidth: number) => css`
-  padding-bottom: 4rem;
   width: 100%;
   max-width: ${maxWidth}px;
 `;
@@ -62,6 +61,7 @@ const mainCss = css`
 `;
 
 const cardContentCss = css`
+  margin-bottom: 0.7rem;
   white-space: break-spaces;
   max-height: 400px;
   overflow-y: scroll;

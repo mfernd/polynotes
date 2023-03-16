@@ -1,6 +1,8 @@
-import { useTitle } from 'react-use';
-import { appName } from '@/main';
 import { useState } from 'react';
+import { useTitle } from 'react-use';
+import { NavLink } from 'react-router-dom';
+import { css } from '@emotion/react';
+import { appName } from '@/main';
 import { Center } from '@components/ui/Center';
 import { Card } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
@@ -57,9 +59,25 @@ export const RegisterPage = () => {
             </div>
 
             <Button isSubmit>S'inscrire</Button>
+
+            <p css={redirectCss}>Déjà un compte{' '}? <NavLink to={'/login'}>Se connecter</NavLink></p>
           </Form>
         </Card>
       </main>
     </Center>
   );
 };
+
+const redirectCss = css`
+  margin: 0;
+  font-size: 1.1rem;
+
+  a {
+    color: #fe0096;
+    font-weight: 700;
+
+    &:hover {
+      color: #e40087;
+    }
+  }
+`;

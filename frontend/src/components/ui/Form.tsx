@@ -21,14 +21,14 @@ export const Form = ({ children, onSubmit }: FormProps) => {
 const formLoginCss = css`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 
   label {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
 
-    span {
+    span:not(:last-of-type) {
       margin-bottom: 0.25rem;
     }
   }

@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { useTitle } from 'react-use';
+import { NavLink } from 'react-router-dom';
+import { css } from '@emotion/react';
 import { appName } from '@/main';
 import { Button } from '@components/ui/Button';
 import { Center } from '@components/ui/Center';
 import { Card } from '@components/ui/Card';
-import { useState } from 'react';
 import { Form } from '@components/ui/Form';
 import { InputText } from '@components/ui/InputText';
 
@@ -37,9 +39,25 @@ export const LoginPage = () => {
             </div>
 
             <Button isSubmit>Se connecter</Button>
+
+            <p css={redirectCss}>Pas de compte{' '}? <NavLink to={'/register'}>Créez un compte</NavLink></p>
           </Form>
         </Card>
       </main>
     </Center>
   );
 };
+
+const redirectCss = css`
+  margin: 0;
+  font-size: 1.1rem;
+
+  a {
+    color: #fe0096;
+    font-weight: 700;
+
+    &:hover {
+      color: #e40087;
+    }
+  }
+`;

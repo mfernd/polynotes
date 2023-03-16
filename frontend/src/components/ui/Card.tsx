@@ -28,7 +28,7 @@ export const Card = (props: CardProps) => {
 const cardCss = css`
   position: relative;
   cursor: default;
-  padding: 1.25rem 2rem 2.5rem 2rem;
+  padding: 1.25rem 2rem 2rem 2rem;
 
   background-color: #fafbfb;
   border: 1px solid #d8d8d8;

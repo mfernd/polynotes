@@ -46,6 +46,8 @@ const buttonCss = (
 ) => css`
   ${isFullWidth ? 'width: 100%;' : ''}
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
   cursor: pointer;
   text-decoration: none;
