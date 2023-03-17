@@ -1,5 +1,4 @@
 mod auth;
-mod models;
 mod pages;
 mod users;
 
