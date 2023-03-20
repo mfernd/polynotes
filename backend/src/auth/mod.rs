@@ -1,13 +1,13 @@
+mod handlers;
+mod hash_utils;
 mod jwt;
-mod login;
-mod logout;
-mod register;
-mod verify_email;
 
-use crate::auth::jwt::refresh_handler;
 use crate::auth::{
-    login::login_handler, logout::logout_handler, register::register_handler,
-    verify_email::verify_email_handler,
+    handlers::{
+        login::login_handler, logout::logout_handler, register::register_handler,
+        verify_email::verify_email_handler,
+    },
+    jwt::refresh_handler,
 };
 use axum::{
     extract::rejection::JsonRejection,
@@ -33,6 +33,7 @@ pub enum AuthError {
     InvalidFields,
     UserConflict,
     InternalError,
+    CouldNotCreateAccount,
     BadRequest,
 }
 
@@ -54,6 +55,10 @@ impl IntoResponse for AuthError {
             AuthError::InternalError => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "An unexpected error occurred on the server",
+            ),
+            AuthError::CouldNotCreateAccount => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Could not create the account due to a problem in the server",
             ),
             AuthError::BadRequest => (StatusCode::BAD_REQUEST, "Error with your request"),
         };

@@ -1,9 +1,8 @@
 use crate::auth::{jwt::claims::Claims, AuthError};
-use crate::db;
+use crate::db::Mongo;
 use crate::users::{AbstractedUser, User};
 use axum::{http::StatusCode, Json};
 use axum_extra::extract::WithRejection;
-use bson::Document;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
@@ -15,23 +14,19 @@ pub async fn register_handler(
     }
 
     let new_user = User::new(payload.username, payload.email, payload.password);
-    let serialized_new_user = bson::to_bson(&new_user)
-        .ok()
-        .ok_or(AuthError::InternalError)?;
-    let document = serialized_new_user
-        .as_document()
-        .ok_or(AuthError::InternalError)?;
 
-    // TODO: use static database connection
-    db::connect()
-        .await
-        .database("polynotes-db")
-        .collection::<&Document>("users")
-        .insert_one(&document, None)
-        .await
-        .expect("TODO: panic message");
+    // store in DB
+    // let serialized_new_user =
+    //     bson::to_bson(&new_user).map_err(|_| AuthError::CouldNotCreateAccount)?;
+    // let document = serialized_new_user
+    //     .as_document()
+    //     .ok_or(AuthError::CouldNotCreateAccount)?;
 
-    // TODO: send an email instead of a token
+    Mongo::get_collection::<User>("users")
+        .insert_one(&new_user, None)
+        .await
+        .map_err(|_| AuthError::CouldNotCreateAccount)?;
+
     let token = Claims::new(new_user.uuid.to_string()).get_token()?;
 
     let response = RegisterResponse {
