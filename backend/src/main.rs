@@ -1,24 +1,23 @@
+extern crate argon2;
 mod auth;
 mod db;
 mod pages;
 mod users;
 
+use crate::db::Mongo;
 use axum::Router;
 use dotenvy::dotenv;
-use mongodb::options::ClientOptions;
-use mongodb::Client;
 use tower_http::compression::CompressionLayer;
 
 #[tokio::main]
 async fn main() {
     dotenv().expect(".env file not found");
 
-    let client = db::connect().await;
-    println!(">>> Connected to MongoDB cluster");
-    // TODO: static database connection
+    // Connect to DB
+    Mongo::set_global_instance().await;
 
     // example: List the names of the collections in that database.
-    let cursor = &client
+    let cursor = Mongo::get_client()
         .database("polynotes-db")
         .list_collection_names(None)
         .await
