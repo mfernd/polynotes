@@ -15,18 +15,12 @@ pub async fn register_handler(
 
     let new_user = User::new(payload.username, payload.email, payload.password);
 
-    // store in DB
-    // let serialized_new_user =
-    //     bson::to_bson(&new_user).map_err(|_| AuthError::CouldNotCreateAccount)?;
-    // let document = serialized_new_user
-    //     .as_document()
-    //     .ok_or(AuthError::CouldNotCreateAccount)?;
-
     Mongo::get_collection::<User>("users")
         .insert_one(&new_user, None)
         .await
         .map_err(|_| AuthError::CouldNotCreateAccount)?;
 
+    // TODO: Send a mail instead of returning a token
     let token = Claims::new(new_user.uuid.to_string()).get_token()?;
 
     let response = RegisterResponse {
