@@ -2,12 +2,9 @@ mod handlers;
 mod hash_utils;
 mod jwt;
 
-use crate::auth::{
-    handlers::{
-        login::login_handler, logout::logout_handler, register::register_handler,
-        verify_email::verify_email_handler,
-    },
-    jwt::refresh_handler,
+use crate::auth::handlers::{
+    login::login_handler, logout::logout_handler, refresh::refresh_handler,
+    register::register_handler, verify_email::verify_email_handler,
 };
 use axum::{
     extract::rejection::JsonRejection,
@@ -30,11 +27,13 @@ pub fn routes() -> Router {
 #[derive(Debug)]
 pub enum AuthError {
     WrongCredentials,
-    InvalidFields,
+    NotVerified,
     UserConflict,
     InternalError,
     CouldNotCreateAccount,
+    CouldNotFetch,
     BadRequest,
+    InvalidFields,
 }
 
 impl From<JsonRejection> for AuthError {
@@ -47,7 +46,7 @@ impl IntoResponse for AuthError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
             AuthError::WrongCredentials => (StatusCode::UNAUTHORIZED, "Wrong credentials"),
-            AuthError::InvalidFields => (StatusCode::BAD_REQUEST, "Invalid or missing fields"),
+            AuthError::NotVerified => (StatusCode::UNAUTHORIZED, "Your account is not verified"),
             AuthError::UserConflict => (
                 StatusCode::CONFLICT,
                 "User with the same email or username already exists",
@@ -60,7 +59,12 @@ impl IntoResponse for AuthError {
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Could not create the account due to a problem in the server",
             ),
+            AuthError::CouldNotFetch => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Could not fetch the account information due to a problem in the server",
+            ),
             AuthError::BadRequest => (StatusCode::BAD_REQUEST, "Error with your request"),
+            AuthError::InvalidFields => (StatusCode::BAD_REQUEST, "Invalid or missing fields"),
         };
 
         let body = json!({ "error": error_message });

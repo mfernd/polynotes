@@ -63,12 +63,8 @@ impl User {
         }
     }
 
-    pub fn is_verified(&self) -> bool {
-        return self.is_verified && self.nonce == None;
-    }
-
     pub fn verify_email(&mut self, email: String, nonce: String) -> Result<(), String> {
-        if self.is_verified() {
+        if self.is_verified {
             return Err("Already verified".to_owned());
         }
 
