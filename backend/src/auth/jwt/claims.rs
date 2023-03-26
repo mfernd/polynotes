@@ -43,29 +43,29 @@ impl Claims {
 
     pub fn encode(&self) -> Result<String, AuthError> {
         let access_secret = &JWT_ACCESS_KEYS.encoding;
+        let refresh_secret = &JWT_REFRESH_KEYS.encoding;
 
         match self.claim_type {
             ClaimType::AccessToken => encode(&Header::default(), &self, access_secret)
                 .map_err(|_| AuthError::InternalError),
-            ClaimType::RefreshToken => encode(&Header::default(), &self, access_secret)
+            ClaimType::RefreshToken => encode(&Header::default(), &self, refresh_secret)
                 .map_err(|_| AuthError::InternalError),
         }
     }
 
     pub fn decode(token: String, claim_type: ClaimType) -> Result<TokenData<Claims>, AuthError> {
+        let access_secret = &JWT_ACCESS_KEYS.decoding;
+        let refresh_secret = &JWT_REFRESH_KEYS.decoding;
+
         match claim_type {
-            ClaimType::AccessToken => decode::<Claims>(
-                &token,
-                &JWT_ACCESS_KEYS.decoding,
-                &Validation::new(Algorithm::HS256),
-            )
-            .map_err(|_| AuthError::InternalError),
-            ClaimType::RefreshToken => decode::<Claims>(
-                &token,
-                &JWT_REFRESH_KEYS.decoding,
-                &Validation::new(Algorithm::HS256),
-            )
-            .map_err(|_| AuthError::InternalError),
+            ClaimType::AccessToken => {
+                decode::<Claims>(&token, access_secret, &Validation::new(Algorithm::HS256))
+                    .map_err(|_| AuthError::InternalError)
+            }
+            ClaimType::RefreshToken => {
+                decode::<Claims>(&token, refresh_secret, &Validation::new(Algorithm::HS256))
+                    .map_err(|_| AuthError::InternalError)
+            }
         }
     }
 }
