@@ -25,6 +25,7 @@ pub struct User {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AbstractedUser {
+    pub uuid: Uuid,
     pub username: String,
     pub email: String,
     pub role: UserRole,
@@ -58,6 +59,7 @@ impl User {
 
     pub fn get_abstracted(&self) -> AbstractedUser {
         AbstractedUser {
+            uuid: self.uuid.to_owned(),
             username: self.username.to_owned(),
             email: self.email.to_owned(),
             role: self.role,
