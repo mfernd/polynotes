@@ -21,8 +21,7 @@ pub struct RegisterRequest {
 
 #[derive(Debug, Serialize)]
 pub struct RegisterResponse {
-    pub user: AbstractedUser,
-    pub access_token: String,
+    pub message: String,
 }
 
 pub async fn register_handler(
@@ -34,6 +33,7 @@ pub async fn register_handler(
     let hashed_password = hash_utils::hash(payload.password)?;
     let new_user = User::new(payload.username, payload.email, hashed_password);
 
+    // Save user
     state
         .database
         .get_collection::<User>("users")
@@ -46,14 +46,34 @@ pub async fn register_handler(
             _ => AuthError::CouldNotCreateAccount,
         })?;
 
-    // TODO: Send a mail instead of returning a token
-    let user_uuid = new_user.uuid.to_string();
-    let token = Claims::new(Some(user_uuid), ClaimType::AccessToken).encode()?;
+    // Send verification link
+    let link = format!(
+        "http://localhost:3000/api/v1/auth/verify-email?user={}&nonce={}",
+        new_user.uuid,
+        new_user.nonce.unwrap(),
+    );
+    let _ = state
+        .mailer
+        .send_mail(
+            format!("{} <{}>", new_user.username, new_user.email),
+            "Bienvenue sur Polynotes !".to_owned(),
+            format!(
+                "<h1>Bienvenue {} sur Polynotes ! 🎉️<h1>\
+                <p>Cliquez sur ce <a href=\"{link}\" target=\"_blank\">lien</a> pour vérifier ce compte.</p>\
+                <p><small>\
+                    Si vous n'êtes pas à l'origine de cette demande, \
+                    aucune action supplémentaire de votre part n'est requise. \
+                    Ignorez simplement ce message.\
+                </small></p>",
+                new_user.username,
+            ),
+        )
+        .await;
 
-    let response = RegisterResponse {
-        user: new_user.get_abstracted(),
-        access_token: token,
-    };
-
-    Ok((StatusCode::CREATED, Json(response)))
+    Ok((
+        StatusCode::CREATED,
+        Json(RegisterResponse {
+            message: "Verification email sent".to_owned(),
+        }),
+    ))
 }
