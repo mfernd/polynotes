@@ -7,6 +7,7 @@ use crate::auth::handlers::{
     register::register_handler, verify_email::verify_email_handler,
 };
 use crate::AppState;
+use axum::extract::rejection::PathRejection;
 use axum::{
     extract::rejection::JsonRejection,
     http::StatusCode,
@@ -21,7 +22,7 @@ pub fn routes() -> Router<AppState> {
         .route("/register", post(register_handler))
         .route("/login", post(login_handler))
         .route("/logout", get(logout_handler))
-        .route("/verify-email", post(verify_email_handler))
+        .route("/verify-email/:user_uuid", get(verify_email_handler))
         .route("/refresh", get(refresh_handler)) // with cookie
 }
 
@@ -31,7 +32,7 @@ pub enum AuthError {
     WrongCredentials,
     NotVerified,
     UserConflict,
-    InternalError,
+    UserNotFound,
     CouldNotCreateAccount,
     CouldNotFetch,
     BadRequest,
@@ -39,6 +40,12 @@ pub enum AuthError {
 
 impl From<JsonRejection> for AuthError {
     fn from(_: JsonRejection) -> AuthError {
+        AuthError::BadRequest
+    }
+}
+
+impl From<PathRejection> for AuthError {
+    fn from(_: PathRejection) -> AuthError {
         AuthError::BadRequest
     }
 }
@@ -56,10 +63,7 @@ impl IntoResponse for AuthError {
                 StatusCode::CONFLICT,
                 "User with the same email already exists",
             ),
-            AuthError::InternalError => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "An unexpected error occurred on the server",
-            ),
+            AuthError::UserNotFound => (StatusCode::NOT_FOUND, "User not found"),
             AuthError::CouldNotCreateAccount => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Could not create the account due to a problem in the server",

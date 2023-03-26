@@ -1,6 +1,6 @@
 use crate::auth::hash_utils;
-use crate::auth::{jwt::claims::ClaimType, jwt::claims::Claims, AuthError};
-use crate::users::{AbstractedUser, User};
+use crate::auth::AuthError;
+use crate::users::User;
 use crate::AppState;
 use axum::extract::State;
 use axum::{http::StatusCode, Json};
@@ -46,9 +46,9 @@ pub async fn register_handler(
             _ => AuthError::CouldNotCreateAccount,
         })?;
 
-    // Send verification link
+    // Send verification link TODO: replace with Frontend host link
     let link = format!(
-        "http://localhost:3000/api/v1/auth/verify-email?user={}&nonce={}",
+        "http://localhost:3000/api/v1/auth/verify-email/{}?nonce={}",
         new_user.uuid,
         new_user.nonce.unwrap(),
     );
@@ -73,7 +73,7 @@ pub async fn register_handler(
     Ok((
         StatusCode::CREATED,
         Json(RegisterResponse {
-            message: "Verification email sent".to_owned(),
+            message: "verification email sent".to_owned(),
         }),
     ))
 }

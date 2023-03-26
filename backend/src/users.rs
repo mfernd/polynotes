@@ -9,7 +9,7 @@ pub fn routes() -> Router<AppState> {
     Router::new()
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct User {
     #[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
     id: Option<ObjectId>,
@@ -66,18 +66,7 @@ impl User {
         }
     }
 
-    pub fn verify_email(&mut self, email: String, nonce: String) -> Result<(), String> {
-        if self.is_verified {
-            return Err("Already verified".to_owned());
-        }
-
-        if self.email != email || self.nonce != Some(nonce) {
-            return Err("Invalid verified email or nonce".to_owned());
-        }
-
-        self.is_verified = true;
-        self.nonce = None;
-
-        Ok(())
+    pub fn check_is_verified(&self) -> bool {
+        self.is_verified || self.nonce.is_none()
     }
 }
