@@ -46,7 +46,7 @@ impl MongoDatabase {
     async fn create_indexes(client: &Client) {
         let options = IndexOptions::builder().unique(true).build();
         let index = IndexModel::builder()
-            .keys(doc! {"email": 1})
+            .keys(doc! {"uuid": 1,"email": 1})
             .options(options)
             .build();
 
