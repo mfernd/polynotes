@@ -27,7 +27,7 @@ pub async fn login_handler(
     State(state): State<AppState>,
     WithRejection(Json(payload), _): WithRejection<Json<LoginRequest>, AuthError>,
 ) -> Result<Json<LoginResponse>, AuthError> {
-    payload.validate().map_err(|_| AuthError::InvalidFields)?;
+    payload.validate().map_err(|_| AuthError::BadRequest)?;
 
     let user = state
         .database

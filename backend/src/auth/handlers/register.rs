@@ -28,7 +28,7 @@ pub async fn register_handler(
     State(state): State<AppState>,
     WithRejection(Json(payload), _): WithRejection<Json<RegisterRequest>, AuthError>,
 ) -> Result<(StatusCode, Json<RegisterResponse>), AuthError> {
-    payload.validate().map_err(|_| AuthError::InvalidFields)?;
+    payload.validate().map_err(|_| AuthError::BadRequest)?;
 
     let hashed_password = hash_utils::hash(payload.password)?;
     let new_user = User::new(payload.username, payload.email, hashed_password);

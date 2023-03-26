@@ -27,6 +27,7 @@ pub fn routes() -> Router<AppState> {
 
 #[derive(Debug)]
 pub enum AuthError {
+    InternalError,
     WrongCredentials,
     NotVerified,
     UserConflict,
@@ -34,7 +35,6 @@ pub enum AuthError {
     CouldNotCreateAccount,
     CouldNotFetch,
     BadRequest,
-    InvalidFields,
 }
 
 impl From<JsonRejection> for AuthError {
@@ -46,6 +46,10 @@ impl From<JsonRejection> for AuthError {
 impl IntoResponse for AuthError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
+            AuthError::InternalError => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "An unexpected error occurred on the server",
+            ),
             AuthError::WrongCredentials => (StatusCode::UNAUTHORIZED, "Wrong credentials"),
             AuthError::NotVerified => (StatusCode::UNAUTHORIZED, "Your account is not verified"),
             AuthError::UserConflict => (
@@ -64,8 +68,7 @@ impl IntoResponse for AuthError {
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Could not fetch the account information due to a problem in the server",
             ),
-            AuthError::BadRequest => (StatusCode::BAD_REQUEST, "Error with your request"),
-            AuthError::InvalidFields => (StatusCode::BAD_REQUEST, "Invalid or missing fields"),
+            AuthError::BadRequest => (StatusCode::BAD_REQUEST, "Invalid or missing fields"),
         };
 
         let body = json!({ "error": error_message });
