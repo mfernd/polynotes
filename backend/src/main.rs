@@ -4,27 +4,23 @@ mod db;
 mod pages;
 mod users;
 
-use crate::db::Mongo;
+use crate::db::MongoDatabase;
 use axum::Router;
 use dotenvy::dotenv;
 use tower_http::compression::CompressionLayer;
+
+#[derive(Clone)]
+pub struct AppState {
+    database: MongoDatabase,
+}
 
 #[tokio::main]
 async fn main() {
     dotenv().expect(".env file not found");
 
-    // Connect to DB
-    Mongo::set_global_instance().await;
-
-    // example: List the names of the collections in that database.
-    let cursor = Mongo::get_client()
-        .database("polynotes-db")
-        .list_collection_names(None)
-        .await
-        .unwrap();
-    for collection_name in cursor {
-        println!("{:?}", collection_name);
-    }
+    let state = AppState {
+        database: MongoDatabase::connect().await,
+    };
 
     let api_routes = Router::new()
         .nest("/auth", auth::routes())
@@ -33,8 +29,8 @@ async fn main() {
 
     let app = Router::new()
         .nest("/api/v1", api_routes)
+        .with_state(state)
         .layer(CompressionLayer::new());
-    // .layer(CorsLayer::new());
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())

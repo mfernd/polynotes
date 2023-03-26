@@ -1,11 +1,13 @@
 use crate::auth::hash_utils::verify_password;
 use crate::auth::jwt::claims::{ClaimType, Claims};
 use crate::auth::AuthError;
-use crate::db::Mongo;
 use crate::users::User;
+use axum::extract::State;
 use axum::Json;
 use axum_extra::extract::WithRejection;
 use serde::{Deserialize, Serialize};
+
+use crate::AppState;
 use validator::Validate;
 
 #[derive(Debug, Deserialize, Validate)]
@@ -22,26 +24,24 @@ pub struct LoginResponse {
 }
 
 pub async fn login_handler(
+    State(state): State<AppState>,
     WithRejection(Json(payload), _): WithRejection<Json<LoginRequest>, AuthError>,
 ) -> Result<Json<LoginResponse>, AuthError> {
-    if payload.validate().is_err() {
-        return Err(AuthError::InvalidFields);
-    }
+    payload.validate().map_err(|_| AuthError::InvalidFields)?;
 
-    let optional_user = Mongo::get_collection::<User>("users")
+    let user = state
+        .database
+        .get_collection::<User>("users")
         .find_one(None, None)
         .await
-        .map_err(|_| AuthError::CouldNotFetch)?;
-    if optional_user.is_none() {
-        return Err(AuthError::WrongCredentials);
-    }
-    let user = optional_user.unwrap();
+        .map_err(|_| AuthError::CouldNotFetch)?
+        .ok_or(AuthError::WrongCredentials)?;
 
     if !user.is_verified {
         return Err(AuthError::NotVerified);
     }
 
-    if !verify_password(user.password, payload.password) {
+    if !verify_password(user.password.clone(), payload.password.clone()) {
         return Err(AuthError::WrongCredentials);
     }
 

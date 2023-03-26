@@ -6,6 +6,7 @@ use crate::auth::handlers::{
     login::login_handler, logout::logout_handler, refresh::refresh_handler,
     register::register_handler, verify_email::verify_email_handler,
 };
+use crate::AppState;
 use axum::{
     extract::rejection::JsonRejection,
     http::StatusCode,
@@ -15,7 +16,7 @@ use axum::{
 };
 use serde_json::json;
 
-pub fn routes() -> Router {
+pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/register", post(register_handler))
         .route("/login", post(login_handler))
@@ -49,7 +50,7 @@ impl IntoResponse for AuthError {
             AuthError::NotVerified => (StatusCode::UNAUTHORIZED, "Your account is not verified"),
             AuthError::UserConflict => (
                 StatusCode::CONFLICT,
-                "User with the same email or username already exists",
+                "User with the same email already exists",
             ),
             AuthError::InternalError => (
                 StatusCode::INTERNAL_SERVER_ERROR,

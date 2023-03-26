@@ -1,10 +1,11 @@
+use crate::AppState;
 use axum::Router;
 use bson::oid::ObjectId;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-pub fn routes() -> Router {
+pub fn routes() -> Router<AppState> {
     Router::new()
 }
 

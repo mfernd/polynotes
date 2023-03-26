@@ -3,7 +3,6 @@ use crate::auth::AuthError;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, Algorithm, Header, TokenData, Validation};
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 /// JWT Claims
 #[derive(Debug, Serialize, Deserialize)]
