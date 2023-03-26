@@ -8,7 +8,7 @@ mod users;
 use crate::db::MongoDatabase;
 use crate::mailer::LettreMailer;
 use axum::Router;
-use dotenvy::dotenv;
+use dotenvy::{dotenv, var};
 use tower_http::compression::CompressionLayer;
 
 #[derive(Clone)]
@@ -20,6 +20,7 @@ pub struct AppState {
 #[tokio::main]
 async fn main() {
     dotenv().expect(".env file not found");
+    let port = var("PORT").unwrap_or("3000".to_owned());
 
     let state = AppState {
         database: MongoDatabase::new().await,
@@ -36,7 +37,7 @@ async fn main() {
         .with_state(state)
         .layer(CompressionLayer::new());
 
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+    axum::Server::bind(&format!("127.0.0.1:{port}").parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
