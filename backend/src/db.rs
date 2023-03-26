@@ -12,7 +12,7 @@ pub struct MongoDatabase {
 static DB_NAME: &str = "polynotes-db";
 
 impl MongoDatabase {
-    pub async fn connect() -> Self {
+    pub async fn new() -> Self {
         let mongo_uri = var("MONGO_URI").expect("MONGO_URI must be provided in the .env file");
 
         let client_options = ClientOptions::parse(mongo_uri.as_str())
@@ -27,6 +27,13 @@ impl MongoDatabase {
         let client = Client::with_options(client_options).expect(&error_message);
         MongoDatabase::create_indexes(&client).await;
 
+        // ping database
+        // let ping_status = client
+        //     .database("admin")
+        //     .run_command(doc! {"ping": 1}, None)
+        //     .await;
+        // println!(">>> DB connection status: {:?}", ping_status);
+
         MongoDatabase { client }
     }
 
@@ -39,7 +46,7 @@ impl MongoDatabase {
     async fn create_indexes(client: &Client) {
         let options = IndexOptions::builder().unique(true).build();
         let index = IndexModel::builder()
-            .keys(doc! { "email": 1 })
+            .keys(doc! {"email": 1})
             .options(options)
             .build();
 
