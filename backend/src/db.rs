@@ -1,4 +1,4 @@
-use crate::users::User;
+use crate::users::models::user::User;
 use bson::doc;
 use dotenvy::var;
 use mongodb::options::IndexOptions;

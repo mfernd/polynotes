@@ -1,6 +1,6 @@
 use crate::auth::error::AuthError;
 use crate::auth::hash_utils;
-use crate::users::User;
+use crate::users::models::user::User;
 use crate::AppState;
 use axum::extract::State;
 use axum::{http::StatusCode, Json};

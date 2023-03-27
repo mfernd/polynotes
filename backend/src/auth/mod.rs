@@ -1,4 +1,4 @@
-mod error;
+pub mod error;
 mod handlers;
 mod hash_utils;
 mod jwt;

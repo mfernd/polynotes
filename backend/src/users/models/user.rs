@@ -1,13 +1,9 @@
-use crate::AppState;
-use axum::Router;
+use crate::users::models::user_role::UserRole;
 use bson::oid::ObjectId;
-use rand::{distributions::Alphanumeric, thread_rng, Rng};
+use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-
-pub fn routes() -> Router<AppState> {
-    Router::new()
-}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct User {
@@ -29,12 +25,6 @@ pub struct AbstractedUser {
     pub username: String,
     pub email: String,
     pub role: UserRole,
-}
-
-#[derive(Debug, Serialize, Deserialize, Copy, Clone)]
-pub enum UserRole {
-    Admin,
-    User,
 }
 
 impl User {

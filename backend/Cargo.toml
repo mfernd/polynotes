@@ -4,7 +4,14 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# to reduce the size see:
+# https://github.com/johnthagen/min-sized-rust
+#[profile.release]
+#strip = true
+#opt-level = "z"
+#lto = true
+#codegen-units = 1
+#panic = "abort"
 
 [dependencies]
 # aide = "0.10.0"
@@ -13,6 +20,7 @@ axum-extra = "0.7.1"
 bson = { version = "2.6.0", features = ["uuid-1", "chrono-0_4"] }
 chrono = { version = "0.4.24", features = ["serde"] }
 dotenvy = "0.15.6"
+futures = { version = "0.3.27", default-features = false, features = ["async-await"] }
 jsonwebtoken = "8.3.0"
 lettre = { version = "0.10.3", features = ["tokio1", "tokio1-native-tls"] }
 mongodb = "2.4.0"
