@@ -13,7 +13,7 @@ use dotenvy::{dotenv, var};
 use serde_json::{json, Value};
 use tower_http::compression::CompressionLayer;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct AppState {
     database: MongoDatabase,
     mailer: LettreMailer,
