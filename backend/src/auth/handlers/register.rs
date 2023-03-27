@@ -11,11 +11,11 @@ use validator::Validate;
 
 #[derive(Debug, Deserialize, Validate)]
 pub struct RegisterRequest {
-    #[validate(length(min = 3))]
+    #[validate(length(min = 3, max = 200))]
     pub username: String,
     #[validate(email)]
     pub email: String,
-    #[validate(length(min = 8))]
+    #[validate(length(min = 8, max = 1024))]
     pub password: String,
 }
 
@@ -58,7 +58,7 @@ pub async fn register_handler(
             format!("{} <{}>", new_user.username, new_user.email),
             "Bienvenue sur Polynotes !".to_owned(),
             format!(
-                "<h1>Bienvenue {} sur Polynotes ! 🎉️<h1>\
+                "<h1>Bienvenue {} sur Polynotes ! 👋️<h1>\
                 <p>Cliquez sur ce <a href=\"{link}\" target=\"_blank\">lien</a> pour vérifier ce compte.</p>\
                 <p><small>\
                     Si vous n'êtes pas à l'origine de cette demande, \

@@ -7,8 +7,10 @@ mod users;
 
 use crate::db::MongoDatabase;
 use crate::mailer::LettreMailer;
-use axum::Router;
+use axum::routing::get;
+use axum::{Json, Router};
 use dotenvy::{dotenv, var};
+use serde_json::{json, Value};
 use tower_http::compression::CompressionLayer;
 
 #[derive(Clone)]
@@ -28,6 +30,7 @@ async fn main() {
     };
 
     let api_routes = Router::new()
+        .route("/health", get(health_handler))
         .nest("/auth", auth::routes())
         .nest("/users", users::routes())
         .nest("/pages", pages::routes());
@@ -37,8 +40,12 @@ async fn main() {
         .with_state(state)
         .layer(CompressionLayer::new());
 
-    axum::Server::bind(&format!("127.0.0.1:{port}").parse().unwrap())
+    axum::Server::bind(&format!("0.0.0.0:{port}").parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
+}
+
+async fn health_handler() -> Json<Value> {
+    Json(json!({"isOk": "healthy ❤️" }))
 }

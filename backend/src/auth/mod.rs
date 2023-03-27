@@ -16,20 +16,23 @@ use axum::{
     Json, Router,
 };
 use serde_json::json;
+use tower_cookies::CookieManagerLayer;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
-        .route("/register", post(register_handler))
-        .route("/login", post(login_handler))
         .route("/logout", get(logout_handler))
+        .route("/refresh", get(refresh_handler))
+        .route("/login", post(login_handler))
+        .layer(CookieManagerLayer::new())
+        .route("/register", post(register_handler))
         .route("/verify-email/:user_uuid", get(verify_email_handler))
-        .route("/refresh", get(refresh_handler)) // with cookie
 }
 
 #[derive(Debug)]
 pub enum AuthError {
     InternalError,
     WrongCredentials,
+    NotLogged,
     NotVerified,
     UserConflict,
     UserNotFound,
@@ -58,6 +61,7 @@ impl IntoResponse for AuthError {
                 "An unexpected error occurred on the server",
             ),
             AuthError::WrongCredentials => (StatusCode::UNAUTHORIZED, "Wrong credentials"),
+            AuthError::NotLogged => (StatusCode::UNAUTHORIZED, "Not logged"),
             AuthError::NotVerified => (StatusCode::UNAUTHORIZED, "Your account is not verified"),
             AuthError::UserConflict => (
                 StatusCode::CONFLICT,

@@ -44,17 +44,32 @@ impl MongoDatabase {
     }
 
     async fn create_indexes(client: &Client) {
-        let options = IndexOptions::builder().unique(true).build();
-        let index = IndexModel::builder()
-            .keys(doc! {"uuid": 1,"email": 1})
-            .options(options)
+        // Uuid unique index
+        let uuid_options = IndexOptions::builder().unique(true).build();
+        let uuid_index = IndexModel::builder()
+            .keys(doc! {"uuid": 1})
+            .options(uuid_options)
             .build();
 
         client
             .database(DB_NAME)
             .collection::<User>("users")
-            .create_index(index, None)
+            .create_index(uuid_index, None)
             .await
-            .expect("error creating the user index");
+            .expect("error creating the user (uuid) index");
+
+        // Email unique index
+        let email_options = IndexOptions::builder().unique(true).build();
+        let email_index = IndexModel::builder()
+            .keys(doc! {"email": 1})
+            .options(email_options)
+            .build();
+
+        client
+            .database(DB_NAME)
+            .collection::<User>("users")
+            .create_index(email_index, None)
+            .await
+            .expect("error creating the user (email) index");
     }
 }

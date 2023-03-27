@@ -1,13 +1,14 @@
 use crate::auth::hash_utils::verify_password;
-use crate::auth::jwt::claims::{ClaimType, Claims};
+use crate::auth::jwt::claims;
 use crate::auth::AuthError;
-use crate::users::User;
+use crate::users::{AbstractedUser, User};
+use crate::AppState;
 use axum::extract::State;
 use axum::Json;
 use axum_extra::extract::WithRejection;
+use bson::doc;
 use serde::{Deserialize, Serialize};
-
-use crate::AppState;
+use tower_cookies::Cookies;
 use validator::Validate;
 
 #[derive(Debug, Deserialize, Validate)]
@@ -19,11 +20,11 @@ pub struct LoginRequest {
 
 #[derive(Debug, Serialize)]
 pub struct LoginResponse {
-    pub access_token: String,
-    pub refresh_token: String,
+    pub user: AbstractedUser,
 }
 
 pub async fn login_handler(
+    cookies: Cookies,
     State(state): State<AppState>,
     WithRejection(Json(payload), _): WithRejection<Json<LoginRequest>, AuthError>,
 ) -> Result<Json<LoginResponse>, AuthError> {
@@ -37,7 +38,7 @@ pub async fn login_handler(
         .map_err(|_| AuthError::CouldNotFetch)?
         .ok_or(AuthError::WrongCredentials)?;
 
-    if !user.is_verified {
+    if !user.check_is_verified() {
         return Err(AuthError::NotVerified);
     }
 
@@ -45,10 +46,11 @@ pub async fn login_handler(
         return Err(AuthError::WrongCredentials);
     }
 
-    let user_uuid = user.uuid.to_string();
+    // Send JWT through cookies
+    claims::refresh_user_cookies(&cookies, user.uuid.to_string())?;
+
     let response = LoginResponse {
-        access_token: Claims::new(Some(user_uuid), ClaimType::AccessToken).encode()?,
-        refresh_token: Claims::new(None, ClaimType::RefreshToken).encode()?,
+        user: user.get_abstracted(),
     };
     Ok(Json(response))
 }

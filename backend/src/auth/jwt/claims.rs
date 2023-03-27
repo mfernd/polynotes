@@ -1,11 +1,13 @@
 use crate::auth::jwt::secret_keys::{JWT_ACCESS_KEYS, JWT_REFRESH_KEYS};
 use crate::auth::AuthError;
-use chrono::{Duration, Utc};
+use chrono::Utc;
 use jsonwebtoken::{decode, encode, Algorithm, Header, TokenData, Validation};
 use serde::{Deserialize, Serialize};
+use tower_cookies::cookie::time;
+use tower_cookies::{Cookie, Cookies};
 
 /// JWT Claims
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Claims {
     #[serde(skip)]
     pub claim_type: ClaimType,
@@ -14,7 +16,7 @@ pub struct Claims {
     pub iat: i64,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub enum ClaimType {
     #[default]
     AccessToken,
@@ -28,16 +30,33 @@ impl Claims {
         match claim_type {
             ClaimType::AccessToken => Claims {
                 claim_type,
-                sub: Some(sub.unwrap()),
-                exp: (now + Duration::minutes(15)).timestamp(),
+                sub,
+                exp: (now + chrono::Duration::minutes(15)).timestamp(),
                 iat: now.timestamp(),
             },
             ClaimType::RefreshToken => Claims {
                 claim_type,
-                sub: None,
-                exp: (now + Duration::weeks(1)).timestamp(),
+                sub,
+                exp: (now + chrono::Duration::weeks(1)).timestamp(),
                 iat: now.timestamp(),
             },
+        }
+    }
+
+    pub fn get_cookie(&self) -> Result<Cookie, AuthError> {
+        let token = self.encode()?;
+
+        match self.claim_type {
+            ClaimType::AccessToken => Ok(Cookie::build("access_token", token)
+                .max_age(time::Duration::minutes(15))
+                .http_only(true)
+                .secure(true)
+                .finish()),
+            ClaimType::RefreshToken => Ok(Cookie::build("refresh_token", token)
+                .max_age(time::Duration::weeks(1))
+                .http_only(true)
+                .secure(true)
+                .finish()),
         }
     }
 
@@ -68,4 +87,17 @@ impl Claims {
             }
         }
     }
+}
+
+pub fn refresh_user_cookies(cookies: &Cookies, sub: String) -> Result<(), AuthError> {
+    let refresh = Claims::new(Some(sub.clone()), ClaimType::RefreshToken);
+    let access = Claims::new(Some(sub), ClaimType::AccessToken);
+
+    let refresh_cookie = refresh.get_cookie()?;
+    let access_cookie = access.get_cookie()?;
+
+    cookies.add(refresh_cookie.into_owned());
+    cookies.add(access_cookie.into_owned());
+
+    Ok(())
 }
