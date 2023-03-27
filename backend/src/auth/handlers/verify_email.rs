@@ -1,4 +1,4 @@
-use crate::auth::AuthError;
+use crate::auth::error::AuthError;
 use crate::users::User;
 use crate::AppState;
 use axum::{

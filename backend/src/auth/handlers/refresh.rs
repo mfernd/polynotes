@@ -1,5 +1,5 @@
+use crate::auth::error::AuthError;
 use crate::auth::jwt::claims;
-use crate::auth::AuthError;
 use axum::Json;
 use serde_json::{json, Value};
 use tower_cookies::Cookies;

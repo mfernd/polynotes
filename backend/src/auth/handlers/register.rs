@@ -1,5 +1,5 @@
+use crate::auth::error::AuthError;
 use crate::auth::hash_utils;
-use crate::auth::AuthError;
 use crate::users::User;
 use crate::AppState;
 use axum::extract::State;

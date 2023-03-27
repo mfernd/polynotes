@@ -1,4 +1,4 @@
-use crate::auth::AuthError;
+use crate::auth::error::AuthError;
 use argon2::Config;
 use dotenvy::var;
 use once_cell::sync::Lazy;

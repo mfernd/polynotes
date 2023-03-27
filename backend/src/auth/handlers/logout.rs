@@ -1,4 +1,4 @@
-use crate::auth::AuthError;
+use crate::auth::error::AuthError;
 use axum::Json;
 use serde_json::{json, Value};
 use tower_cookies::cookie::time::OffsetDateTime;
