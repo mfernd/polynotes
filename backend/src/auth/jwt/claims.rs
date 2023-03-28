@@ -49,11 +49,13 @@ impl Claims {
         match self.claim_type {
             ClaimType::AccessToken => Ok(Cookie::build("access_token", token)
                 .max_age(time::Duration::minutes(15))
+                .path("/api/v1")
                 .http_only(true)
                 .secure(true)
                 .finish()),
             ClaimType::RefreshToken => Ok(Cookie::build("refresh_token", token)
                 .max_age(time::Duration::weeks(1))
+                .path("/api/v1")
                 .http_only(true)
                 .secure(true)
                 .finish()),

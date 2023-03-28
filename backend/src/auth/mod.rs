@@ -1,7 +1,7 @@
 pub mod error;
 mod handlers;
 mod hash_utils;
-mod jwt;
+pub mod jwt;
 
 use crate::auth::handlers::{
     login::login_handler, logout::logout_handler, refresh::refresh_handler,
