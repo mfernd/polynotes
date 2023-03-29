@@ -17,6 +17,7 @@ target/
 **/*.rs.bk
 
 ### Miscellaneous
-***/*.log
+**/.env
+**/*.log
 **/.DS_Store
 .DS_Store
