@@ -17,6 +17,6 @@ pub fn hash(password: String) -> Result<String, AuthError> {
     Ok(hashed_password)
 }
 
-pub fn verify_password(hash: String, password: String) -> bool {
-    argon2::verify_encoded(hash.as_str(), password.as_bytes()).is_ok()
+pub fn verify_password(hash: &str, password: &str) -> bool {
+    argon2::verify_encoded(hash, password.as_bytes()).is_ok()
 }

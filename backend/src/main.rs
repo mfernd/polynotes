@@ -38,9 +38,9 @@ async fn main() {
         .route_layer(from_fn_with_state(state.clone(), auth_guard::is_logged));
 
     let api_routes = Router::new()
-        .nest("", secured_routes)
         .route("/health", get(health_handler))
-        .nest("/auth", auth::routes())
+        .merge(secured_routes)
+        .nest("/auth", auth::routes(&state))
         .nest("/users", users::routes())
         .nest("/pages", pages::routes());
 

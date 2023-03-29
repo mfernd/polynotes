@@ -33,7 +33,7 @@ pub async fn login_handler(
     let user = state
         .database
         .get_collection::<User>("users")
-        .find_one(None, None)
+        .find_one(doc! {"email": payload.email}, None)
         .await
         .map_err(|_| AuthError::CouldNotFetch)?
         .ok_or(AuthError::WrongCredentials)?;
@@ -42,7 +42,7 @@ pub async fn login_handler(
         return Err(AuthError::NotVerified);
     }
 
-    if !verify_password(user.password.clone(), payload.password.clone()) {
+    if !verify_password(&user.password, &payload.password) {
         return Err(AuthError::WrongCredentials);
     }
 

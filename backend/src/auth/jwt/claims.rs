@@ -55,7 +55,7 @@ impl Claims {
                 .finish()),
             ClaimType::RefreshToken => Ok(Cookie::build("refresh_token", token)
                 .max_age(time::Duration::weeks(1))
-                .path("/api/v1")
+                .path("/api/v1/auth")
                 .http_only(true)
                 .secure(true)
                 .finish()),
