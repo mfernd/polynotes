@@ -1,17 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { CssBaseline, GeistProvider } from '@geist-ui/core';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Provider } from 'react-redux';
 import { LandingPage } from '@pages/LandingPage';
 import { LoginPage } from '@pages/LoginPage';
 import { RegisterPage } from '@pages/RegisterPage';
 import { WorkspacePage } from '@pages/WorkspacePage';
 import { EditorPage } from '@pages/EditorPage';
-import { Provider } from 'react-redux';
 import { store } from '@/store';
 import '@assets/main.css';
 
 export const appName = 'Polynotes';
 
+const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
     path: '/',
@@ -37,8 +40,13 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.querySelector('#app') as HTMLElement).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router}/>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <GeistProvider>
+          <CssBaseline/>
+          <RouterProvider router={router}/>
+        </GeistProvider>
+      </Provider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );
