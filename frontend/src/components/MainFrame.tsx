@@ -1,10 +1,10 @@
-import { VerticalNavbar } from '@components/vertical-navbar/VerticalNavbar';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { css } from '@emotion/react';
 import { FaUserCircle } from 'react-icons/all';
-import { InputText } from '@components/ui/InputText';
 import { useTitle } from 'react-use';
 import { appName } from '@/main';
+import { VerticalNavbar } from '@components/vertical-navbar/VerticalNavbar';
+import { SearchBar } from '@components/ui/SearchBar';
 
 type MainFrameProps = {
   titlePage?: string;
@@ -13,7 +13,6 @@ type MainFrameProps = {
 
 export const MainFrame = ({ titlePage, children }: MainFrameProps) => {
   useTitle(titlePage ? `${titlePage} - ${appName}` : appName);
-  const [searchBar, setSearchBar] = useState('');
 
   return (
     <div css={containerCss}>
@@ -22,11 +21,7 @@ export const MainFrame = ({ titlePage, children }: MainFrameProps) => {
       <div css={frameCss}>
         <header css={headerNavbarCss}>
           <div className={'left-column'}>
-            <InputText type={'text'}
-                       value={searchBar}
-                       onChange={(e) => setSearchBar(e.target.value)}
-                       autoComplete={'on'}
-                       placeholder={'🔎 Search'}/>
+            <SearchBar/>
           </div>
           <div className={'right-column'}>
             <FaUserCircle css={accountButtonCss}/>
@@ -42,7 +37,6 @@ export const MainFrame = ({ titlePage, children }: MainFrameProps) => {
 
 const containerCss = css`
   display: flex;
-  color: rgba(25, 23, 17, 0.6);
 `;
 
 const frameCss = css`
@@ -57,7 +51,7 @@ const mainCss = css`
   width: 100%;
   overflow-x: clip;
   flex-grow: 1;
-  color: #000;
+  color: #333;
   padding: 1rem 1.5rem 0;
 
   display: flex;
@@ -91,7 +85,7 @@ const accountButtonCss = css`
   height: 40px;
   width: auto;
   aspect-ratio: 1;
-  
+
   &:active {
     color: rgba(25, 23, 17, 0.5);
   }

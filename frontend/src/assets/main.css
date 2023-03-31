@@ -9,15 +9,20 @@
   -moz-osx-font-smoothing: grayscale;
 
   color: #202124;
-  background: url("images/grid-background-tile.svg") #fff repeat;
 }
 
 :root * {
   box-sizing: border-box;
 }
 
+html,
+body {
+  background-color: unset!important;
+}
+
 body {
   margin: 0;
+  background: url("images/grid-background-tile.svg") #fff repeat;
 }
 
 #app {

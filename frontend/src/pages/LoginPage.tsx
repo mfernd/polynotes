@@ -1,41 +1,45 @@
-import { useState } from 'react';
 import { useTitle } from 'react-use';
 import { NavLink } from 'react-router-dom';
 import { css } from '@emotion/react';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { Input } from '@geist-ui/core';
 import { appName } from '@/main';
 import { Button } from '@components/ui/Button';
 import { Center } from '@components/ui/Center';
 import { Card } from '@components/ui/Card';
 import { Form } from '@components/ui/Form';
-import { InputText } from '@components/ui/InputText';
+import { InputWrapper } from '@components/ui/InputWrapper';
 
 export const LoginPage = () => {
   useTitle(`Login - ${appName}`);
   const maxWidth = 400;
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { register, handleSubmit } = useForm();
+  const onSubmit: SubmitHandler<FieldValues> = (data) => console.log(data);
 
   return (
     <Center isVertical>
       <main css={{ width: '100%', maxWidth: maxWidth }}>
         <Card title={'Connexion'} showLogo>
-          <Form onSubmit={() => console.log(email, password)}>
+          <Form onSubmit={handleSubmit(onSubmit)}>
             <div>
-              <InputText type={'email'}
-                         labelTitle={'Email'}
-                         value={email}
-                         onChange={(e) => setEmail(e.target.value)}
-                         autoComplete={'email'}
-                         placeholder={'john.doe@example.tld'}
-                         tabIndex={1}/>
+              <InputWrapper labelTitle={'Email'}>
+                <Input scale={4 / 3}
+                       htmlType={'email'}
+                       autoComplete={'email'}
+                       placeholder={'john.doe@example.tld'}
+                       width={'100%'}
+                       tabIndex={1}
+                       {...register('email', { required: true })}/>
+              </InputWrapper>
 
-              <InputText type={'password'}
-                         labelTitle={'Mot de passe'}
-                         value={password}
-                         onChange={(e) => setPassword(e.target.value)}
-                         autoComplete={'current-password'}
-                         tabIndex={2}/>
+              <InputWrapper labelTitle={'Mot de passe'}>
+                <Input.Password scale={4 / 3}
+                                autoComplete={'current-password'}
+                                width={'100%'}
+                                tabIndex={2}
+                                {...register('password', { required: true })}/>
+              </InputWrapper>
             </div>
 
             <Button isSubmit>Se connecter</Button>

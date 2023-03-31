@@ -69,11 +69,14 @@ const navbarCss = css`
 
   background-color: #fbfbfa;
   box-shadow: rgba(0 0 0 / 5%) -1px 0px 0px 0px inset;
-  color: rgba(25, 23, 17, 0.6);
-  font-weight: 500;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  
+  ul {
+    color: rgba(25, 23, 17, 0.75);
+    font-weight: 500;
+  }
 `;

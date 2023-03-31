@@ -40,11 +40,19 @@ const pageSelectorCss = css`
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.1rem;
+    
+    li {
+      margin: 0;
+    }
 
     a {
       text-decoration: none;
       color: unset;
+    }
+
+    & > li:before {
+      content: none;
     }
   }
 `;

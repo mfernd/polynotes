@@ -1,19 +1,20 @@
-import { ChangeEventHandler } from 'react';
 import { css } from '@emotion/react';
+import { FieldValues, RegisterOptions, UseFormRegister } from 'react-hook-form';
 
 type InputCheckboxProps = {
   labelTitle: string;
-  value: boolean;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  registerHandle: UseFormRegister<FieldValues>;
+  registerParams: {
+    name: string;
+    options?: RegisterOptions;
+  };
 };
 
 export const InputCheckbox = (props: InputCheckboxProps) => {
   return (
     <label css={labelCss}>
       <div css={checkboxCss}>
-        <input type="checkbox"
-               checked={props.value}
-               onChange={props.onChange}/>
+        <input type="checkbox" {...props.registerHandle(props.registerParams.name, props.registerParams.options)}/>
         <span></span>
       </div>
       <span css={css`user-select: none;`}>{props.labelTitle}</span>
@@ -25,7 +26,7 @@ const labelCss = css`
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
 `;
 
 const checkboxCss = css`
@@ -51,12 +52,12 @@ const checkboxCss = css`
       content: "";
       display: none;
       position: absolute;
-      top: 0.36rem;
-      left: 0.535rem;
-      height: 0.5rem;
-      width: 0.25rem;
+      top: 10%;
+      left: 35%;
+      height: 0.9rem;
+      width: 0.5rem;
       border: solid #fff;
-      border-width: 0 0.15em 0.15em 0;
+      border-width: 0 0.15rem 0.15rem 0;
       transform: rotate(45deg);
     }
   }
