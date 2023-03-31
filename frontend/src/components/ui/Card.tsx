@@ -50,9 +50,9 @@ const logoCss = css`
   height: auto;
   width: 225px;
   aspect-ratio: 1;
+  transition: transform 100ms ease-in-out;
 
   :hover {
-    transition: transform 100ms ease-in-out;
     transform: rotate(-20deg) scale(1.1);
   }
 `;
