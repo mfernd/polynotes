@@ -18,5 +18,5 @@ pub fn hash(password: String) -> Result<String, AuthError> {
 }
 
 pub fn verify_password(hash: &str, password: &str) -> bool {
-    argon2::verify_encoded(hash, password.as_bytes()).is_ok()
+    argon2::verify_encoded(hash, password.as_bytes()).unwrap_or(false)
 }
