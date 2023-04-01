@@ -16,6 +16,7 @@ use axum::{Extension, Json, Router};
 use dotenvy::{dotenv, var};
 use serde_json::{json, Value};
 use tower_http::compression::CompressionLayer;
+use tower_http::cors::CorsLayer;
 
 #[derive(Debug, Clone)]
 pub struct AppState {
@@ -47,6 +48,7 @@ async fn main() {
     let app = Router::new()
         .nest("/api/v1", api_routes)
         .with_state(state)
+        .layer(CorsLayer::permissive())
         .layer(CompressionLayer::new());
 
     axum::Server::bind(&format!("0.0.0.0:{port}").parse().unwrap())
