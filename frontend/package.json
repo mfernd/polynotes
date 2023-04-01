@@ -17,23 +17,22 @@
     "@tiptap/pm": "^2.0.0-beta.220",
     "@tiptap/react": "^2.0.0-beta.220",
     "@tiptap/starter-kit": "^2.0.0-beta.220",
-    "localforage": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.8",
     "react-icons": "^4.7.1",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.1",
+    "react-use": "^17.4.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@swc/plugin-emotion": "^2.5.41",
-    "@types/node": "^18.14.0",
+    "@types/node": "^18.15.11",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/uuid": "^9.0.1",
     "@vitejs/plugin-react-swc": "^3.0.0",
-    "react-use": "^17.4.0",
     "typescript": "^4.9.3",
     "vite": "^4.1.0"
   }

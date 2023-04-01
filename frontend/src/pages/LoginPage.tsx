@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { Input } from '@geist-ui/core';
 import { appName } from '@/main';
+import { FetchError, useApi } from '@hooks/useApi';
 import { Button } from '@components/ui/Button';
 import { Center } from '@components/ui/Center';
 import { Card } from '@components/ui/Card';
@@ -14,8 +15,14 @@ export const LoginPage = () => {
   useTitle(`Login - ${appName}`);
   const maxWidth = 400;
 
+  const { auth: { apiLogin } } = useApi();
+
   const { register, handleSubmit } = useForm();
-  const onSubmit: SubmitHandler<FieldValues> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    apiLogin(data.email, data.password)
+      .then(({ user }) => console.log(user))
+      .catch((error: FetchError) => console.log(error));
+  };
 
   return (
     <Center isVertical>

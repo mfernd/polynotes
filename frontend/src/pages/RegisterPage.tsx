@@ -4,6 +4,7 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { Input } from '@geist-ui/core';
 import { css } from '@emotion/react';
 import { appName } from '@/main';
+import { FetchError, useApi } from '@hooks/useApi';
 import { Center } from '@components/ui/Center';
 import { Card } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
@@ -15,8 +16,14 @@ export const RegisterPage = () => {
   useTitle(`Register - ${appName}`);
   const maxWidth = 400;
 
+  const { auth: { apiRegister } } = useApi();
+
   const { register, handleSubmit } = useForm();
-  const onSubmit: SubmitHandler<FieldValues> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    apiRegister(data.username, data.email, data.password, data.age, data.cgu)
+      .then(({ message }) => console.log(message))
+      .catch((error: FetchError) => console.log(error));
+  };
 
   return (
     <Center isVertical>
