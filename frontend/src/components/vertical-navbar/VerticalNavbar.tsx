@@ -15,7 +15,7 @@ export const VerticalNavbar = () => {
         <img src={logoLarge} alt={'Polynotes large logo'}/>
       </Link>
       <Button buttonProperties={{ initHeight: 1, addHeight: 1, isFullWidth: false }}
-              onClick={() => navigate(`/page/${uuidv4()}`)}>
+              onClick={() => navigate(`/pages/${uuidv4()}`)}>
         <FiPlus/>
         <span>Créer</span>
       </Button>

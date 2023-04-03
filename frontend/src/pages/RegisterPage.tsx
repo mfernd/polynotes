@@ -1,7 +1,7 @@
 import { useTitle } from 'react-use';
 import { NavLink } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { Input } from '@geist-ui/core';
+import { Input, useToasts } from '@geist-ui/core';
 import { css } from '@emotion/react';
 import { appName } from '@/main';
 import { FetchError, useApi } from '@hooks/useApi';
@@ -16,13 +16,14 @@ export const RegisterPage = () => {
   useTitle(`Register - ${appName}`);
   const maxWidth = 400;
 
+  const { setToast } = useToasts();
   const { auth: { apiRegister } } = useApi();
 
   const { register, handleSubmit } = useForm();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     apiRegister(data.username, data.email, data.password, data.age, data.cgu)
-      .then(({ message }) => console.log(message))
-      .catch((error: FetchError) => console.log(error));
+      .then(({ message }) => console.log(message)) // redirect to verify email
+      .catch((data: FetchError) => setToast({ type: 'error', text: data.error }));
   };
 
   return (

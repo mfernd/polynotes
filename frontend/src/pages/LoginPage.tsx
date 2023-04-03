@@ -1,8 +1,9 @@
-import { useTitle } from 'react-use';
-import { NavLink } from 'react-router-dom';
-import { css } from '@emotion/react';
+import { useCallback } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { Input } from '@geist-ui/core';
+import { useTitle } from 'react-use';
+import { css } from '@emotion/react';
+import { Input, useToasts } from '@geist-ui/core';
 import { appName } from '@/main';
 import { FetchError, useApi } from '@hooks/useApi';
 import { Button } from '@components/ui/Button';
@@ -15,14 +16,16 @@ export const LoginPage = () => {
   useTitle(`Login - ${appName}`);
   const maxWidth = 400;
 
-  const { auth: { apiLogin } } = useApi();
+  const { setToast } = useToasts();
+  const navigate = useNavigate();
+  const { apiState, auth: { apiLogin } } = useApi();
 
   const { register, handleSubmit } = useForm();
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = useCallback(async (data) => {
     apiLogin(data.email, data.password)
-      .then(({ user }) => console.log(user))
-      .catch((error: FetchError) => console.log(error));
-  };
+      .then(() => navigate('/workspace'))
+      .catch((data: FetchError) => setToast({ type: 'error', text: data.error }));
+  }, [apiState]);
 
   return (
     <Center isVertical>

@@ -10,7 +10,7 @@ export const WorkspacePage = () => {
       <Tile key={i} imageUrl={`https://picsum.photos/25${i}/25${i}`}
             title={'PolyNotes - Projet Promotion 2022-23'}
             modifiedDate={new Date()}
-            link={`/page/${uuidv4()}`}/>);
+            link={`/pages/${uuidv4()}`}/>);
   }
 
   return (
