@@ -51,7 +51,7 @@ async fn main() {
         .layer(CorsLayer::permissive())
         .layer(CompressionLayer::new());
 
-    axum::Server::bind(&format!("0.0.0.0:{port}").parse().unwrap())
+    axum::Server::bind(&format!("127.0.0.1:{port}").parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
