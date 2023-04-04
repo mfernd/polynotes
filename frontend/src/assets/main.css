@@ -54,3 +54,11 @@ small {
   text-decoration-thickness: 3px;
   background-color: rgba(324 100 89 / 5%);
 }
+
+.tooltip .avatar {
+  background-color: lightpink!important;
+}
+
+.tooltip .avatar-text {
+  font-size: 1.25rem!important;
+}

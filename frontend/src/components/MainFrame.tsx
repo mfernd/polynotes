@@ -1,10 +1,13 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { css } from '@emotion/react';
-import { FaUserCircle } from 'react-icons/all';
 import { useTitle } from 'react-use';
 import { appName } from '@/main';
 import { VerticalNavbar } from '@components/vertical-navbar/VerticalNavbar';
 import { SearchBar } from '@components/ui/SearchBar';
+import { Avatar, Popover, useToasts } from '@geist-ui/core';
+import { FetchError, useApi } from '@hooks/useApi';
+import { BsFillPersonFill, FaSignOutAlt } from 'react-icons/all';
+import { useNavigate } from 'react-router-dom';
 
 type MainFrameProps = {
   titlePage?: string;
@@ -13,6 +16,33 @@ type MainFrameProps = {
 
 export const MainFrame = ({ titlePage, children }: MainFrameProps) => {
   useTitle(titlePage ? `${titlePage} - ${appName}` : appName);
+
+  const { setToast } = useToasts();
+  const navigate = useNavigate();
+  const { apiState, auth: { apiLogout } } = useApi();
+
+  const logout = useCallback(() => {
+    apiLogout()
+      .then(() => {
+        setToast({ type: 'success', text: 'Déconnecté avec succès 👍' });
+        navigate('/login');
+      })
+      .catch((data: FetchError) => setToast({ type: 'error', text: data.error }));
+  }, [apiState]);
+
+  const userDropdown = (
+    <>
+      <Popover.Item css={popoverItemCss}>
+        <BsFillPersonFill height={'17px'}/>
+        <span>Profil</span>
+      </Popover.Item>
+      <Popover.Item line/>
+      <Popover.Item onClick={logout} css={popoverItemCss}>
+        <FaSignOutAlt height={'17px'}/>
+        <span>Se{' '}déconnecter</span>
+      </Popover.Item>
+    </>
+  );
 
   return (
     <div css={containerCss}>
@@ -24,7 +54,12 @@ export const MainFrame = ({ titlePage, children }: MainFrameProps) => {
             <SearchBar/>
           </div>
           <div className={'right-column'}>
-            <FaUserCircle css={accountButtonCss}/>
+            <Popover hideArrow
+                     placement={'bottomEnd'}
+                     content={userDropdown}>
+              <Avatar width={'50px'} height={'50px'}
+                      text={apiState?.userInfo?.username!.substring(0, 3).toUpperCase() ?? ''}/>
+            </Popover>
           </div>
         </header>
         <main css={mainCss}>
@@ -78,15 +113,15 @@ const headerNavbarCss = css`
     width: 100%;
     max-width: 600px;
   }
+
+  .right-column * {
+    cursor: pointer !important;
+  }
 `;
 
-const accountButtonCss = css`
-  cursor: pointer;
-  height: 40px;
-  width: auto;
-  aspect-ratio: 1;
-
-  &:active {
-    color: rgba(25, 23, 17, 0.5);
-  }
+const popoverItemCss = css`
+  min-width: max-content;
+  width: 100%;
+  gap: 10px;
+  cursor: pointer !important;
 `;
