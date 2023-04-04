@@ -1,5 +1,5 @@
 import { useTitle } from 'react-use';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { Input, useToasts } from '@geist-ui/core';
 import { css } from '@emotion/react';
@@ -18,11 +18,12 @@ export const RegisterPage = () => {
 
   const { setToast } = useToasts();
   const { auth: { apiRegister } } = useApi();
+  const navigate = useNavigate();
 
   const { register, handleSubmit } = useForm();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     apiRegister(data.username, data.email, data.password, data.age, data.cgu)
-      .then(({ message }) => console.log(message)) // redirect to verify email
+      .then(() => navigate('/verify-email')) // redirect to verify email
       .catch((data: FetchError) => setToast({ type: 'error', text: data.error }));
   };
 
@@ -59,17 +60,19 @@ export const RegisterPage = () => {
               </InputWrapper>
 
               <InputCheckbox labelTitle={'J\'assure avoir plus de 13 ans'}
+                             tabIndex={4}
                              registerHandle={register}
                              registerParams={{ name: 'age' }}/>
 
               <InputCheckbox labelTitle={'Accepter les CGUs'}
+                             tabIndex={5}
                              registerHandle={register}
                              registerParams={{ name: 'cgu' }}/>
             </div>
 
             <Button isSubmit>S'inscrire</Button>
 
-            <p css={redirectCss}>Déjà un compte{' '}? <NavLink to={'/login'}>Se connecter</NavLink></p>
+            <p css={redirectCss}>Déjà un compte{' '}? <NavLink to={'/login'} className={'nav-link'}>Se connecter</NavLink></p>
           </Form>
         </Card>
       </main>
@@ -80,13 +83,4 @@ export const RegisterPage = () => {
 const redirectCss = css`
   margin: 0;
   font-size: 1.1rem;
-
-  a {
-    color: #fe0096;
-    font-weight: 700;
-
-    &:hover {
-      color: #e40087;
-    }
-  }
 `;

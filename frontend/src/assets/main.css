@@ -38,3 +38,19 @@ h1 {
 small {
   font-size: 0.75rem;
 }
+
+/* ANCHOR */
+.nav-link {
+  color: #202124;
+  font-weight: bolder;
+  text-decoration: underline;
+  text-decoration-color: #fe0096;
+  text-decoration-thickness: 3px;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+  text-decoration-color: #e40087;
+  text-decoration-thickness: 3px;
+  background-color: rgba(324 100 89 / 5%);
+}

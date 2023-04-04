@@ -3,6 +3,7 @@ import { FieldValues, RegisterOptions, UseFormRegister } from 'react-hook-form';
 
 type InputCheckboxProps = {
   labelTitle: string;
+  tabIndex?: number;
   registerHandle: UseFormRegister<FieldValues>;
   registerParams: {
     name: string;
@@ -14,7 +15,9 @@ export const InputCheckbox = (props: InputCheckboxProps) => {
   return (
     <label css={labelCss}>
       <div css={checkboxCss}>
-        <input type="checkbox" {...props.registerHandle(props.registerParams.name, props.registerParams.options)}/>
+        <input type="checkbox"
+               tabIndex={props.tabIndex}
+               {...props.registerHandle(props.registerParams.name, props.registerParams.options)}/>
         <span></span>
       </div>
       <span css={css`user-select: none;`}>{props.labelTitle}</span>

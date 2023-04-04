@@ -15,7 +15,7 @@ export const ProtectedRoute = (props: ProtectedRouteProps) => {
   const location = useLocation();
 
   useEffect(() => {
-    if ((props.needsAuth && !apiState.isAuth) || (!props.needsAuth && apiState.isAuth)) {
+    if ((props.needsAuth && !apiState?.isAuth) || (!props.needsAuth && apiState?.isAuth)) {
       navigate(props.elsePath, { replace: true, state: { from: location } });
     }
   }, [apiState]);

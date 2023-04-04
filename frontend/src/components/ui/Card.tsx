@@ -31,7 +31,7 @@ export const Card = (props: CardProps) => {
 
 const cardCss = css`
   position: relative;
-  padding: 1.25rem 2rem 2rem 2rem;
+  padding: 2rem;
 
   background-color: #fafbfb;
   border: 1px solid #d8d8d8;

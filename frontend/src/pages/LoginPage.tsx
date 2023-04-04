@@ -54,7 +54,7 @@ export const LoginPage = () => {
 
             <Button isSubmit>Se connecter</Button>
 
-            <p css={redirectCss}>Pas de compte{' '}? <NavLink to={'/register'}>Créez un compte</NavLink></p>
+            <p css={redirectCss}>Pas de compte{' '}? <NavLink to={'/register'} className={'nav-link'}>Créez un compte</NavLink></p>
           </Form>
         </Card>
       </main>
@@ -65,13 +65,4 @@ export const LoginPage = () => {
 const redirectCss = css`
   margin: 0;
   font-size: 1.1rem;
-
-  a {
-    color: #fe0096;
-    font-weight: 700;
-
-    &:hover {
-      color: #e40087;
-    }
-  }
 `;

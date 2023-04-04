@@ -1,5 +1,6 @@
 import { User } from '@/typings/user.type';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
+import { useLocalStorage } from 'react-use';
 
 const BASE_API = import.meta.env.VITE_BASE_API;
 
@@ -10,7 +11,7 @@ type ApiState = {
 };
 
 export function useApi() {
-  const [apiState, setApiState] = useState(/*'polynotes/auth', */{
+  const [apiState, setApiState] = useLocalStorage('polynotes/auth', {
     isAuth: false,
     lastLogin: 0, // as timestamp
     userInfo: undefined,
@@ -56,6 +57,8 @@ export function useApi() {
         });
         return resp;
       }),
+      // TODO: check if access & refresh token expired
+      apiLogout: () => fetchWrapper<{ message: string }>({ endpoint: '/auth/logout', hasJWT: true }),
       apiRegister: (
         username: string,
         email: string,
@@ -67,8 +70,9 @@ export function useApi() {
         method: 'POST',
         data: { username, email, password, age, cgu },
       }),
-      // TODO: check if access & refresh token expired
-      apiLogout: () => fetchWrapper<{ message: string }>({ endpoint: '/auth/logout', hasJWT: true }),
+      apiVerifyEmail: (userUuid: string, nonce: string) => fetchWrapper<{ message: string }>(
+        { endpoint: `/auth/verify-email/${userUuid}?${new URLSearchParams({ nonce }).toString()}` },
+      ),
     },
   };
 }
