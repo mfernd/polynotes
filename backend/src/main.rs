@@ -48,7 +48,7 @@ async fn main() {
     let app = Router::new()
         .nest("/api/v1", api_routes)
         .with_state(state)
-        .layer(CorsLayer::permissive())
+        .layer(CorsLayer::very_permissive())
         .layer(CompressionLayer::new());
 
     axum::Server::bind(&format!("127.0.0.1:{port}").parse().unwrap())
@@ -64,5 +64,5 @@ async fn secured_route(Extension(user): Extension<User>) -> Json<Value> {
 }
 
 async fn health_handler() -> Json<Value> {
-    Json(json!({"isOk": "healthy ❤️" }))
+    Json(json!({"isOk": "healthy ❤️"}))
 }
