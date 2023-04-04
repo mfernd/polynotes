@@ -57,6 +57,6 @@ impl User {
     }
 
     pub fn check_is_verified(&self) -> bool {
-        self.is_verified || self.nonce.is_none()
+        self.is_verified && self.nonce.is_none()
     }
 }

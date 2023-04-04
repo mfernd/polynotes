@@ -5,6 +5,7 @@ use crate::AppState;
 use axum::extract::State;
 use axum::{http::StatusCode, Json};
 use axum_extra::extract::WithRejection;
+use dotenvy::var;
 use mongodb::error::{ErrorKind, WriteFailure};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -31,7 +32,7 @@ pub async fn register_handler(
     WithRejection(Json(payload), _): WithRejection<Json<RegisterRequest>, AuthError>,
 ) -> Result<(StatusCode, Json<RegisterResponse>), AuthError> {
     payload.validate().map_err(|_| AuthError::BadRequest)?;
-    if !payload.age && !payload.cgu {
+    if !payload.age || !payload.cgu {
         return Err(AuthError::BadRequest);
     }
 
@@ -51,9 +52,10 @@ pub async fn register_handler(
             _ => AuthError::CouldNotCreateAccount,
         })?;
 
-    // Send verification link TODO: replace with Frontend host link
+    // Send verification link
+    let frontend_host = var("FRONTEND_HOST").unwrap_or("http://localhost:5173".to_owned());
     let link = format!(
-        "http://localhost:3000/api/v1/auth/verify-email/{}?nonce={}",
+        "{frontend_host}/verify-email/{}/{}",
         new_user.uuid,
         new_user.nonce.unwrap(),
     );
