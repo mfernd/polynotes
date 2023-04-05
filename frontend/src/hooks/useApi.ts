@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useLocalStorage } from 'react-use';
 import { User } from '@/typings/user.type';
+import { useNavigate } from 'react-router-dom';
 
 const BASE_API = import.meta.env.VITE_BASE_API;
 
@@ -18,19 +19,20 @@ const initialState: ApiState = {
 
 export function useApi() {
   const [apiState, setApiState] = useLocalStorage('polynotes/auth', initialState);
+  const navigate = useNavigate();
 
   // --- GENERIC FETCH
   const fetchWrapper = useCallback(async <ResponseData>(
     { endpoint, method = 'GET', headers, checkJWT, acceptCookies, data }: FetchParams,
   ): Promise<ResponseData> => {
-    if (checkJWT && apiState?.isAuth) {
-      const remaining_minutes = (Date.now() - apiState.lastLogin) / 60000;
-      // refresh access_token if almost expired (15 min / 2)
-      if (remaining_minutes > 7.5) {
-        await fetchWrapper({ endpoint: '/auth/refresh', acceptCookies: true })
-          .then(() => setApiState({ isAuth: true, lastLogin: Date.now() }))
-          .catch(() => setApiState(initialState));
-      }
+    if (checkJWT && apiState?.isAuth && ((Date.now() - apiState.lastLogin) / 60000) > 11.25) {
+      // refresh tokens if almost expired (75% of 15 min)
+      await fetchWrapper({ endpoint: '/auth/refresh', acceptCookies: true })
+        .then(() => setApiState({ isAuth: true, lastLogin: Date.now() }))
+        .catch(() => { // disconnect if cannot refresh
+          setApiState(initialState);
+          navigate('/login');
+        });
     }
 
     const response = await fetch(`${BASE_API}${endpoint}`, {
@@ -67,7 +69,6 @@ export function useApi() {
         return resp;
       }),
 
-      // TODO: check if access & refresh token expired
       apiLogout: () => fetchWrapper<{ message: string }>({ endpoint: '/auth/logout', checkJWT: true, acceptCookies: true })
         .then((resp) => {
           setApiState(initialState);
@@ -97,7 +98,9 @@ type FetchParams = {
   endpoint: string;
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
+  // To refresh tokens if almost expired
   checkJWT?: boolean;
+  // To accept cookies from backend
   acceptCookies?: boolean;
   data?: { [key: string]: any };
 };
