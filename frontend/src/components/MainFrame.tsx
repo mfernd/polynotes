@@ -100,6 +100,7 @@ const headerNavbarCss = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   padding: 0 1.5rem;
   box-shadow: rgba(0 0 0 / 5%) 0px -1px 0px 0px inset;
 
