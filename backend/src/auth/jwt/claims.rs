@@ -3,7 +3,7 @@ use crate::auth::jwt::secret_keys::{JWT_ACCESS_KEYS, JWT_REFRESH_KEYS};
 use chrono::Utc;
 use jsonwebtoken::{decode, encode, Algorithm, Header, TokenData, Validation};
 use serde::{Deserialize, Serialize};
-use tower_cookies::cookie::time;
+use tower_cookies::cookie::{time, SameSite};
 use tower_cookies::{Cookie, Cookies};
 
 /// JWT Claims
@@ -51,12 +51,14 @@ impl Claims {
                 .max_age(time::Duration::minutes(15))
                 .path("/api/v1")
                 .http_only(true)
+                .same_site(SameSite::Strict)
                 .secure(true)
                 .finish()),
             ClaimType::RefreshToken => Ok(Cookie::build("refresh_token", token)
                 .max_age(time::Duration::weeks(1))
                 .path("/api/v1/auth")
                 .http_only(true)
+                .same_site(SameSite::Strict)
                 .secure(true)
                 .finish()),
         }

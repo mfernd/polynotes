@@ -15,10 +15,19 @@ use axum::Router;
 use tower_cookies::CookieManagerLayer;
 
 pub fn routes(state: &AppState) -> Router<AppState> {
-    let secured_route = Router::new()
+    let access_token_route = Router::new()
         .route("/logout", get(logout_handler))
+        .route_layer(from_fn_with_state(
+            state.clone(),
+            auth_guard::access_token_extractor,
+        ));
+
+    let refresh_token_route = Router::new()
         .route("/refresh", get(refresh_handler))
-        .route_layer(from_fn_with_state(state.clone(), auth_guard::is_logged));
+        .route_layer(from_fn_with_state(
+            state.clone(),
+            auth_guard::refresh_token_extractor,
+        ));
 
     let unsecured_route = Router::new()
         .route("/login", post(login_handler))
@@ -26,7 +35,8 @@ pub fn routes(state: &AppState) -> Router<AppState> {
         .route("/verify-email/:user_uuid", get(verify_email_handler));
 
     Router::new()
-        .merge(secured_route)
+        .merge(access_token_route)
+        .merge(refresh_token_route)
         .merge(unsecured_route)
         .layer(CookieManagerLayer::new())
 }

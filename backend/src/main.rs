@@ -36,7 +36,10 @@ async fn main() {
 
     let secured_routes = Router::new()
         .route("/secured_route", get(secured_route))
-        .route_layer(from_fn_with_state(state.clone(), auth_guard::is_logged));
+        .route_layer(from_fn_with_state(
+            state.clone(),
+            auth_guard::access_token_extractor,
+        ));
 
     let api_routes = Router::new()
         .route("/health", get(health_handler))
