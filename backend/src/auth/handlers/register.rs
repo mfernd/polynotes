@@ -1,4 +1,4 @@
-use crate::auth::error::AuthError;
+use crate::api_error::ApiError;
 use crate::auth::hash_utils;
 use crate::users::models::user::User;
 use crate::AppState;
@@ -29,11 +29,16 @@ pub struct RegisterResponse {
 
 pub async fn register_handler(
     State(state): State<AppState>,
-    WithRejection(Json(payload), _): WithRejection<Json<RegisterRequest>, AuthError>,
-) -> Result<(StatusCode, Json<RegisterResponse>), AuthError> {
-    payload.validate().map_err(|_| AuthError::BadRequest)?;
+    WithRejection(Json(payload), _): WithRejection<Json<RegisterRequest>, ApiError>,
+) -> Result<(StatusCode, Json<RegisterResponse>), ApiError> {
+    payload
+        .validate()
+        .map_err(|_| ApiError::new(StatusCode::BAD_REQUEST, "Invalid or missing fields"))?;
     if !payload.age || !payload.cgu {
-        return Err(AuthError::BadRequest);
+        return Err(ApiError::new(
+            StatusCode::BAD_REQUEST,
+            "Invalid or missing fields",
+        ));
     }
 
     let hashed_password = hash_utils::hash(payload.password)?;
@@ -47,9 +52,15 @@ pub async fn register_handler(
         .await
         .map_err(|err| match *err.kind {
             ErrorKind::Write(WriteFailure::WriteError(error)) if error.code == 11000 => {
-                AuthError::UserConflict
+                ApiError::new(
+                    StatusCode::CONFLICT,
+                    "User with the same email already exists",
+                )
             }
-            _ => AuthError::CouldNotCreateAccount,
+            _ => ApiError::new(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Could not create your account due to a problem in the server",
+            ),
         })?;
 
     // Send verification link

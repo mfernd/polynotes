@@ -1,4 +1,5 @@
 extern crate argon2;
+mod api_error;
 mod auth;
 mod db;
 mod mailer;

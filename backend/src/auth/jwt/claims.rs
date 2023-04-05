@@ -1,12 +1,13 @@
-use crate::auth::error::AuthError;
+use crate::api_error::ApiError;
 use crate::auth::jwt::secret_keys::{JWT_ACCESS_KEYS, JWT_REFRESH_KEYS};
+use axum::http::StatusCode;
 use chrono::Utc;
 use jsonwebtoken::{decode, encode, Algorithm, Header, TokenData, Validation};
 use serde::{Deserialize, Serialize};
 use tower_cookies::cookie::{time, SameSite};
 use tower_cookies::{Cookie, Cookies};
 
-/// JWT Claims
+/// # JWT Claims
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Claims {
     #[serde(skip)]
@@ -43,7 +44,7 @@ impl Claims {
         }
     }
 
-    pub fn get_cookie(&self) -> Result<Cookie, AuthError> {
+    pub fn get_cookie(&self) -> Result<Cookie, ApiError> {
         let token = self.encode()?;
 
         match self.claim_type {
@@ -64,36 +65,53 @@ impl Claims {
         }
     }
 
-    pub fn encode(&self) -> Result<String, AuthError> {
+    pub fn encode(&self) -> Result<String, ApiError> {
         let access_secret = &JWT_ACCESS_KEYS.encoding;
         let refresh_secret = &JWT_REFRESH_KEYS.encoding;
+        let header = &Header::default();
 
         match self.claim_type {
-            ClaimType::AccessToken => encode(&Header::default(), &self, access_secret)
-                .map_err(|_| AuthError::InternalError),
-            ClaimType::RefreshToken => encode(&Header::default(), &self, refresh_secret)
-                .map_err(|_| AuthError::InternalError),
+            ClaimType::AccessToken => encode(header, &self, access_secret).map_err(|_| {
+                ApiError::new(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Error encoding the jwt access token",
+                )
+            }),
+            ClaimType::RefreshToken => encode(header, &self, refresh_secret).map_err(|_| {
+                ApiError::new(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Error encoding the jwt refresh token",
+                )
+            }),
         }
     }
 
-    pub fn decode(token: String, claim_type: ClaimType) -> Result<TokenData<Claims>, AuthError> {
+    pub fn decode(token: String, claim_type: ClaimType) -> Result<TokenData<Claims>, ApiError> {
         let access_secret = &JWT_ACCESS_KEYS.decoding;
         let refresh_secret = &JWT_REFRESH_KEYS.decoding;
+        let validation = &Validation::new(Algorithm::HS256);
 
         match claim_type {
             ClaimType::AccessToken => {
-                decode::<Claims>(&token, access_secret, &Validation::new(Algorithm::HS256))
-                    .map_err(|_| AuthError::InternalError)
+                decode::<Claims>(&token, access_secret, validation).map_err(|_| {
+                    ApiError::new(
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        "Error decoding the jwt access token",
+                    )
+                })
             }
-            ClaimType::RefreshToken => {
-                decode::<Claims>(&token, refresh_secret, &Validation::new(Algorithm::HS256))
-                    .map_err(|_| AuthError::InternalError)
-            }
+            ClaimType::RefreshToken => decode::<Claims>(&token, refresh_secret, validation)
+                .map_err(|_| {
+                    ApiError::new(
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        "Error decoding the jwt refresh token",
+                    )
+                }),
         }
     }
 }
 
-pub fn refresh_user_cookies(cookies: &Cookies, sub: String) -> Result<(), AuthError> {
+pub fn refresh_user_cookies(cookies: &Cookies, sub: String) -> Result<(), ApiError> {
     let refresh = Claims::new(Some(sub.clone()), ClaimType::RefreshToken);
     let access = Claims::new(Some(sub), ClaimType::AccessToken);
 

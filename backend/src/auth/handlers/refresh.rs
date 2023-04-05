@@ -1,4 +1,4 @@
-use crate::auth::error::AuthError;
+use crate::api_error::ApiError;
 use crate::auth::jwt::claims;
 use crate::users::models::user::User;
 use axum::{Extension, Json};
@@ -8,7 +8,7 @@ use tower_cookies::Cookies;
 pub async fn refresh_handler(
     Extension(user): Extension<User>,
     cookies: Cookies,
-) -> Result<Json<Value>, AuthError> {
+) -> Result<Json<Value>, ApiError> {
     // Send JWT through cookies
     claims::refresh_user_cookies(&cookies, user.uuid.to_string())?;
 

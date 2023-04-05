@@ -1,9 +1,10 @@
-use crate::auth::error::AuthError;
+use crate::api_error::ApiError;
 use crate::auth::hash_utils::verify_password;
 use crate::auth::jwt::claims;
 use crate::users::models::user::{AbstractedUser, User};
 use crate::AppState;
 use axum::extract::State;
+use axum::http::StatusCode;
 use axum::Json;
 use axum_extra::extract::WithRejection;
 use bson::doc;
@@ -26,24 +27,34 @@ pub struct LoginResponse {
 pub async fn login_handler(
     cookies: Cookies,
     State(state): State<AppState>,
-    WithRejection(Json(payload), _): WithRejection<Json<LoginRequest>, AuthError>,
-) -> Result<Json<LoginResponse>, AuthError> {
-    payload.validate().map_err(|_| AuthError::BadRequest)?;
+    WithRejection(Json(payload), _): WithRejection<Json<LoginRequest>, ApiError>,
+) -> Result<Json<LoginResponse>, ApiError> {
+    payload
+        .validate()
+        .map_err(|_| ApiError::new(StatusCode::BAD_REQUEST, "Invalid or missing fields"))?;
 
     let user = state
         .database
         .get_collection::<User>("users")
         .find_one(doc! {"email": payload.email}, None)
         .await
-        .map_err(|_| AuthError::CouldNotFetch)?
-        .ok_or(AuthError::WrongCredentials)?;
+        .map_err(|_| {
+            ApiError::new(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Could not fetch the account information due to a problem in the server",
+            )
+        })?
+        .ok_or(ApiError::new(StatusCode::UNAUTHORIZED, "Wrong credentials"))?;
 
     if !user.check_is_verified() {
-        return Err(AuthError::NotVerified);
+        return Err(ApiError::new(
+            StatusCode::UNAUTHORIZED,
+            "Your account is not verified",
+        ));
     }
 
     if !verify_password(&user.password, &payload.password) {
-        return Err(AuthError::WrongCredentials);
+        return Err(ApiError::new(StatusCode::UNAUTHORIZED, "Wrong credentials"));
     }
 
     // Send JWT through cookies
