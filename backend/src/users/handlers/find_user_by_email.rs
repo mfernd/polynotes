@@ -11,14 +11,14 @@ pub async fn find_user_by_email_handler(
     State(state): State<AppState>,
     Path(user_email): Path<String>,
 ) -> Result<Json<Value>, ApiError> {
-    let option = FindOneOptions::builder()
+    let options = FindOneOptions::builder()
         .projection(doc! {"_id": 0, "username": 1, "email": 1, "role": 1})
         .build();
 
     let user = state
         .database
         .get_collection::<Document>("users")
-        .find_one(doc! {"email": &user_email}, option)
+        .find_one(doc! {"email": &user_email}, options)
         .await
         .map_err(|_| {
             ApiError::new(

@@ -61,10 +61,7 @@ impl LettreMailer {
 
         match self.mailer.send(message).await {
             Ok(_) => Ok(()),
-            Err(err) => {
-                println!("{:?}", err);
-                Err("Error sending the mail".to_owned())
-            }
+            Err(_) => Err("Error sending the mail".to_owned()),
         }
     }
 }

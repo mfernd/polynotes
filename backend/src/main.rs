@@ -47,7 +47,7 @@ async fn main() {
         .merge(secured_routes)
         .nest("/auth", auth::routes(&state))
         .nest("/users", users::routes())
-        .nest("/pages", pages::routes());
+        .nest("/pages", pages::routes(&state));
 
     let app = Router::new()
         .nest("/api/v1", api_routes)
@@ -64,9 +64,9 @@ async fn main() {
 async fn secured_route(Extension(user): Extension<User>) -> Json<Value> {
     println!("{user:?}");
 
-    Json(json!({"isAuthorized": true}))
+    Json(json!({ "isAuthorized": true }))
 }
 
 async fn health_handler() -> Json<Value> {
-    Json(json!({"isOk": "healthy ❤️"}))
+    Json(json!({ "isOk": "healthy ❤️" }))
 }

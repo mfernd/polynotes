@@ -1,8 +1,6 @@
-use crate::users::models::user::User;
-use bson::doc;
+use crate::{pages, users};
 use dotenvy::var;
-use mongodb::options::IndexOptions;
-use mongodb::{options::ClientOptions, Client, Collection, IndexModel};
+use mongodb::{options::ClientOptions, Client, Collection};
 
 #[derive(Debug, Clone)]
 pub struct MongoDatabase {
@@ -25,7 +23,8 @@ impl MongoDatabase {
         );
 
         let client = Client::with_options(client_options).expect(&error_message);
-        MongoDatabase::create_indexes(&client).await;
+        users::create_users_indexes(&client, DB_NAME).await;
+        pages::create_pages_indexes(&client, DB_NAME).await;
 
         // ping database
         // let ping_status = client
@@ -41,35 +40,5 @@ impl MongoDatabase {
         self.client
             .database(DB_NAME)
             .collection::<T>(collection_name)
-    }
-
-    async fn create_indexes(client: &Client) {
-        // Uuid unique index
-        let uuid_options = IndexOptions::builder().unique(true).build();
-        let uuid_index = IndexModel::builder()
-            .keys(doc! {"uuid": 1})
-            .options(uuid_options)
-            .build();
-
-        client
-            .database(DB_NAME)
-            .collection::<User>("users")
-            .create_index(uuid_index, None)
-            .await
-            .expect("error creating the user (uuid) index");
-
-        // Email unique index
-        let email_options = IndexOptions::builder().unique(true).build();
-        let email_index = IndexModel::builder()
-            .keys(doc! {"email": 1})
-            .options(email_options)
-            .build();
-
-        client
-            .database(DB_NAME)
-            .collection::<User>("users")
-            .create_index(email_index, None)
-            .await
-            .expect("error creating the user (email) index");
     }
 }

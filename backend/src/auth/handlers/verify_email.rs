@@ -63,6 +63,6 @@ pub async fn verify_email_handler(
             )
         })?;
 
-    let message = json!({"message": "Account successfully verified"});
+    let message = json!({ "message": "Account successfully verified" });
     Ok((StatusCode::OK, Json(message)))
 }

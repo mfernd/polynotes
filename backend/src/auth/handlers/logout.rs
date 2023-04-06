@@ -17,5 +17,5 @@ pub async fn logout_handler(cookies: Cookies) -> Json<Value> {
             .finish(),
     );
 
-    Json(json!({"message": "ok"}))
+    Json(json!({ "message": "ok" }))
 }

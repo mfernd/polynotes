@@ -12,5 +12,5 @@ pub async fn refresh_handler(
     // Send JWT through cookies
     claims::refresh_user_cookies(&cookies, user.uuid.to_string())?;
 
-    Ok(Json(json!({"message": "ok"})))
+    Ok(Json(json!({ "message": "ok" })))
 }
