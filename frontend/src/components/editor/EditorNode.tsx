@@ -55,7 +55,7 @@ export const EditorNode = (props: EditorNodeProps) => {
       if (e.key === 'Enter') commandManager.chooseCommand(props.block.id);
     }
 
-    dispatch(updateData(editor?.getHTML()));
+    dispatch(updateData(editor?.getHTML() ?? ''));
   }, [commandManager]);
 
   return (

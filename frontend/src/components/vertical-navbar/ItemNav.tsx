@@ -1,6 +1,7 @@
 import { Item } from '@components/vertical-navbar/Item';
 import { css } from '@emotion/react';
 import { NavLink } from 'react-router-dom';
+import { MouseEventHandler } from 'react';
 
 type ItemNavProps = {
   items: {
@@ -8,6 +9,7 @@ type ItemNavProps = {
     title: string;
     isCollapsible: boolean;
     link?: string;
+    onClick?: MouseEventHandler<HTMLLIElement>;
   }[];
 };
 
@@ -16,7 +18,7 @@ export const ItemNav = (props: ItemNavProps) => {
     <nav css={pageSelectorCss}>
       <ul>
         {props.items.map((item, index) =>
-          <li key={`item-${index}`}>
+          <li key={`item-${index}`} onClick={item.onClick}>
             {item.link ?
               <NavLink to={item.link}>
                 <Item icon={item.icon} title={item.title} isCollapsible={item.isCollapsible}/>

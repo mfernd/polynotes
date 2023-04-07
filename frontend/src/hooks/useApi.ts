@@ -1,7 +1,10 @@
 import { useCallback } from 'react';
 import { useLocalStorage } from 'react-use';
 import { User } from '@/typings/user.type';
-import { useNavigate } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
+import { Node } from '@/typings/editor.type';
+import { v4 as uuidv4 } from 'uuid';
+import { Page } from '@/typings/page.type';
 
 const BASE_API = import.meta.env.VITE_BASE_API;
 
@@ -19,25 +22,24 @@ const initialState: ApiState = {
 
 export function useApi() {
   const [apiState, setApiState] = useLocalStorage('polynotes/auth', initialState);
-  const navigate = useNavigate();
 
   // --- GENERIC FETCH
   const fetchWrapper = useCallback(async <ResponseData>(
-    { endpoint, method = 'GET', headers, checkJWT, acceptCookies, data }: FetchParams,
+    { endpoint, method = 'GET', headers, secure, acceptCookies, data }: FetchParams,
   ): Promise<ResponseData> => {
-    if (checkJWT && apiState?.isAuth && ((Date.now() - apiState.lastLogin) / 60000) > 11.25) {
+    if (secure && apiState?.isAuth && ((Date.now() - apiState.lastLogin) / 60000) > 11.25) {
       // refresh tokens if almost expired (75% of 15 min)
       await fetchWrapper({ endpoint: '/auth/refresh', acceptCookies: true })
-        .then(() => setApiState({ isAuth: true, lastLogin: Date.now() }))
+        .then(() => setApiState({ ...apiState, isAuth: true, lastLogin: Date.now() }))
         .catch(() => { // disconnect if cannot refresh
           setApiState(initialState);
-          navigate('/login');
+          redirect('/login');
         });
     }
 
     const response = await fetch(`${BASE_API}${endpoint}`, {
       method: method,
-      credentials: acceptCookies ? 'include' : undefined,
+      credentials: acceptCookies || secure ? 'include' : undefined,
       headers: {
         'Content-Type': 'application/json',
         ...headers,
@@ -69,7 +71,7 @@ export function useApi() {
         return resp;
       }),
 
-      apiLogout: () => fetchWrapper<{ message: string }>({ endpoint: '/auth/logout', checkJWT: true, acceptCookies: true })
+      apiLogout: () => fetchWrapper<{ message: string }>({ endpoint: '/auth/logout', secure: true })
         .then((resp) => {
           setApiState(initialState);
           return resp;
@@ -91,6 +93,22 @@ export function useApi() {
         { endpoint: `/auth/verify-email/${userUuid}?${new URLSearchParams({ nonce }).toString()}` },
       ),
     },
+    pages: {
+      apiFindPage: (pageUuid: String) => fetchWrapper<Page>({
+        endpoint: `/pages/${pageUuid}`,
+        secure: true,
+      }).catch(() => redirect('/errors/content-not-found')),
+      apiUpsertPage: (pageUuid?: String, title?: String, nodes?: Node[]) => fetchWrapper<{ pageUuid: string }>({
+        endpoint: '/pages',
+        method: 'PUT',
+        secure: true,
+        data: {
+          uuid: pageUuid,
+          title: title ?? '',
+          nodes: nodes ?? [{ uuid: uuidv4(), type: 'text', data: '' }],
+        },
+      }),
+    },
   };
 }
 
@@ -99,7 +117,7 @@ type FetchParams = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
   // To refresh tokens if almost expired
-  checkJWT?: boolean;
+  secure?: boolean;
   // To accept cookies from backend
   acceptCookies?: boolean;
   data?: { [key: string]: any };

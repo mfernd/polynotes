@@ -1,13 +1,23 @@
+import { useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { css } from '@emotion/react';
 import { FiClock, FiDatabase, FiPlus, FiStar, FiTrash2, MdPeopleAlt, MdWorkspaces } from 'react-icons/all';
-import { v4 as uuidv4 } from 'uuid';
+import { useToasts } from '@geist-ui/core';
 import { Button } from '@components/ui/Button';
 import { ItemNav } from '@components/vertical-navbar/ItemNav';
+import { FetchError, useApi } from '@hooks/useApi';
 import logoLarge from '@assets/images/logo-large.svg';
 
 export const VerticalNavbar = () => {
   const navigate = useNavigate();
+  const { pages: { apiUpsertPage } } = useApi();
+  const { setToast } = useToasts();
+
+  const createPage = useCallback(() => {
+    apiUpsertPage()
+      .then(({ pageUuid }) => navigate(`/pages/${pageUuid}`))
+      .catch(({ error }: FetchError) => setToast({ type: 'warning', text: error }));
+  }, [navigate, apiUpsertPage]);
 
   return (
     <aside css={navbarCss}>
@@ -15,7 +25,7 @@ export const VerticalNavbar = () => {
         <img src={logoLarge} alt={'Polynotes large logo'}/>
       </Link>
       <Button buttonProperties={{ initHeight: 1, addHeight: 1, isFullWidth: false }}
-              onClick={() => navigate(`/pages/${uuidv4()}`)}>
+              onClick={createPage}>
         <FiPlus/>
         <span>Créer</span>
       </Button>
@@ -40,6 +50,7 @@ export const VerticalNavbar = () => {
           icon: <FiPlus/>,
           title: 'Ajouter une page',
           isCollapsible: false,
+          onClick: createPage,
         },
       ]}/>
       <ItemNav items={[
@@ -74,7 +85,7 @@ const navbarCss = css`
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  
+
   ul {
     color: rgba(25, 23, 17, 0.75);
     font-weight: 500;

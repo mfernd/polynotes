@@ -5,16 +5,19 @@ import { CssBaseline, GeistProvider } from '@geist-ui/core';
 import { AppRoutes } from '@/AppRoutes';
 import { store } from '@/store';
 import '@assets/main.css';
+import { RouterProvider } from 'react-router-dom';
 
 export const appName = 'Polynotes';
 
 const App = () => {
+  const routes = AppRoutes();
+
   return (
     <StrictMode>
       <Provider store={store}>
         <GeistProvider>
           <CssBaseline/>
-          <AppRoutes/>
+          <RouterProvider router={routes}/>
         </GeistProvider>
       </Provider>
     </StrictMode>

@@ -43,9 +43,12 @@ export const HeadingBlock = (props: HeadingBlockProps) => {
       History,
     ],
     onFocus: () => dispatch(updateFocus(props.node.id)),
-    onCreate: ({ editor }) => editor.commands.setHeading({ level: props.level ?? 1 }),
     content: props.node.data,
   });
+
+  useEffect(() => {
+    editor?.commands.setHeading({ level: props.level ?? 1 });
+  }, [editor, props.level]);
 
   useEffect(() => {
     const isFocused = props.node.id === editorState.focusedNode;

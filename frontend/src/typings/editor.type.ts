@@ -2,9 +2,9 @@ import { KeyboardEvent } from 'react';
 import { Editor } from '@tiptap/react';
 
 export type Node = {
-  id: string;
+  uuid: string;
   type: NodeType;
-  data?: string;
+  data: string;
 };
 
 export type NodeType =
