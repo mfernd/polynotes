@@ -8,6 +8,7 @@ use axum::http::StatusCode;
 use axum::{Extension, Json};
 use axum_extra::extract::WithRejection;
 use bson::doc;
+use mongodb::error::{ErrorKind, WriteFailure};
 use mongodb::options::ReplaceOptions;
 use serde::Deserialize;
 use serde_json::{json, Value};
@@ -21,25 +22,32 @@ pub struct UpdatePageRequest {
     pub nodes: Vec<Node>,
 }
 
-pub async fn update_page_handler(
+pub async fn insert_or_update_page_handler(
     State(state): State<AppState>,
     Extension(user): Extension<User>,
     WithRejection(Json(payload), _): WithRejection<Json<UpdatePageRequest>, ApiError>,
 ) -> Result<Json<Value>, ApiError> {
     let page = Page::new(payload.uuid, user, payload.title, payload.nodes);
 
+    let filter = doc! {
+        "uuid": page.uuid,
+        "author": page.author
+    };
     let options = ReplaceOptions::builder().upsert(Some(true)).build();
 
     state
         .database
         .get_collection::<Page>("pages")
-        .replace_one(doc! {"uuid": page.uuid}, &page, options)
+        .replace_one(filter, &page, options)
         .await
-        .map_err(|_| {
-            ApiError::new(
+        .map_err(|e| match *e.kind {
+            ErrorKind::Write(WriteFailure::WriteError(error)) if error.code == 11000 => {
+                ApiError::new(StatusCode::UNAUTHORIZED, "Could not update the page")
+            }
+            _ => ApiError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Could not create or update the page due to a problem in the server",
-            )
+            ),
         })?;
 
     let page_uuid = page.uuid.to_string();

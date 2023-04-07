@@ -2,8 +2,10 @@ mod handlers;
 mod models;
 
 use crate::middlewares::auth_guard;
-use crate::pages::handlers::find_page_by_uuid::find_page_by_uuid_handler;
-use crate::pages::handlers::update_page::update_page_handler;
+use crate::pages::handlers::{
+    find_page_by_uuid::find_page_by_uuid_handler,
+    insert_or_update_page::insert_or_update_page_handler,
+};
 use crate::pages::models::page::Page;
 use crate::AppState;
 use axum::middleware::from_fn_with_state;
@@ -15,7 +17,7 @@ use mongodb::{Client, IndexModel};
 
 pub fn routes(state: &AppState) -> Router<AppState> {
     let access_token_route = Router::new()
-        .route("/", put(update_page_handler))
+        .route("/", put(insert_or_update_page_handler))
         .route_layer(from_fn_with_state(
             state.clone(),
             auth_guard::access_token_extractor,
