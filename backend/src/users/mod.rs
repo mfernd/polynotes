@@ -1,23 +1,30 @@
 mod handlers;
 pub mod models;
 
-use crate::users::handlers::find_all_users::find_all_users_handler;
+use crate::middlewares::auth_guard;
 use crate::users::handlers::{
-    find_user_by_email::find_user_by_email_handler, find_user_by_uuid::find_user_by_uuid_handler,
+    find_all_users::find_all_users_handler, find_user_by_email::find_user_by_email_handler,
+    find_user_by_uuid::find_user_by_uuid_handler, find_user_pages::find_user_pages_handler,
 };
 use crate::users::models::user::User;
 use crate::AppState;
+use axum::middleware::from_fn_with_state;
 use axum::routing::get;
 use axum::Router;
 use bson::doc;
 use mongodb::options::IndexOptions;
 use mongodb::{Client, IndexModel};
 
-pub fn routes() -> Router<AppState> {
+pub fn routes(state: &AppState) -> Router<AppState> {
     Router::new()
+        .route("/pages", get(find_user_pages_handler))
         .route("/", get(find_all_users_handler))
         .route("/uuid/:user_uuid", get(find_user_by_uuid_handler))
         .route("/email/:user_email", get(find_user_by_email_handler))
+        .route_layer(from_fn_with_state(
+            state.clone(),
+            auth_guard::access_token_extractor,
+        ))
 }
 
 pub async fn create_users_indexes(client: &Client, db_name: &str) {

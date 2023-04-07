@@ -1,3 +1,4 @@
+use crate::users::models::abstracted_user::AbstractedUser;
 use crate::users::models::user_role::UserRole;
 use bson::oid::ObjectId;
 use rand::distributions::Alphanumeric;
@@ -18,15 +19,6 @@ pub struct User {
     pub role: UserRole,
     pub is_verified: bool,
     pub nonce: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct AbstractedUser {
-    #[serde(with = "bson::serde_helpers::uuid_1_as_binary")]
-    pub uuid: Uuid,
-    pub username: String,
-    pub email: String,
-    pub role: UserRole,
 }
 
 impl User {

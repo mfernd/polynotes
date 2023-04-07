@@ -1,15 +1,14 @@
 use crate::api_error::ApiError;
 use crate::pages::models::node::Node;
-use crate::pages::models::page::Page;
 use crate::users::models::user::User;
 use crate::AppState;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::{Extension, Json};
 use axum_extra::extract::WithRejection;
-use bson::doc;
-use mongodb::error::{ErrorKind, WriteFailure};
-use mongodb::options::ReplaceOptions;
+use bson::{doc, Document};
+use chrono::Utc;
+use mongodb::options::UpdateOptions;
 use serde::Deserialize;
 use serde_json::{json, Value};
 use uuid::Uuid;
@@ -27,29 +26,44 @@ pub async fn insert_or_update_page_handler(
     Extension(user): Extension<User>,
     WithRejection(Json(payload), _): WithRejection<Json<UpdatePageRequest>, ApiError>,
 ) -> Result<Json<Value>, ApiError> {
-    let page = Page::new(payload.uuid, user, payload.title, payload.nodes);
-
-    let filter = doc! {
-        "uuid": page.uuid,
-        "author": page.author
+    let user_id = user.id.ok_or(ApiError::new(
+        StatusCode::UNAUTHORIZED,
+        "User not authenticated",
+    ))?;
+    let timestamp_now = Utc::now().timestamp();
+    let page_uuid = match payload.uuid {
+        None => bson::Uuid::from_uuid_1(Uuid::new_v4()),
+        Some(uuid) => bson::Uuid::from_uuid_1(uuid),
     };
-    let options = ReplaceOptions::builder().upsert(Some(true)).build();
+    let nodes = Node::vec_to_bson(payload.nodes)?;
+
+    let upsert = doc! {
+        "$setOnInsert": {
+            "author": user_id,
+            "createdAt": timestamp_now,
+        },
+        "$set": {
+            "uuid": page_uuid,
+            "title": payload.title,
+            "nodes": nodes,
+            "updatedAt": timestamp_now,
+        },
+    };
+
+    let options = UpdateOptions::builder().upsert(Some(true)).build();
 
     state
         .database
-        .get_collection::<Page>("pages")
-        .replace_one(filter, &page, options)
+        .get_collection::<Document>("pages")
+        .update_one(doc! {"uuid": page_uuid}, upsert, options)
         .await
-        .map_err(|e| match *e.kind {
-            ErrorKind::Write(WriteFailure::WriteError(error)) if error.code == 11000 => {
-                ApiError::new(StatusCode::UNAUTHORIZED, "Could not update the page")
-            }
-            _ => ApiError::new(
+        .map_err(|_| {
+            ApiError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Could not create or update the page due to a problem in the server",
-            ),
+            )
         })?;
 
-    let page_uuid = page.uuid.to_string();
+    let page_uuid = page_uuid.to_string();
     Ok(Json(json!({ "pageUuid": page_uuid })))
 }

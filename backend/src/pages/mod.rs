@@ -1,5 +1,5 @@
 mod handlers;
-mod models;
+pub mod models;
 
 use crate::middlewares::auth_guard;
 use crate::pages::handlers::{

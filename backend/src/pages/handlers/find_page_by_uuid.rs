@@ -1,5 +1,5 @@
 use crate::api_error::ApiError;
-use crate::pages::models::page::AbstractedPage;
+use crate::pages::models::abstracted_page::AbstractedPage;
 use crate::AppState;
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
@@ -27,18 +27,7 @@ pub async fn find_page_by_uuid_handler(
             }
         },
         doc! { "$unwind": "$author" },
-        doc! {
-            "$project": {
-                "_id": 0,
-                "uuid": 1,
-                "author.uuid": 1,
-                "author.username": 1,
-                "author.email": 1,
-                "author.role": 1,
-                "title": 1,
-                "nodes": 1,
-            }
-        },
+        doc! { "$project": AbstractedPage::get_doc() },
     ];
 
     let page = state
@@ -56,13 +45,15 @@ pub async fn find_page_by_uuid_handler(
         .await
         .ok_or(ApiError::new(StatusCode::NOT_FOUND, "Page not found"))?
         .map(bson::from_document::<AbstractedPage>)
-        .map_err(|_| {
+        .map_err(|e| {
+            println!("error1: {e:?}");
             ApiError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Could not deserialize the page due to a problem in the server",
             )
         })?
-        .map_err(|_| {
+        .map_err(|e| {
+            println!("error2: {e:?}");
             ApiError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Could not deserialize the page due to a problem in the server",

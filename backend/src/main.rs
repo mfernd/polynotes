@@ -46,7 +46,7 @@ async fn main() {
         .route("/health", get(health_handler))
         .merge(secured_routes)
         .nest("/auth", auth::routes(&state))
-        .nest("/users", users::routes())
+        .nest("/users", users::routes(&state))
         .nest("/pages", pages::routes(&state));
 
     let app = Router::new()

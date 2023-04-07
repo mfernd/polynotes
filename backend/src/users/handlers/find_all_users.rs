@@ -1,24 +1,23 @@
 use crate::api_error::ApiError;
+use crate::users::models::abstracted_user::AbstractedUser;
 use crate::AppState;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::Json;
-use bson::{doc, Document};
 use futures::TryStreamExt;
 use mongodb::options::FindOptions;
-use serde_json::{json, Value};
 
 pub async fn find_all_users_handler(
     State(state): State<AppState>,
-) -> Result<Json<Value>, ApiError> {
+) -> Result<Json<Vec<AbstractedUser>>, ApiError> {
     let options = FindOptions::builder()
-        .projection(doc! {"_id": 0, "username": 1, "email": 1, "role": 1})
-        .limit(10)
+        .projection(AbstractedUser::get_doc())
+        // .limit(10)
         .build();
 
-    let users: Vec<Document> = state
+    let users: Vec<AbstractedUser> = state
         .database
-        .get_collection::<Document>("users")
+        .get_collection::<AbstractedUser>("users")
         .find(None, options)
         .await
         .map_err(|_| {
@@ -36,5 +35,5 @@ pub async fn find_all_users_handler(
             )
         })?;
 
-    Ok(Json(json!(users)))
+    Ok(Json(users))
 }

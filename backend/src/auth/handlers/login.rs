@@ -1,7 +1,8 @@
 use crate::api_error::ApiError;
 use crate::auth::hash_utils::verify_password;
 use crate::auth::jwt::claims;
-use crate::users::models::user::{AbstractedUser, User};
+use crate::users::models::abstracted_user::AbstractedUser;
+use crate::users::models::user::User;
 use crate::AppState;
 use axum::extract::State;
 use axum::http::StatusCode;
