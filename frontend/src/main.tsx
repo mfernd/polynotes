@@ -1,11 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { CssBaseline, GeistProvider } from '@geist-ui/core';
 import { AppRoutes } from '@/AppRoutes';
 import { store } from '@/store';
 import '@assets/main.css';
-import { RouterProvider } from 'react-router-dom';
 
 export const appName = 'Polynotes';
 

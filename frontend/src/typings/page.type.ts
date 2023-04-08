@@ -3,7 +3,16 @@ import { User } from '@/typings/user.type';
 
 export type Page = {
   uuid?: string;
-  author?: User;
+  author: User;
   title: string;
   nodes: Node[];
+  createdAt: number;
+  updatedAt: number;
+};
+
+export type ShortPage = {
+  uuid: string;
+  title: string;
+  createdAt: number;
+  updatedAt: number;
 };

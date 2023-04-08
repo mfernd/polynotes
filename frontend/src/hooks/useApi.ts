@@ -4,7 +4,7 @@ import { User } from '@/typings/user.type';
 import { redirect } from 'react-router-dom';
 import { Node } from '@/typings/editor.type';
 import { v4 as uuidv4 } from 'uuid';
-import { Page } from '@/typings/page.type';
+import { Page, ShortPage } from '@/typings/page.type';
 
 const BASE_API = import.meta.env.VITE_BASE_API;
 
@@ -57,57 +57,81 @@ export function useApi() {
   return {
     apiState,
     auth: {
-      apiLogin: (email: string, password: string) => fetchWrapper<{ user: User }>({
-        endpoint: '/auth/login',
-        method: 'POST',
-        acceptCookies: true,
-        data: { email, password },
-      }).then((resp) => {
-        setApiState({
-          isAuth: true,
-          lastLogin: Date.now(),
-          userInfo: resp.user,
-        });
-        return resp;
-      }),
-
-      apiLogout: () => fetchWrapper<{ message: string }>({ endpoint: '/auth/logout', secure: true })
-        .then((resp) => {
-          setApiState(initialState);
+      apiLogin: (email: string, password: string) => {
+        return fetchWrapper<{ user: User }>({
+          endpoint: '/auth/login',
+          method: 'POST',
+          acceptCookies: true,
+          data: { email, password },
+        }).then((resp) => {
+          setApiState({
+            isAuth: true,
+            lastLogin: Date.now(),
+            userInfo: resp.user,
+          });
           return resp;
-        }),
-
-      apiRegister: (
-        username: string,
-        email: string,
-        password: string,
-        age: boolean,
-        cgu: boolean,
-      ) => fetchWrapper<{ message: string }>({
-        endpoint: '/auth/register',
-        method: 'POST',
-        data: { username, email, password, age, cgu },
-      }),
-
-      apiVerifyEmail: (userUuid: string, nonce: string) => fetchWrapper<{ message: string }>(
-        { endpoint: `/auth/verify-email/${userUuid}?${new URLSearchParams({ nonce }).toString()}` },
-      ),
+        });
+      },
+      apiLogout: () => {
+        return fetchWrapper<{ message: string }>({ endpoint: '/auth/logout', secure: true })
+          .then((resp) => {
+            setApiState(initialState);
+            return resp;
+          });
+      },
+      apiRegister: (username: string, email: string, password: string, age: boolean, cgu: boolean) => {
+        return fetchWrapper<{ message: string }>({
+          endpoint: '/auth/register',
+          method: 'POST',
+          data: { username, email, password, age, cgu },
+        });
+      },
+      apiVerifyEmail: (userUuid: string, nonce: string) => {
+        return fetchWrapper<{ message: string }>(
+          { endpoint: `/auth/verify-email/${userUuid}?${new URLSearchParams({ nonce }).toString()}` },
+        );
+      },
     },
+
     pages: {
-      apiFindPage: (pageUuid: String) => fetchWrapper<Page>({
-        endpoint: `/pages/${pageUuid}`,
-        secure: true,
-      }).catch(() => redirect('/errors/content-not-found')),
-      apiUpsertPage: (pageUuid?: String, title?: String, nodes?: Node[]) => fetchWrapper<{ pageUuid: string }>({
-        endpoint: '/pages',
-        method: 'PUT',
-        secure: true,
-        data: {
-          uuid: pageUuid,
-          title: title ?? '',
-          nodes: nodes ?? [{ uuid: uuidv4(), type: 'text', data: '' }],
-        },
-      }),
+      apiFindPage: (pageUuid: String) => {
+        return fetchWrapper<Page>({
+          endpoint: `/pages/${pageUuid}`,
+          secure: true,
+        }).catch(() => redirect('/errors/content-not-found'));
+      },
+      apiUpsertPage: (pageUuid?: String, title?: String, nodes?: Node[]) => {
+        return fetchWrapper<{ pageUuid: string }>({
+          endpoint: '/pages',
+          method: 'PUT',
+          secure: true,
+          data: {
+            uuid: pageUuid,
+            title: title ?? '',
+            nodes: nodes ?? [{ uuid: uuidv4(), type: 'text', data: '' }],
+          },
+        });
+      },
+      apiDeletePage: (pageUuid: string) => {
+        return fetchWrapper<{ message: string }>({ endpoint: `/pages/${pageUuid}`, method: 'DELETE', secure: true });
+      },
+    },
+
+    users: {
+      apiUserPages: () => {
+        // if (limit) {
+        // const params = new URLSearchParams({ limit: `${limit}` });
+        //   return fetchWrapper<ShortPage[]>({ endpoint: `/users/me/pages?${params}`, secure: true });
+        // }
+        return fetchWrapper<ShortPage[]>({ endpoint: `/users/me/pages`, secure: true });
+      },
+      apiRecentPages: (limit?: number) => {
+        if (limit) {
+          const params = new URLSearchParams({ limit: `${limit}` });
+          return fetchWrapper<ShortPage[]>({ endpoint: `/users/me/pages/recent?${params}`, secure: true });
+        }
+        return fetchWrapper<ShortPage[]>({ endpoint: `/users/me/pages/recent`, secure: true });
+      },
     },
   };
 }

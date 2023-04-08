@@ -40,12 +40,12 @@ export const TextBlock = (props: DefaultBlockProps) => {
       Gapcursor,
       History,
     ],
-    onFocus: () => dispatch(updateFocus(props.node.id)),
+    onFocus: () => dispatch(updateFocus(props.node.uuid)),
     content: props.node.data,
   });
 
   useEffect(() => {
-    const isFocused = props.node.id === editorState.focusedNode;
+    const isFocused = props.node.uuid === editorState.focusedNode;
     if (isFocused)
       editor?.commands.focus(editorState.cursorIndex);
   }, [editorState, editor]);

@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 
 type CenterProps = {
   isVertical?: boolean;
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 export const Center = ({ isVertical, children }: CenterProps) => {

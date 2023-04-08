@@ -42,7 +42,7 @@ export const HeadingBlock = (props: HeadingBlockProps) => {
       }),
       History,
     ],
-    onFocus: () => dispatch(updateFocus(props.node.id)),
+    onFocus: () => dispatch(updateFocus(props.node.uuid)),
     content: props.node.data,
   });
 
@@ -51,7 +51,7 @@ export const HeadingBlock = (props: HeadingBlockProps) => {
   }, [editor, props.level]);
 
   useEffect(() => {
-    const isFocused = props.node.id === editorState.focusedNode;
+    const isFocused = props.node.uuid === editorState.focusedNode;
     if (isFocused)
       editor?.commands.focus(editorState.cursorIndex);
   }, [editorState, editor]);

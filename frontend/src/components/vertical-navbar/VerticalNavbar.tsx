@@ -78,7 +78,7 @@ const navbarCss = css`
   padding: 1rem 1rem 0;
   min-height: 100vh;
 
-  background-color: #fbfbfa;
+  background-color: #fafafa;
   box-shadow: rgba(0 0 0 / 5%) -1px 0px 0px 0px inset;
 
   display: flex;

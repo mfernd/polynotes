@@ -26,10 +26,10 @@ export const EditorNode = (props: EditorNodeProps) => {
 
     if (e.key === 'Enter' && !commandManager.show) {
       e.preventDefault();
-      dispatch(addBottomNode(props.block.id));
+      dispatch(addBottomNode(props.block.uuid));
     } else if (['Backspace', 'Delete'].includes(e.key) && editor.isEmpty) {
       e.preventDefault();
-      dispatch(deleteNode(props.block.id));
+      dispatch(deleteNode(props.block.uuid));
     } else if (e.key === 'ArrowUp' && selection?.isCollapsed && !commandManager.show) {
       e.preventDefault();
       dispatch(onArrow({ orientation: 'up', cursorIndex: selection.anchorOffset }));
@@ -52,14 +52,14 @@ export const EditorNode = (props: EditorNodeProps) => {
     if (commandManager.commands.length > 0) {
       if (e.key === 'ArrowUp') commandManager.goUpOneCommand();
       if (e.key === 'ArrowDown') commandManager.goDownOneCommand();
-      if (e.key === 'Enter') commandManager.chooseCommand(props.block.id);
+      if (e.key === 'Enter') commandManager.chooseCommand(props.block.uuid);
     }
 
     dispatch(updateData(editor?.getHTML() ?? ''));
   }, [commandManager]);
 
   return (
-    <div data-node-id={props.block.id}
+    <div data-node-id={props.block.uuid}
          css={nodeContainerCss}
          onFocus={() => setFocused(true)}
          onBlur={() => setFocused(false)}
@@ -68,12 +68,12 @@ export const EditorNode = (props: EditorNodeProps) => {
       {/* Node */}
       {getEditorNodeFromType(props.block, props.isLastNode, beforeInput, afterInput)}
       {/* ---- */}
-      <DragHandle nodeId={props.block.id} show={focused}/>
+      <DragHandle nodeId={props.block.uuid} show={focused}/>
       {commandManager.show
-        ? <CommandManager nodeId={props.block.id}
+        ? <CommandManager nodeId={props.block.uuid}
                           commands={commandManager.commands}
                           selected={commandManager.selectedIndex}
-                          onCommandClick={(newType) => commandManager.chooseCommand(props.block.id, newType)}/>
+                          onCommandClick={(newType) => commandManager.chooseCommand(props.block.uuid, newType)}/>
         : null}
     </div>
   );

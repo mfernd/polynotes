@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { LandingPage } from '@pages/LandingPage';
 import { ProtectedRoute } from '@components/ProtectedRoute';
+import { LandingPage } from '@pages/LandingPage';
 import { WorkspacePage } from '@pages/WorkspacePage';
 import { EditorPage } from '@pages/EditorPage';
 import { LoginPage } from '@pages/LoginPage';
@@ -8,10 +8,11 @@ import { RegisterPage } from '@pages/RegisterPage';
 import { AfterVerificationPage } from '@pages/verify-email/AfterVerificationPage';
 import { BeforeVerificationPage } from '@pages/verify-email/BeforeVerificationPage';
 import { ContentNotFound } from '@pages/errors/ContentNotFound';
+import { CguPage } from '@pages/CguPage';
 import { useApi } from '@hooks/useApi';
 
 export const AppRoutes = () => {
-  const { pages: { apiFindPage } } = useApi();
+  const { pages: { apiFindPage }, users: { apiRecentPages, apiUserPages } } = useApi();
 
   return createBrowserRouter([
     // ALL
@@ -31,6 +32,7 @@ export const AppRoutes = () => {
     {
       path: '/workspace',
       element: <ProtectedRoute needsAuth elsePath={'/login'} children={<WorkspacePage/>}/>,
+      loader: () => Promise.all([apiUserPages(), apiRecentPages()]),
     },
     {
       path: '/pages/:pageId',

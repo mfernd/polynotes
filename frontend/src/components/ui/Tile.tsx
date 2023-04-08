@@ -2,33 +2,43 @@ import { css } from '@emotion/react';
 import { NavLink } from 'react-router-dom';
 
 type TileProps = {
-  imageUrl: string;
   title: string;
-  modifiedDate: Date;
+  imageUrl?: string;
+  updatedAt: Date;
   link?: string;
 };
 
 export const Tile = (props: TileProps) => {
+  const dateFormat = new Intl.DateTimeFormat('fr', { dateStyle: 'medium', timeStyle: 'medium' });
+
   const tileBody = (
     <>
       <div css={previewSectionCss}>
-        <img src={props.imageUrl} alt={`"${props.title}" tile image`}/>
+        <div css={imgContainerCss}>
+          {props.imageUrl
+            ? <img src={props.imageUrl} alt={`"${props.title}" tile image`}/>
+            : (
+              <div>
+                <strong>{props.title}</strong>
+                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusantium adipisci amet assumenda corporis, doloremque dolores eos
+                  est et harum hic illo illum inventore iste!
+                </div>
+              </div>)}
+        </div>
       </div>
-      <div css={detailsSectionCss}>
+      <div css={detailsSectionCss} className={'tile-description'}>
         <h1>{props.title}</h1>
-        <p>Modifié le{` ${props.modifiedDate.toLocaleDateString('fr', { dateStyle: 'medium' })}`}</p>
+        <p>{`Modifié le ${dateFormat.format(props.updatedAt)}`}</p>
       </div>
     </>
   );
 
   return (
-    <>
-      {props.link ?
-        <div css={tileCss} title={props.title}>
-          <NavLink to={props.link}>{tileBody}</NavLink>
-        </div>
-        : <div css={tileCss} title={props.title}>{tileBody}</div>}
-    </>
+    <div css={tileCss} title={props.title}>
+      {props.link
+        ? <NavLink to={props.link}>{tileBody}</NavLink>
+        : tileBody}
+    </div>
   );
 };
 
@@ -39,11 +49,16 @@ const tileCss = css`
 
   border: 1px solid #dadce0;
   border-radius: 6px;
-  
+
   a {
     border-radius: inherit;
     text-decoration: none;
     color: unset;
+  }
+
+  &:hover .tile-description {
+    background-color: #fafafa;
+    transition: background-color 250ms ease;
   }
 `;
 
@@ -55,13 +70,33 @@ const previewSectionCss = css`
   background-color: #f5f5f5;
   overflow: hidden;
   padding: 6% 6% 0;
+`;
 
-  img {
-    box-shadow: 0 0 4px 0 rgba(0 0 0 / 20%);
+const imgContainerCss = css`
+  box-shadow: 0 0 4px 0 rgba(0 0 0 / 20%);
+  height: 100%;
+  width: 100%;
+  background-color: #fafafa;
+
+  & > img {
     margin: 0;
     height: 100%;
     width: 100%;
     object-fit: cover;
+  }
+
+  & > div {
+    padding: 15px 20px 0;
+    font-size: 0.75rem;
+    font-weight: normal;
+    text-align: justify;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    
+    strong {
+      font-size: 1rem;
+    }
   }
 `;
 

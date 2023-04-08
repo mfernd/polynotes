@@ -33,12 +33,12 @@ export const MainFrame = ({ titlePage, children }: MainFrameProps) => {
   const userDropdown = (
     <>
       <Popover.Item css={popoverItemCss}>
-        <BsFillPersonFill height={'17px'}/>
+        <BsFillPersonFill/>
         <span>Profil</span>
       </Popover.Item>
       <Popover.Item line/>
       <Popover.Item onClick={logout} css={popoverItemCss}>
-        <FaSignOutAlt height={'17px'}/>
+        <FaSignOutAlt/>
         <span>Se{' '}déconnecter</span>
       </Popover.Item>
     </>
