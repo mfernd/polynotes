@@ -13,11 +13,11 @@ use validator::Validate;
 
 #[derive(Debug, Deserialize, Validate)]
 pub struct Params {
-    #[validate(range(min = 1))]
+    #[validate(range(min = 1, max = 20))]
     pub limit: Option<i64>,
 }
 
-pub async fn find_user_pages_handler(
+pub async fn find_recent_pages_handler(
     State(state): State<AppState>,
     Extension(user): Extension<User>,
     Query(params): Query<Params>,
@@ -25,7 +25,7 @@ pub async fn find_user_pages_handler(
     if params.limit.is_some() && params.validate().is_err() {
         return Err(ApiError::new(
             StatusCode::BAD_REQUEST,
-            "Your limit parameter needs to be greater or equal to 1",
+            "Your limit parameter needs to be between 1 and 20",
         ));
     }
     let user_id = user.id.ok_or(ApiError::new(
@@ -35,7 +35,8 @@ pub async fn find_user_pages_handler(
 
     let options = FindOptions::builder()
         .projection(ShortPage::get_doc())
-        .limit(params.limit)
+        .sort(doc! {"updatedAt": -1})
+        .limit(params.limit.unwrap_or(10))
         .build();
 
     let pages: Vec<ShortPage> = state
@@ -46,7 +47,7 @@ pub async fn find_user_pages_handler(
         .map_err(|_| {
             ApiError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
-                "Could not get user pages due to a problem in the server",
+                "Could not get recent pages due to a problem in the server",
             )
         })?
         .try_collect()
@@ -54,7 +55,7 @@ pub async fn find_user_pages_handler(
         .map_err(|_| {
             ApiError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
-                "Error collecting user pages due to a problem in the server",
+                "Error collecting recent pages due to a problem in the server",
             )
         })?;
 

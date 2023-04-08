@@ -2,6 +2,7 @@ use crate::api_error::ApiError;
 use crate::auth::jwt::secret_keys::{JWT_ACCESS_KEYS, JWT_REFRESH_KEYS};
 use axum::http::StatusCode;
 use chrono::Utc;
+use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::{decode, encode, Algorithm, Header, TokenData, Validation};
 use serde::{Deserialize, Serialize};
 use tower_cookies::cookie::{time, SameSite};
@@ -93,19 +94,20 @@ impl Claims {
 
         match claim_type {
             ClaimType::AccessToken => {
-                decode::<Claims>(&token, access_secret, validation).map_err(|_| {
-                    ApiError::new(
-                        StatusCode::INTERNAL_SERVER_ERROR,
-                        "Error decoding the jwt access token",
-                    )
+                decode::<Claims>(&token, access_secret, validation).map_err(|e| match e.kind() {
+                    ErrorKind::ExpiredSignature => {
+                        ApiError::new(StatusCode::UNAUTHORIZED, "Your jwt access token is expired")
+                    }
+                    _ => ApiError::new(StatusCode::BAD_REQUEST, "Invalid jwt access token"),
                 })
             }
             ClaimType::RefreshToken => decode::<Claims>(&token, refresh_secret, validation)
-                .map_err(|_| {
-                    ApiError::new(
-                        StatusCode::INTERNAL_SERVER_ERROR,
-                        "Error decoding the jwt refresh token",
-                    )
+                .map_err(|e| match e.kind() {
+                    ErrorKind::ExpiredSignature => ApiError::new(
+                        StatusCode::UNAUTHORIZED,
+                        "Your jwt refresh token is expired",
+                    ),
+                    _ => ApiError::new(StatusCode::BAD_REQUEST, "Invalid jwt refresh token"),
                 }),
         }
     }

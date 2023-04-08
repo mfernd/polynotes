@@ -2,6 +2,7 @@ mod handlers;
 pub mod models;
 
 use crate::middlewares::auth_guard;
+use crate::users::handlers::find_recent_pages::find_recent_pages_handler;
 use crate::users::handlers::{
     find_all_users::find_all_users_handler, find_user_by_email::find_user_by_email_handler,
     find_user_by_uuid::find_user_by_uuid_handler, find_user_pages::find_user_pages_handler,
@@ -17,7 +18,8 @@ use mongodb::{Client, IndexModel};
 
 pub fn routes(state: &AppState) -> Router<AppState> {
     Router::new()
-        .route("/pages", get(find_user_pages_handler))
+        .route("/me/pages", get(find_user_pages_handler))
+        .route("/me/pages/recent", get(find_recent_pages_handler))
         .route("/", get(find_all_users_handler))
         .route("/uuid/:user_uuid", get(find_user_by_uuid_handler))
         .route("/email/:user_email", get(find_user_by_email_handler))
