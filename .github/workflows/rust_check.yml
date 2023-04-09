@@ -15,9 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-      with:
-        path: backend
     - name: Check code & tests
-      run: cargo check -v --workspace --tests
+      run: cd backend && cargo check -v --workspace --tests
     - name: Run tests
-      run: cargo test -v --workspace
+      run: cd backend && cargo test -v --workspace
