@@ -6,6 +6,7 @@ use axum::extract::State;
 use axum::{http::StatusCode, Json};
 use axum_extra::extract::WithRejection;
 use dotenvy::var;
+use log::info;
 use mongodb::error::{ErrorKind, WriteFailure};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -87,6 +88,10 @@ pub async fn register_handler(
             ),
         )
         .await;
+
+    let user_email = &new_user.email;
+    let user_uuid = new_user.uuid.to_string();
+    info!("User \"{user_email}\" [{user_uuid}] registered in");
 
     Ok((
         StatusCode::CREATED,

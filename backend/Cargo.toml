@@ -23,8 +23,10 @@ dotenvy = "0.15.6"
 futures = { version = "0.3.27", default-features = false, features = ["async-await"] }
 jsonwebtoken = "8.3.0"
 lettre = { version = "0.10.3", features = ["tokio1", "tokio1-native-tls"] }
+log = "0.4.17"
 mongodb = "2.4.0"
 once_cell = "1.17.1"
+pretty_env_logger = "0.4.0"
 rand = { version = "0.8.5", features = ["small_rng"] }
 rust-argon2 = "1.0.0"
 serde = { version = "1.0", features = ["derive"] }

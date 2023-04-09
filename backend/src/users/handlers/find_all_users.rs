@@ -7,6 +7,7 @@ use axum::Json;
 use futures::TryStreamExt;
 use mongodb::options::FindOptions;
 
+#[allow(dead_code)]
 pub async fn find_all_users_handler(
     State(state): State<AppState>,
 ) -> Result<Json<Vec<AbstractedUser>>, ApiError> {

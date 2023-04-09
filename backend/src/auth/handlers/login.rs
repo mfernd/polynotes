@@ -9,6 +9,7 @@ use axum::http::StatusCode;
 use axum::Json;
 use axum_extra::extract::WithRejection;
 use bson::doc;
+use log::info;
 use serde::{Deserialize, Serialize};
 use tower_cookies::Cookies;
 use validator::Validate;
@@ -60,6 +61,10 @@ pub async fn login_handler(
 
     // Send JWT through cookies
     claims::refresh_user_cookies(&cookies, user.uuid.to_string())?;
+
+    let user_email = &user.email;
+    let user_uuid = user.uuid.to_string();
+    info!("User \"{user_email}\" [{user_uuid}] logged in");
 
     let response = LoginResponse {
         user: user.get_abstracted(),
