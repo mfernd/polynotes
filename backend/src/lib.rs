@@ -29,7 +29,7 @@ pub struct AppState {
 
 pub async fn create_server() {
     pretty_env_logger::init_timed();
-    let port = var("PORT").unwrap_or("3000".to_owned());
+    let port = var("APP_PORT").unwrap_or("3000".to_owned());
 
     let state = AppState {
         database: MongoDatabase::new().await,
@@ -56,7 +56,7 @@ pub async fn create_server() {
         .layer(CorsLayer::very_permissive())
         .layer(CompressionLayer::new());
 
-    let server_addr = format!("127.0.0.1:{port}");
+    let server_addr = format!("0.0.0.0:{port}");
     info!("Server starting on {server_addr}");
 
     axum::Server::bind(&server_addr.parse().unwrap())

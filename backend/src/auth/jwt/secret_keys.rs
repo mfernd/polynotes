@@ -4,14 +4,14 @@ use once_cell::sync::Lazy;
 
 /// Lazily set this const with decoding/encoding JWT Keys
 pub static JWT_ACCESS_KEYS: Lazy<JwtKeys> = Lazy::new(|| {
-    let encoding_secret =
-        var("JWT_ACCESS_SECRET").expect("JWT_ACCESS_SECRET must be provided in the .env file");
+    let encoding_secret = var("JWT_ACCESS_SECRET")
+        .expect("JWT_ACCESS_SECRET must be provided in the .env.locale file");
     JwtKeys::new(encoding_secret.as_bytes())
 });
 
 pub static JWT_REFRESH_KEYS: Lazy<JwtKeys> = Lazy::new(|| {
-    let encoding_secret =
-        var("JWT_REFRESH_SECRET").expect("JWT_REFRESH_SECRET must be provided in the .env file");
+    let encoding_secret = var("JWT_REFRESH_SECRET")
+        .expect("JWT_REFRESH_SECRET must be provided in the .env.locale file");
     JwtKeys::new(encoding_secret.as_bytes())
 });
 
