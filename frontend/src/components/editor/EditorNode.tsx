@@ -12,6 +12,7 @@ import { useCommandManager } from '@hooks/useCommandManager';
 type EditorNodeProps = {
   block: Node;
   isLastNode?: boolean;
+  onChange?: () => void;
 };
 
 export const EditorNode = (props: EditorNodeProps) => {
@@ -55,7 +56,9 @@ export const EditorNode = (props: EditorNodeProps) => {
       if (e.key === 'Enter') commandManager.chooseCommand(props.block.uuid);
     }
 
-    dispatch(updateData(editor?.getHTML() ?? ''));
+    const htmlData = editor?.getHTML();
+    if (htmlData) dispatch(updateData(htmlData));
+    if (props.onChange) props.onChange();
   }, [commandManager]);
 
   return (

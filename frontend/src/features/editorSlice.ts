@@ -25,6 +25,11 @@ export const editorSlice = createSlice({
   name: 'editorNode',
   initialState,
   reducers: {
+    initEditor: (state, initState: PayloadAction<NodeState>) => {
+      state.focusedNode = initState.payload.focusedNode;
+      state.cursorIndex = initState.payload.cursorIndex;
+      state.nodes = initState.payload.nodes;
+    },
     updateFocus: (state, nodeId: PayloadAction<string>) => {
       state.focusedNode = nodeId.payload;
     },
@@ -77,5 +82,5 @@ export const editorSlice = createSlice({
   },
 });
 
-export const { updateFocus, updateData, onArrow, addBottomNode, deleteNode, changeNodeType } = editorSlice.actions;
+export const { initEditor, updateFocus, updateData, onArrow, addBottomNode, deleteNode, changeNodeType } = editorSlice.actions;
 export default editorSlice.reducer;

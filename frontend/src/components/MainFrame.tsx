@@ -91,6 +91,7 @@ const mainCss = css`
 
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const headerNavbarCss = css`

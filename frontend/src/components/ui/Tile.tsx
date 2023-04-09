@@ -20,9 +20,10 @@ export const Tile = (props: TileProps) => {
             : (
               <div>
                 <strong>{props.title}</strong>
-                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusantium adipisci amet assumenda corporis, doloremque dolores eos
+                <small>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusantium adipisci amet assumenda corporis, doloremque dolores eos
                   est et harum hic illo illum inventore iste!
-                </div>
+                </small>
               </div>)}
         </div>
       </div>
@@ -93,7 +94,7 @@ const imgContainerCss = css`
     display: flex;
     flex-direction: column;
     gap: 5px;
-    
+
     strong {
       font-size: 1rem;
     }
