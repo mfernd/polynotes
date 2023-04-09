@@ -11,6 +11,7 @@ RUN yarn install --frozen-lockfile
 # copy rest of the files
 COPY . .
 
+ARG VITE_BASE_API
 RUN yarn build
 
 # Stage 2: Serve React app with Nginx

@@ -7,10 +7,11 @@ COPY . .
 RUN cargo build --release
 
 # Stage 2: Start app
-FROM scratch
+FROM debian:bullseye-slim
 
 WORKDIR /api
 COPY --from=builder /api/target/release/polynotes-backend /api/polynotes-api
+RUN ls /api
 
 ENV RUST_LOG="polynotes_backend=trace"
-CMD ["/api/polynotes-api"]
+CMD ["./polynotes-api"]

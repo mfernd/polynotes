@@ -1,0 +1,36 @@
+services:
+  backend:
+    image: polynotes-backend
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+    environment:
+      APP_PORT: "${APP_PORT}"
+      FRONTEND_HOST: "${FRONTEND_HOST}"
+      MONGO_URI: "${MONGO_URI}"
+      JWT_ACCESS_SECRET: "${JWT_ACCESS_SECRET}"
+      JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET}"
+      PASSWORD_SALT: "${PASSWORD_SALT}"
+      SMTP_HOST: "${SMTP_HOST}"
+      SMTP_USERNAME: "${SMTP_USERNAME}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"
+      DEFAULT_SENDER: "${DEFAULT_SENDER}"
+    ports:
+      - "${HOST_BACKEND_PORT}:${APP_PORT}"
+    networks:
+      - polynotes-network
+
+  frontend:
+    image: polynotes-frontend
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+      args:
+        VITE_BASE_API: "${BACKEND_BASE_API}"
+    ports:
+      - "${HOST_FRONTEND_PORT}:80"
+    networks:
+      - polynotes-network
+
+networks:
+  polynotes-network:
