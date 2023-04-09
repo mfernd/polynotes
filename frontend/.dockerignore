@@ -1,0 +1,12 @@
+.idea/
+*.iml
+
+node_modules/
+Dockerfile
+.dockerignore
+
+.output/
+dist/
+
+.env.dist
+.env
