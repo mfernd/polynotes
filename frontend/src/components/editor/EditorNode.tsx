@@ -84,9 +84,9 @@ export const EditorNode = (props: EditorNodeProps) => {
 
 const nodeContainerCss = css`
   position: relative;
-  background-color: rgba(0 0 0 / 2%);
-  border-bottom: 1px solid #505050;
-  border-radius: .5rem;
+  //background-color: rgba(0 0 0 / 2%);
+  //border-bottom: 1px solid #505050;
+  //border-radius: .5rem;
 
   .ProseMirror {
     padding: 3px 7px;

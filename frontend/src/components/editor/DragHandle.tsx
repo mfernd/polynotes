@@ -38,7 +38,7 @@ const showDragHandle = css`
 
 const dragHandleCss = css`
   position: absolute;
-  left: -4px;
+  left: 0;
   top: 50%;
   transform: translateX(-100%) translateY(-50%);
   display: flex;
