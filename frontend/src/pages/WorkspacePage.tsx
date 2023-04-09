@@ -93,7 +93,7 @@ const recentTilesSectionCss = css`
 
   & > h2 {
     cursor: default;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
   }
