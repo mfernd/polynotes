@@ -57,10 +57,16 @@ export const editorSlice = createSlice({
 
       const uuid = uuidv4();
       state.focusedNode = uuid;
+      let nextNode: Node = { uuid, type: 'text', data: '' };
       switch (state.nodes[index].type) {
-        default: // text by default for now
-          state.nodes.splice(index + 1, 0, { uuid, type: 'text', data: '' });
+        case 'bulleted-list':
+          nextNode = { uuid, type: 'bulleted-list', data: '' };
+          break;
+        case 'numbered-list':
+          nextNode = { uuid, type: 'numbered-list', data: '' };
+          break;
       }
+      state.nodes.splice(index + 1, 0, nextNode);
     },
     deleteNode: (state, nodeId: PayloadAction<string>) => {
       if (state.nodes.length === 1) return;

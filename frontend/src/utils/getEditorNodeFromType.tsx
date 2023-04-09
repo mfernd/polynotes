@@ -3,6 +3,8 @@ import { Editor } from '@tiptap/react';
 import { DefaultBlockProps, Node } from '@/typings/editor.type';
 import { TextBlock } from '@components/editor/blocks/TextBlock';
 import { HeadingBlock } from '@components/editor/blocks/HeadingBlock';
+import { BulletList } from '@components/editor/blocks/BulletList';
+import { NumberList } from '@components/editor/blocks/NumberList';
 
 export const getEditorNodeFromType = (
   node: Node,
@@ -24,6 +26,10 @@ export const getEditorNodeFromType = (
       return <HeadingBlock {...defaultProps} level={2}/>;
     case 'header-3':
       return <HeadingBlock {...defaultProps} level={3}/>;
+    case 'bulleted-list':
+      return <BulletList {...defaultProps} showPlaceholder={isLastNode}/>;
+    case 'numbered-list':
+      return <NumberList {...defaultProps} showPlaceholder={isLastNode}/>;
     default:
       return <TextBlock {...defaultProps} showPlaceholder={isLastNode}/>;
   }

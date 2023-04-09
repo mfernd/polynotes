@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { Document } from '@tiptap/extension-document';
 import { Text } from '@tiptap/extension-text';
@@ -6,18 +8,14 @@ import { Bold } from '@tiptap/extension-bold';
 import { Italic } from '@tiptap/extension-italic';
 import { Strike } from '@tiptap/extension-strike';
 import { Code } from '@tiptap/extension-code';
-import { Dropcursor } from '@tiptap/extension-dropcursor';
-import { Gapcursor } from '@tiptap/extension-gapcursor';
 import { History } from '@tiptap/extension-history';
-import { updateFocus } from '@/features/editorSlice';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
-import { css } from '@emotion/react';
+import { updateFocus } from '@/features/editorSlice';
 import { DefaultBlockProps } from '@/typings/editor.type';
 import { shouldShowPlaceholder } from '@/utils/shouldShowPlaceholder';
+import { css } from '@emotion/react';
 
-export const TextBlock = (props: DefaultBlockProps) => {
+export const BulletList = (props: DefaultBlockProps) => {
   const editorState = useSelector((state: RootState) => state.editor);
   const dispatch = useDispatch();
 
@@ -36,8 +34,6 @@ export const TextBlock = (props: DefaultBlockProps) => {
           spellcheck: false,
         },
       }),
-      Dropcursor,
-      Gapcursor,
       History,
     ],
     onFocus: () => dispatch(updateFocus(props.node.uuid)),
@@ -52,7 +48,7 @@ export const TextBlock = (props: DefaultBlockProps) => {
 
   return (
     <div css={css`
-      ${textBlockCss};
+      ${bulletListBlockCss};
       ${shouldShowPlaceholder(props.showPlaceholder, editor?.isFocused, editor?.isEmpty)
               ? placeholderCss
               : undefined};
@@ -64,23 +60,22 @@ export const TextBlock = (props: DefaultBlockProps) => {
   );
 };
 
-const textBlockCss = css`
-  code {
-    font-family: Consolas, monospace;
-    color: #fe0096;
-    font-size: 85%;
-
-    background: rgba(135, 131, 120, 0.15);
-    border-radius: 3px;
-    padding: 0.2rem 0.4rem;
+const bulletListBlockCss = css`
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  
+  &::before {
+    content: "•";
+    font-size: 30px;
+    font-weight: bolder;
+    height: 15px;
+    transform: translateY(-13px);
   }
-
-  .ProseMirror {
-    padding: 3px 7px;
-
-    &:focus {
-      outline: none;
-    }
+  
+  & > div {
+    flex: 1;
+    display: inline-block;
   }
 `;
 
