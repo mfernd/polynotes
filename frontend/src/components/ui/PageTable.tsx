@@ -61,7 +61,7 @@ export const PageTable = () => {
 };
 
 const tableCss = css`
-  td:nth-child(1) {
+  td:nth-of-type(1) {
     max-width: 100px;
   }
 `;
