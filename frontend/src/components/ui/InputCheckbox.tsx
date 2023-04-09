@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { FieldValues, RegisterOptions, UseFormRegister } from 'react-hook-form';
 
 type InputCheckboxProps = {
-  labelTitle: string;
+  labelTitle: JSX.Element | string;
   tabIndex?: number;
   registerHandle: UseFormRegister<FieldValues>;
   registerParams: {

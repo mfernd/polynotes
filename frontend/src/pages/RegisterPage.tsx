@@ -1,7 +1,7 @@
 import { useTitle } from 'react-use';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { Input, useToasts } from '@geist-ui/core';
+import { Input, Link, useToasts } from '@geist-ui/core';
 import { css } from '@emotion/react';
 import { appName } from '@/main';
 import { FetchError, useApi } from '@hooks/useApi';
@@ -64,7 +64,7 @@ export const RegisterPage = () => {
                              registerHandle={register}
                              registerParams={{ name: 'age' }}/>
 
-              <InputCheckbox labelTitle={'Accepter les CGUs'}
+              <InputCheckbox labelTitle={<span>J'accepte les <Link href={'/cgu'} target={'_blank'} className={'nav-link'} icon>CGUs</Link></span>}
                              tabIndex={5}
                              registerHandle={register}
                              registerParams={{ name: 'cgu' }}/>

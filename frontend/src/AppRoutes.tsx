@@ -21,6 +21,10 @@ export const AppRoutes = () => {
       element: <LandingPage/>,
     },
     {
+      path: '/cgu',
+      element: <CguPage/>,
+    },
+    {
       path: '/verify-email',
       element: <BeforeVerificationPage/>,
     },
