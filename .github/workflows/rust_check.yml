@@ -1,0 +1,21 @@
+name: Rust check
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Check code & tests
+      run: cd backend && cargo check -v --workspace --tests
+    - name: Run tests
+      run: cd backend && cargo test -v --workspace
