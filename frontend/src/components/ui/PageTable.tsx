@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaRegFile, FaTrash } from 'react-icons/all';
+import { AiFillFile, FaTrash } from 'react-icons/all';
 import { Button as GeistButton, Table, Text, useToasts } from '@geist-ui/core';
 import { css } from '@emotion/react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,8 +31,8 @@ export const PageTable = () => {
       return {
         uuid: page.uuid,
         title: (
-          <NavLink to={`/pages/${page.uuid}`} css={tableLinkCss}>
-            <FaRegFile height={'21px'}/><span>{page.title === '' ? 'Sans titre' : page.title}</span>
+          <NavLink to={`/pages/${page.uuid}`} css={tableLinkCss} title={page.title}>
+            <AiFillFile size={'18px'}/><span>{page.title === '' ? 'Sans titre' : page.title}</span>
           </NavLink>),
         author: <div>moi</div>,
         createdAt: <Text type={'secondary'}>{dateFormat.format(updatedAt)}</Text>,
@@ -50,7 +50,7 @@ export const PageTable = () => {
   }, [userPages]);
 
   return (
-    <Table data={tableData}>
+    <Table data={tableData} css={tableCss}>
       <Table.Column prop={'title'} label={'Titre'}/>
       <Table.Column prop={'author'} label={'Auteur'}/>
       <Table.Column prop={'updatedAt'} label={'Dernière modification'}/>
@@ -60,13 +60,26 @@ export const PageTable = () => {
   );
 };
 
+const tableCss = css`
+  td:nth-child(1) {
+    max-width: 100px;
+  }
+`;
+
 const tableLinkCss = css`
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #202124;
+  align-items: start;
+  gap: 5px;
+  color: rgb(60, 64, 67);
+  max-width: 100%;
 
   &:hover {
     color: #fe0096;
+  }
+  
+  span {
+    max-width: 75%;
+    overflow-x: clip;
+    text-overflow: ellipsis;
   }
 `;

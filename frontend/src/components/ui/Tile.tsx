@@ -97,6 +97,8 @@ const imgContainerCss = css`
 
     strong {
       font-size: 1rem;
+      overflow-x: clip;
+      text-overflow: ellipsis;
     }
   }
 `;
