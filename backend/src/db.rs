@@ -12,7 +12,7 @@ static DB_NAME: &str = "polynotes-db";
 impl MongoDatabase {
     pub async fn new() -> Self {
         let mongo_uri =
-            var("MONGO_URI").expect("MONGO_URI must be provided in the .env.locale file");
+            var("MONGO_URI").expect("MONGO_URI must be provided in the .env file");
 
         let client_options = ClientOptions::parse(mongo_uri.as_str())
             .await
