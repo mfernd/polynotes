@@ -5,6 +5,7 @@ import { TextBlock } from '@components/editor/blocks/TextBlock';
 import { HeadingBlock } from '@components/editor/blocks/HeadingBlock';
 import { BulletList } from '@components/editor/blocks/BulletList';
 import { NumberList } from '@components/editor/blocks/NumberList';
+import { ImageBlock } from '@components/editor/blocks/ImageBlock';
 
 export const getEditorNodeFromType = (
   node: Node,
@@ -17,6 +18,7 @@ export const getEditorNodeFromType = (
     onBeforeInput: beforeInput,
     onAfterInput: afterInput,
   };
+
   switch (node.type) {
     case 'text':
       return <TextBlock {...defaultProps} showPlaceholder={isLastNode}/>;
@@ -30,6 +32,8 @@ export const getEditorNodeFromType = (
       return <BulletList {...defaultProps} showPlaceholder={isLastNode}/>;
     case 'numbered-list':
       return <NumberList {...defaultProps} showPlaceholder={isLastNode}/>;
+    case 'image':
+      return <ImageBlock {...defaultProps}/>
     default:
       return <TextBlock {...defaultProps} showPlaceholder={isLastNode}/>;
   }

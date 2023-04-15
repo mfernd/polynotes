@@ -74,14 +74,6 @@ const textBlockCss = css`
     border-radius: 3px;
     padding: 0.2rem 0.4rem;
   }
-
-  .ProseMirror {
-    padding: 3px 7px;
-
-    &:focus {
-      outline: none;
-    }
-  }
 `;
 
 const placeholderCss = css`

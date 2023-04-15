@@ -63,7 +63,7 @@ export const NumberList = (props: DefaultBlockProps) => {
 const numberListBlockCss = css`
   display: flex;
   align-items: center;
-  padding-left: 15px;
+  margin-left: 15px;
   
   &::before {
     content: "1.";

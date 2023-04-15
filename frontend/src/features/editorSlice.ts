@@ -13,11 +13,11 @@ const initialState: NodeState = {
   focusedNode: firstUuid,
   cursorIndex: 0,
   nodes: [
-    { uuid: firstUuid, type: 'header-1', data: '' },
-    { uuid: uuidv4(), type: 'header-2', data: '' },
-    { uuid: uuidv4(), type: 'header-3', data: '' },
-    { uuid: uuidv4(), type: 'text', data: '' },
-    { uuid: uuidv4(), type: 'text', data: '' },
+    { uuid: firstUuid, type: 'header-1', data: '', settingsOpen: false },
+    { uuid: uuidv4(), type: 'header-2', data: '', settingsOpen: false },
+    { uuid: uuidv4(), type: 'header-3', data: '', settingsOpen: false },
+    { uuid: uuidv4(), type: 'text', data: '', settingsOpen: false },
+    { uuid: uuidv4(), type: 'text', data: '', settingsOpen: false },
   ],
 };
 
@@ -39,6 +39,12 @@ export const editorSlice = createSlice({
 
       state.nodes[index].data = newData.payload;
     },
+    switchSettings: (state, action: PayloadAction<{ nodeId: string, isOpen: boolean }>) => {
+      const index = state.nodes.findIndex((node) => node.uuid === action.payload.nodeId);
+      if (index === -1) return;
+
+      state.nodes[index].settingsOpen = action.payload.isOpen;
+    },
     onArrow: (state, action: PayloadAction<{ orientation: 'up' | 'down', cursorIndex?: number | 'start' | 'end' }>) => {
       const index = state.nodes.findIndex((node) => node.uuid === state.focusedNode);
       if (index === -1) return;
@@ -57,13 +63,13 @@ export const editorSlice = createSlice({
 
       const uuid = uuidv4();
       state.focusedNode = uuid;
-      let nextNode: Node = { uuid, type: 'text', data: '' };
+      let nextNode: Node = { uuid, type: 'text', data: '', settingsOpen: false };
       switch (state.nodes[index].type) {
         case 'bulleted-list':
-          nextNode = { uuid, type: 'bulleted-list', data: '' };
+          nextNode = { uuid, type: 'bulleted-list', data: '', settingsOpen: false };
           break;
         case 'numbered-list':
-          nextNode = { uuid, type: 'numbered-list', data: '' };
+          nextNode = { uuid, type: 'numbered-list', data: '', settingsOpen: false };
           break;
       }
       state.nodes.splice(index + 1, 0, nextNode);
@@ -83,10 +89,14 @@ export const editorSlice = createSlice({
       const index = state.nodes.findIndex((node) => node.uuid === action.payload.nodeId);
       if (index === -1) return;
 
+      if ('image' === action.payload.newType) {
+        state.nodes[index].data = '';
+        state.nodes[index].settingsOpen = true;
+      }
       state.nodes[index].type = action.payload.newType;
     },
   },
 });
 
-export const { initEditor, updateFocus, updateData, onArrow, addBottomNode, deleteNode, changeNodeType } = editorSlice.actions;
+export const { initEditor, updateFocus, updateData, switchSettings, onArrow, addBottomNode, deleteNode, changeNodeType } = editorSlice.actions;
 export default editorSlice.reducer;

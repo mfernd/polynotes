@@ -25,8 +25,8 @@ export const PageTable = () => {
   const tableData = useMemo(() => {
     return userPages.map((page) => {
       const dateFormat = new Intl.DateTimeFormat('fr', { dateStyle: 'medium', timeStyle: 'medium' });
-      const updatedAt = new Date(page.updatedAt * 1000);
-      const createdAt = new Date(page.createdAt * 1000);
+        const createdAt = new Date(page.createdAt * 1000);
+        const updatedAt = new Date(page.updatedAt * 1000);
 
       return {
         uuid: page.uuid,
@@ -35,8 +35,8 @@ export const PageTable = () => {
             <AiFillFile size={'18px'}/><span>{page.title === '' ? 'Sans titre' : page.title}</span>
           </NavLink>),
         author: <div>moi</div>,
-        createdAt: <Text type={'secondary'}>{dateFormat.format(updatedAt)}</Text>,
-        updatedAt: <Text type={'secondary'}>{dateFormat.format(createdAt)}</Text>,
+        createdAt: <Text type={'secondary'}>{dateFormat.format(createdAt)}</Text>,
+        updatedAt: <Text type={'secondary'}>{dateFormat.format(updatedAt)}</Text>,
         actions: (
           <GeistButton type={'error'}
                        title={'Supprimer'}

@@ -86,12 +86,7 @@ const h3Css = css`
 
 const headingBlockCss = css`;
   position: relative;
-
-  h1, h2, h3 {
-    margin: 0;
-    padding-top: 1rem;
-    padding-bottom: 0.5rem;
-  }
+  margin: 1rem 0 0.5rem;
 
   h1 {
     ${h1Css};
@@ -119,8 +114,6 @@ const placeholderCss = (level: number) => css`
   [contenteditable]:before {
     content: 'Titre ${level}';
     color: rgba(38, 37, 34, 0.4);
-    padding-top: 1rem;
-    padding-bottom: 0.5rem;
 
     ${level === 1 ? h1Css : undefined};
     ${level === 2 ? h2Css : undefined};

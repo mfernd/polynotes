@@ -1,8 +1,7 @@
-import { RxDragHandleDots2, RxPlus } from 'react-icons/all';
-import { css } from '@emotion/react';
-import { IconContext } from 'react-icons';
-import { addBottomNode } from '@/features/editorSlice';
+import { FiTrash2, RxDragHandleDots2, RxPlus } from 'react-icons/all';
 import { useDispatch } from 'react-redux';
+import { css } from '@emotion/react';
+import { addBottomNode, deleteNode } from '@/features/editorSlice';
 
 type DragHandleProps = {
   nodeId: string;
@@ -18,14 +17,13 @@ export const DragHandle = (props: DragHandleProps) => {
       ${props.show ? showDragHandle : undefined};
     `}>
       <div css={squareIcon} onClick={() => dispatch(addBottomNode(props.nodeId))}>
-        <IconContext.Provider value={{ className: 'plus' }}>
-          <RxPlus/>
-        </IconContext.Provider>
+        <RxPlus size={'22px'}/>
+      </div>
+      <div css={trashIcon} onClick={() => dispatch(deleteNode(props.nodeId))}>
+        <FiTrash2 size={'18px'}/>
       </div>
       <div css={dragIcon}>
-        <IconContext.Provider value={{ className: 'handle' }}>
-          <RxDragHandleDots2/>
-        </IconContext.Provider>
+        <RxDragHandleDots2 size={'22px'}/>
       </div>
     </div>
   );
@@ -38,7 +36,7 @@ const showDragHandle = css`
 
 const dragHandleCss = css`
   position: absolute;
-  left: 0;
+  left: -10px;
   top: 50%;
   transform: translateX(-100%) translateY(-50%);
   display: flex;
@@ -69,11 +67,12 @@ const squareIcon = css`
   cursor: pointer;
   width: 24px;
   height: 24px;
+`;
 
-  .plus {
-    width: 22px;
-    height: 22px;
-  }
+const trashIcon = css`
+  ${buttonCss};
+  cursor: pointer;
+  padding: 0 2px;
 `;
 
 const dragIcon = css`
@@ -81,9 +80,4 @@ const dragIcon = css`
   cursor: grab;
   width: 22px;
   height: 24px;
-
-  .handle {
-    width: 22px;
-    height: auto;
-  }
 `;

@@ -87,12 +87,9 @@ const nodeContainerCss = css`
   //background-color: rgba(0 0 0 / 2%);
   //border-bottom: 1px solid #505050;
   //border-radius: .5rem;
+  margin: 3px 7px;
 
-  .ProseMirror {
-    padding: 3px 7px;
-
-    &:focus {
-      outline: none;
-    }
+  .ProseMirror:focus {
+    outline: none;
   }
 `;

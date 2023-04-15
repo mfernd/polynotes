@@ -63,7 +63,7 @@ export const BulletList = (props: DefaultBlockProps) => {
 const bulletListBlockCss = css`
   display: flex;
   align-items: center;
-  padding-left: 15px;
+  margin-left: 15px;
   
   &::before {
     content: "•";
