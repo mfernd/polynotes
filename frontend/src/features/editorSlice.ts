@@ -33,11 +33,11 @@ export const editorSlice = createSlice({
     updateFocus: (state, nodeId: PayloadAction<string>) => {
       state.focusedNode = nodeId.payload;
     },
-    updateData: (state, newData: PayloadAction<string>) => {
-      const index = state.nodes.findIndex((node) => node.uuid === state.focusedNode);
+    updateData: (state, action: PayloadAction<{ nodeId: string, newData: string }>) => {
+      const index = state.nodes.findIndex((node) => node.uuid === action.payload.nodeId);
       if (index === -1) return;
 
-      state.nodes[index].data = newData.payload;
+      state.nodes[index].data = action.payload.newData;
     },
     switchSettings: (state, action: PayloadAction<{ nodeId: string, isOpen: boolean }>) => {
       const index = state.nodes.findIndex((node) => node.uuid === action.payload.nodeId);
@@ -45,8 +45,8 @@ export const editorSlice = createSlice({
 
       state.nodes[index].settingsOpen = action.payload.isOpen;
     },
-    onArrow: (state, action: PayloadAction<{ orientation: 'up' | 'down', cursorIndex?: number | 'start' | 'end' }>) => {
-      const index = state.nodes.findIndex((node) => node.uuid === state.focusedNode);
+    onArrow: (state, action: PayloadAction<{ nodeId: string, orientation: 'up' | 'down', cursorIndex?: number | 'start' | 'end' }>) => {
+      const index = state.nodes.findIndex((node) => node.uuid === action.payload.nodeId);
       if (index === -1) return;
 
       if (action.payload.orientation === 'up' && index > 0)

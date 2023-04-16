@@ -1,8 +1,7 @@
 import { DefaultBlockProps } from '@/typings/editor.type';
 import { css } from '@emotion/react';
-import { Button } from '@components/ui/Button';
 import { useDispatch } from 'react-redux';
-import { ChangeEvent, KeyboardEventHandler, useCallback, useState } from 'react';
+import { KeyboardEventHandler, useCallback, useState } from 'react';
 import { switchSettings, updateData } from '@/features/editorSlice';
 
 export const ImageBlock = (props: DefaultBlockProps) => {
@@ -11,13 +10,12 @@ export const ImageBlock = (props: DefaultBlockProps) => {
   const [imgState, setImageState] = useState<string>(props.node.data);
 
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback((e) => {
-    if ('Enter' !== e.key) return;
-    onButtonClick();
-  }, []);
+    if ('Enter' === e.key) onButtonClick();
+  }, [imgState]);
 
   const onButtonClick = useCallback(() => {
     if (imgState !== props.node.data)
-      dispatch(updateData(imgState));
+      dispatch(updateData({ nodeId: props.node.uuid, newData: imgState }));
     dispatch(switchSettings({nodeId: props.node.uuid, isOpen: false}));
   }, [imgState]);
 
