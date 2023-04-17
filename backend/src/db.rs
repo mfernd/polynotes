@@ -1,4 +1,4 @@
-use crate::{pages, users};
+use crate::{pages, times, users};
 use dotenvy::var;
 use mongodb::{options::ClientOptions, Client, Collection};
 
@@ -11,8 +11,7 @@ static DB_NAME: &str = "polynotes-db";
 
 impl MongoDatabase {
     pub async fn new() -> Self {
-        let mongo_uri =
-            var("MONGO_URI").expect("MONGO_URI must be provided in the .env file");
+        let mongo_uri = var("MONGO_URI").expect("MONGO_URI must be provided in the .env file");
 
         let client_options = ClientOptions::parse(mongo_uri.as_str())
             .await
@@ -24,8 +23,12 @@ impl MongoDatabase {
         );
 
         let client = Client::with_options(client_options).expect(&error_message);
-        users::create_users_indexes(&client, DB_NAME).await;
-        pages::create_pages_indexes(&client, DB_NAME).await;
+
+        tokio::join!(
+            users::create_users_indexes(&client, DB_NAME),
+            pages::create_pages_indexes(&client, DB_NAME),
+            times::create_times_indexes(&client, DB_NAME),
+        );
 
         // ping database
         // let ping_status = client
