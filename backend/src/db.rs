@@ -1,4 +1,4 @@
-use crate::{pages, times, users};
+use crate::{pages, users};
 use dotenvy::var;
 use mongodb::{options::ClientOptions, Client, Collection};
 
@@ -27,7 +27,6 @@ impl MongoDatabase {
         tokio::join!(
             users::create_users_indexes(&client, DB_NAME),
             pages::create_pages_indexes(&client, DB_NAME),
-            times::create_times_indexes(&client, DB_NAME),
         );
 
         // ping database

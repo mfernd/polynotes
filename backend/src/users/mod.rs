@@ -3,6 +3,7 @@ pub mod models;
 
 use crate::middlewares::auth_guard;
 use crate::users::handlers::find_recent_pages::find_recent_pages_handler;
+use crate::users::handlers::find_user_times::find_user_times_handler;
 use crate::users::handlers::{
     find_user_by_email::find_user_by_email_handler, find_user_by_uuid::find_user_by_uuid_handler,
     find_user_pages::find_user_pages_handler,
@@ -17,12 +18,30 @@ use mongodb::options::IndexOptions;
 use mongodb::{Client, IndexModel};
 
 pub fn routes(state: &AppState) -> Router<AppState> {
-    Router::new()
-        .route("/me/pages", get(find_user_pages_handler))
-        .route("/me/pages/recent", get(find_recent_pages_handler))
+    let users_routes = Router::new()
         // .route("/", get(find_all_users_handler))
         .route("/uuid/:user_uuid", get(find_user_by_uuid_handler))
-        .route("/email/:user_email", get(find_user_by_email_handler))
+        .route("/email/:user_email", get(find_user_by_email_handler));
+
+    let pages_routes = Router::new()
+        .route("/me/pages", get(find_user_pages_handler))
+        .route("/me/pages/recent", get(find_recent_pages_handler));
+
+    let time_tracker_routes = Router::new()
+        .route(
+            "/:user_uuid/times/:date_from/:date_to",
+            get(find_user_times_handler),
+        )
+        // .route("/:user_uuid/times/:time_uuid", get()) // TODO
+        // .route("/:user_uuid/times/:time_uuid", put()) // TODO
+        // .route("/:user_uuid/projects", get())        // TODO
+        // .route("/:user_uuid/tags", get())            // TODO
+    ;
+
+    Router::new()
+        .merge(users_routes)
+        .merge(pages_routes)
+        .merge(time_tracker_routes)
         .route_layer(from_fn_with_state(
             state.clone(),
             auth_guard::access_token_extractor,

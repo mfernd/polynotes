@@ -6,7 +6,6 @@ mod db;
 mod mailer;
 mod middlewares;
 mod pages;
-mod times;
 mod users;
 
 use crate::db::MongoDatabase;
@@ -49,8 +48,7 @@ pub async fn create_server() {
         .merge(secured_routes)
         .nest("/auth", auth::routes(&state))
         .nest("/users", users::routes(&state))
-        .nest("/pages", pages::routes(&state))
-        .nest("/times", times::routes(&state));
+        .nest("/pages", pages::routes(&state));
 
     let app = Router::new()
         .nest("/api/v1", api_routes)

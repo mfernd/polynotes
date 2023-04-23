@@ -1,4 +1,5 @@
 use crate::users::models::abstracted_user::AbstractedUser;
+use crate::users::models::time_tracker::TimeTracker;
 use crate::users::models::user_role::UserRole;
 use bson::oid::ObjectId;
 use rand::distributions::Alphanumeric;
@@ -19,6 +20,7 @@ pub struct User {
     pub role: UserRole,
     pub is_verified: bool,
     pub nonce: Option<String>,
+    pub time_tracker: TimeTracker,
 }
 
 impl User {
@@ -38,6 +40,7 @@ impl User {
             role: UserRole::User,
             is_verified: false,
             nonce: Some(nonce),
+            time_tracker: TimeTracker::new(),
         }
     }
 
