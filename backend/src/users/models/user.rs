@@ -56,4 +56,8 @@ impl User {
     pub fn check_is_verified(&self) -> bool {
         self.is_verified && self.nonce.is_none()
     }
+
+    pub fn is_admin(&self) -> bool {
+        self.role.eq(&UserRole::Admin)
+    }
 }

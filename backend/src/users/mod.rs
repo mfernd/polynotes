@@ -2,16 +2,15 @@ mod handlers;
 pub mod models;
 
 use crate::middlewares::auth_guard;
-use crate::users::handlers::find_recent_pages::find_recent_pages_handler;
-use crate::users::handlers::find_user_times::find_user_times_handler;
 use crate::users::handlers::{
-    find_user_by_email::find_user_by_email_handler, find_user_by_uuid::find_user_by_uuid_handler,
-    find_user_pages::find_user_pages_handler,
+    find_recent_pages::find_recent_pages_handler, find_user_by_email::find_user_by_email_handler,
+    find_user_by_uuid::find_user_by_uuid_handler, find_user_pages::find_user_pages_handler,
+    find_user_times::find_user_times_handler, insert_or_update_time::insert_or_update_time_handler,
 };
 use crate::users::models::user::User;
 use crate::AppState;
 use axum::middleware::from_fn_with_state;
-use axum::routing::get;
+use axum::routing::{get, put};
 use axum::Router;
 use bson::doc;
 use mongodb::options::IndexOptions;
@@ -33,7 +32,7 @@ pub fn routes(state: &AppState) -> Router<AppState> {
             get(find_user_times_handler),
         )
         // .route("/:user_uuid/times/:time_uuid", get()) // TODO
-        // .route("/:user_uuid/times/:time_uuid", put()) // TODO
+        .route("/:user_uuid/times", put(insert_or_update_time_handler)) // TODO
         // .route("/:user_uuid/projects", get())        // TODO
         // .route("/:user_uuid/tags", get())            // TODO
     ;
@@ -76,4 +75,18 @@ pub async fn create_users_indexes(client: &Client, db_name: &str) {
         .create_index(email_index, None)
         .await
         .expect("error creating the user (email) index");
+
+    // Time tracker time unique index
+    let email_options = IndexOptions::builder().unique(true).build();
+    let email_index = IndexModel::builder()
+        .keys(doc! {"timeTracker.times.uuid": 1})
+        .options(email_options)
+        .build();
+
+    client
+        .database(db_name)
+        .collection::<User>("users")
+        .create_index(email_index, None)
+        .await
+        .expect("error creating the timeTracker.times (uuid) index");
 }
