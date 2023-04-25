@@ -21,7 +21,7 @@ pub async fn insert_or_update_time_handler(
     // if user try to modify not his time and is not an admin -> Error
     if user_uuid.ne(&user.uuid) && !user.is_admin() {
         return Err(ApiError::new(
-            StatusCode::UNAUTHORIZED,
+            StatusCode::FORBIDDEN,
             "You do not have the necessary permissions to update this resource",
         ));
     }

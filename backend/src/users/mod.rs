@@ -2,10 +2,12 @@ mod handlers;
 pub mod models;
 
 use crate::middlewares::auth_guard;
+use crate::users::handlers::find_all_projects_tags::find_all_tags_handler;
 use crate::users::handlers::{
-    find_recent_pages::find_recent_pages_handler, find_user_by_email::find_user_by_email_handler,
-    find_user_by_uuid::find_user_by_uuid_handler, find_user_pages::find_user_pages_handler,
-    find_user_times::find_user_times_handler, insert_or_update_time::insert_or_update_time_handler,
+    find_all_projects_tags::find_all_projects_handler,
+    find_recent_pages::find_recent_pages_handler, find_times::find_times_handler,
+    find_user_by_email::find_user_by_email_handler, find_user_by_uuid::find_user_by_uuid_handler,
+    find_user_pages::find_user_pages_handler, insert_or_update_time::insert_or_update_time_handler,
 };
 use crate::users::models::user::User;
 use crate::AppState;
@@ -29,13 +31,12 @@ pub fn routes(state: &AppState) -> Router<AppState> {
     let time_tracker_routes = Router::new()
         .route(
             "/:user_uuid/times/:date_from/:date_to",
-            get(find_user_times_handler),
-        )
+            get(find_times_handler),
+        ) // TODO
         // .route("/:user_uuid/times/:time_uuid", get()) // TODO
-        .route("/:user_uuid/times", put(insert_or_update_time_handler)) // TODO
-        // .route("/:user_uuid/projects", get())        // TODO
-        // .route("/:user_uuid/tags", get())            // TODO
-    ;
+        .route("/:user_uuid/times", put(insert_or_update_time_handler))
+        .route("/:user_uuid/projects", get(find_all_projects_handler))
+        .route("/:user_uuid/tags", get(find_all_tags_handler));
 
     Router::new()
         .merge(users_routes)
