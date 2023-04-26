@@ -6,7 +6,7 @@ use crate::users::handlers::find_all_projects_tags::find_all_tags_handler;
 use crate::users::handlers::find_time_by_uuid::find_time_by_uuid_handler;
 use crate::users::handlers::{
     find_all_projects_tags::find_all_projects_handler,
-    find_recent_pages::find_recent_pages_handler, find_times::find_times_handler,
+    find_recent_pages::find_recent_pages_handler, find_times_by_date::find_times_by_date_handler,
     find_user_by_email::find_user_by_email_handler, find_user_by_uuid::find_user_by_uuid_handler,
     find_user_pages::find_user_pages_handler, insert_or_update_time::insert_or_update_time_handler,
 };
@@ -32,7 +32,7 @@ pub fn routes(state: &AppState) -> Router<AppState> {
     let time_tracker_routes = Router::new()
         .route(
             "/:user_uuid/times/search/:date_from/:date_to",
-            get(find_times_handler),
+            get(find_times_by_date_handler),
         ) // TODO
         .route(
             "/:user_uuid/times/:time_uuid",

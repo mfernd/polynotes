@@ -45,20 +45,13 @@ pub async fn find_page_by_uuid_handler(
         .await
         .ok_or(ApiError::new(StatusCode::NOT_FOUND, "Page not found"))?
         .map(bson::from_document::<AbstractedPage>)
-        .map_err(|e| {
-            println!("error1: {e:?}");
+        .map_err(|_| {
             ApiError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Could not deserialize the page due to a problem in the server",
             )
         })?
-        .map_err(|e| {
-            println!("error2: {e:?}");
-            ApiError::new(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "Could not deserialize the page due to a problem in the server",
-            )
-        })?;
+        .map_err(|_| ApiError::new(StatusCode::NOT_FOUND, "Page not found"))?;
 
     Ok(Json(page))
 }

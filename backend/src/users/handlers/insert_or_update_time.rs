@@ -10,21 +10,13 @@ use bson::doc;
 use uuid::Uuid;
 use validator::Validate;
 
-// TODO: remove upsert on author who does not exist
-
 pub async fn insert_or_update_time_handler(
     State(state): State<AppState>,
     Extension(user): Extension<User>,
     WithRejection(Path(user_uuid), _): WithRejection<Path<Uuid>, ApiError>,
     WithRejection(Json(time), _): WithRejection<Json<Time>, ApiError>,
 ) -> Result<Json<Time>, ApiError> {
-    // if user try to modify not his time and is not an admin -> Error
-    if user_uuid.ne(&user.uuid) && !user.is_admin() {
-        return Err(ApiError::new(
-            StatusCode::FORBIDDEN,
-            "You do not have the necessary permissions to update this resource",
-        ));
-    }
+    user.check_permissions(user_uuid)?;
 
     // validate time data
     if let Err(err) = time.validate() {
@@ -32,6 +24,7 @@ pub async fn insert_or_update_time_handler(
         return Err(ApiError::new(StatusCode::BAD_REQUEST, &err_msg));
     }
 
+    // transform to bson
     let bson_time_doc = bson::to_bson(&time).map_err(|_| {
         ApiError::new(
             StatusCode::BAD_REQUEST,

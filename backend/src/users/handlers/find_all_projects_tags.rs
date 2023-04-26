@@ -14,13 +14,7 @@ pub async fn find_all_projects_handler(
     Extension(user): Extension<User>,
     WithRejection(Path(user_uuid), _): WithRejection<Path<Uuid>, ApiError>,
 ) -> Result<Json<Document>, ApiError> {
-    // if user try to access not his times data and is not an admin -> Error
-    if user_uuid.ne(&user.uuid) && !user.is_admin() {
-        return Err(ApiError::new(
-            StatusCode::FORBIDDEN,
-            "You do not have the necessary permissions to access this resource",
-        ));
-    }
+    user.check_permissions(user_uuid)?;
 
     let projects = find_all(&state, TimeFields::Projects, user_uuid).await?;
 
@@ -32,13 +26,7 @@ pub async fn find_all_tags_handler(
     Extension(user): Extension<User>,
     WithRejection(Path(user_uuid), _): WithRejection<Path<Uuid>, ApiError>,
 ) -> Result<Json<Document>, ApiError> {
-    // if user try to access not his times data and is not an admin -> Error
-    if user_uuid.ne(&user.uuid) && !user.is_admin() {
-        return Err(ApiError::new(
-            StatusCode::FORBIDDEN,
-            "You do not have the necessary permissions to access this resource",
-        ));
-    }
+    user.check_permissions(user_uuid)?;
 
     let tags = find_all(&state, TimeFields::Tags, user_uuid).await?;
 

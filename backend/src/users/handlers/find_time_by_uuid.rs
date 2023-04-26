@@ -15,12 +15,7 @@ pub async fn find_time_by_uuid_handler(
     Extension(user): Extension<User>,
     WithRejection(Path((user_uuid, time_uuid)), _): WithRejection<Path<(Uuid, Uuid)>, ApiError>,
 ) -> Result<Json<Time>, ApiError> {
-    if user_uuid.ne(&user.uuid) && !user.is_admin() {
-        return Err(ApiError::new(
-            StatusCode::FORBIDDEN,
-            "You do not have the necessary permissions to access this resource",
-        ));
-    }
+    user.check_permissions(user_uuid)?;
 
     let pipeline: Vec<Document> = vec![
         doc! { "$match": { "uuid": user_uuid, "timeTracker.times.uuid": time_uuid } },
@@ -36,7 +31,7 @@ pub async fn find_time_by_uuid_handler(
 
     let time = state
         .database
-        .get_collection::<Time>("users")
+        .get_collection::<User>("users")
         .aggregate(pipeline, None)
         .await
         .map_err(|_| {

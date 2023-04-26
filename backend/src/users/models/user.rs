@@ -1,6 +1,8 @@
+use crate::api_error::ApiError;
 use crate::users::models::abstracted_user::AbstractedUser;
 use crate::users::models::time_tracker::TimeTracker;
 use crate::users::models::user_role::UserRole;
+use axum::http::StatusCode;
 use bson::oid::ObjectId;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
@@ -59,5 +61,17 @@ impl User {
 
     pub fn is_admin(&self) -> bool {
         self.role.eq(&UserRole::Admin)
+    }
+
+    /// Check if the user access the resource of another user and if he's an admin
+    pub fn check_permissions(&self, user_uuid: Uuid) -> Result<(), ApiError> {
+        if user_uuid.ne(&self.uuid) && !self.is_admin() {
+            return Err(ApiError::new(
+                StatusCode::FORBIDDEN,
+                "You do not have the necessary permissions to access this resource",
+            ));
+        }
+
+        Ok(())
     }
 }
