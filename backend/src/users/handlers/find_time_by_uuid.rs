@@ -6,7 +6,6 @@ use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::{Extension, Json};
 use axum_extra::extract::WithRejection;
-use bson::{doc, Document};
 use futures::StreamExt;
 use uuid::Uuid;
 
@@ -17,17 +16,7 @@ pub async fn find_time_by_uuid_handler(
 ) -> Result<Json<Time>, ApiError> {
     user.check_permissions(user_uuid)?;
 
-    let pipeline: Vec<Document> = vec![
-        doc! { "$match": { "uuid": user_uuid, "timeTracker.times.uuid": time_uuid } },
-        doc! { "$limit": 1 },
-        doc! {
-            "$project": {
-                "_id": 0,
-                "time": { "$arrayElemAt": ["$timeTracker.times", 0] },
-            },
-        },
-        Time::project_from_time_key(),
-    ];
+    let pipeline = Time::get_all_times_pipeline(user_uuid, Some(time_uuid));
 
     let time = state
         .database

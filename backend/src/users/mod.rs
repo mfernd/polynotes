@@ -31,9 +31,9 @@ pub fn routes(state: &AppState) -> Router<AppState> {
 
     let time_tracker_routes = Router::new()
         .route(
-            "/:user_uuid/times/search/:date_from/:date_to",
+            "/:user_uuid/times/search/:date_from/to/:date_to",
             get(find_times_by_date_handler),
-        ) // TODO
+        )
         .route(
             "/:user_uuid/times/:time_uuid",
             get(find_time_by_uuid_handler),

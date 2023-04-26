@@ -30,16 +30,28 @@ pub struct Time {
 static HASHTAG_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"#(\w+)").unwrap());
 
 impl Time {
-    pub fn project_from_time_key() -> Document {
-        doc! {
-            "$project": {
-                "uuid": "$time.uuid",
-                "project": "$time.project",
-                "description": "$time.description",
-                "startingTime": "$time.startingTime",
-                "duration": "$time.duration",
+    /// Pipeline to get all times from a user, can filter with its uuid
+    pub fn get_all_times_pipeline(user_uuid: Uuid, time_uuid: Option<Uuid>) -> Vec<Document> {
+        let mut pipeline = vec![
+            doc! { "$match": { "uuid": user_uuid } },
+            doc! { "$unwind": "$timeTracker.times" },
+            doc! {
+                "$project": {
+                    "_id": 0,
+                    "uuid": "$timeTracker.times.uuid",
+                    "project": "$timeTracker.times.project",
+                    "description": "$timeTracker.times.description",
+                    "startingTime": "$timeTracker.times.startingTime",
+                    "duration": "$timeTracker.times.duration",
+                },
             },
+        ];
+
+        if let Some(uuid) = time_uuid {
+            pipeline.push(doc! { "$match": { "uuid": uuid } });
         }
+
+        pipeline
     }
 
     pub fn extract_tags(text: &str) -> Vec<String> {
