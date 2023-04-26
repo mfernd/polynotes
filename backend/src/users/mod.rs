@@ -3,6 +3,7 @@ pub mod models;
 
 use crate::middlewares::auth_guard;
 use crate::users::handlers::find_all_projects_tags::find_all_tags_handler;
+use crate::users::handlers::find_time_by_uuid::find_time_by_uuid_handler;
 use crate::users::handlers::{
     find_all_projects_tags::find_all_projects_handler,
     find_recent_pages::find_recent_pages_handler, find_times::find_times_handler,
@@ -30,10 +31,13 @@ pub fn routes(state: &AppState) -> Router<AppState> {
 
     let time_tracker_routes = Router::new()
         .route(
-            "/:user_uuid/times/:date_from/:date_to",
+            "/:user_uuid/times/search/:date_from/:date_to",
             get(find_times_handler),
         ) // TODO
-        // .route("/:user_uuid/times/:time_uuid", get()) // TODO
+        .route(
+            "/:user_uuid/times/:time_uuid",
+            get(find_time_by_uuid_handler),
+        )
         .route("/:user_uuid/times", put(insert_or_update_time_handler))
         .route("/:user_uuid/projects", get(find_all_projects_handler))
         .route("/:user_uuid/tags", get(find_all_tags_handler));

@@ -1,4 +1,4 @@
-use bson::doc;
+use bson::{doc, Document};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -30,6 +30,18 @@ pub struct Time {
 static HASHTAG_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"#(\w+)").unwrap());
 
 impl Time {
+    pub fn project_from_time_key() -> Document {
+        doc! {
+            "$project": {
+                "uuid": "$time.uuid",
+                "project": "$time.project",
+                "description": "$time.description",
+                "startingTime": "$time.startingTime",
+                "duration": "$time.duration",
+            },
+        }
+    }
+
     pub fn extract_tags(text: &str) -> Vec<String> {
         HASHTAG_REGEX
             .captures_iter(text)
