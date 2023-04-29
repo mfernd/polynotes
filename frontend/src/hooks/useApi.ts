@@ -5,6 +5,8 @@ import { redirect } from 'react-router-dom';
 import { Node } from '@/typings/editor.type';
 import { v4 as uuidv4 } from 'uuid';
 import { Page, ShortPage } from '@/typings/page.type';
+import { Time } from '@/typings/time.type';
+import moment from 'moment';
 
 const BASE_API = import.meta.env.VITE_BASE_API;
 
@@ -56,6 +58,7 @@ export function useApi() {
   // --- ALL FUNCTIONAL FETCHES
   return {
     apiState,
+
     auth: {
       apiLogin: (email: string, password: string) => {
         return fetchWrapper<{ user: User }>({
@@ -131,6 +134,63 @@ export function useApi() {
           return fetchWrapper<ShortPage[]>({ endpoint: `/users/me/pages/recent?${params}`, secure: true });
         }
         return fetchWrapper<ShortPage[]>({ endpoint: `/users/me/pages/recent`, secure: true });
+      },
+    },
+
+    times: {
+      apiGetTimesFromRange: (from: Date, to: Date) => {
+        if (undefined === apiState || undefined === apiState.userInfo) throw 'Not connected';
+
+        const dateFrom = moment(from).format('YYYY-MM-DD');
+        const dateTo = moment(to).format('YYYY-MM-DD');
+
+        return fetchWrapper<Time[]>({
+          endpoint: `/users/${apiState.userInfo.uuid}/times/search/${dateFrom}/to/${dateTo}`,
+          secure: true,
+        });
+      },
+      apiFindTime: (timeUuid: string) => {
+        if (undefined === apiState || undefined === apiState.userInfo) throw 'Not connected';
+
+        return fetchWrapper<Time>({
+          endpoint: `/users/${apiState.userInfo.uuid}/times/${timeUuid}`,
+          secure: true,
+        });
+      },
+      apiDeleteTime: (timeUuid: string) => {
+        if (undefined === apiState || undefined === apiState.userInfo) throw 'Not connected';
+
+        return fetchWrapper<{ message: string; }>({
+          method: 'DELETE',
+          endpoint: `/users/${apiState.userInfo.uuid}/times/${timeUuid}`,
+          secure: true,
+        });
+      },
+      apiUpsertTime: (time: Time) => {
+        if (undefined === apiState || undefined === apiState.userInfo) throw 'Not connected';
+
+        return fetchWrapper<Time>({
+          method: 'PUT',
+          endpoint: `/users/${apiState.userInfo.uuid}/times`,
+          data: time,
+          secure: true,
+        });
+      },
+      apiAllProjects: () => {
+        if (undefined === apiState || undefined === apiState.userInfo) throw 'Not connected';
+
+        return fetchWrapper<{ projects: string[]; }>({
+          endpoint: `/users/${apiState.userInfo.uuid}/projects`,
+          secure: true,
+        });
+      },
+      apiAllTags: () => {
+        if (undefined === apiState || undefined === apiState.userInfo) throw 'Not connected';
+
+        return fetchWrapper<{ projects: string[]; }>({
+          endpoint: `/users/${apiState.userInfo.uuid}/tags`,
+          secure: true,
+        });
       },
     },
   };

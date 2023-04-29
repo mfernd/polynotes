@@ -40,6 +40,7 @@ export const VerticalNavbar = () => {
           icon: <BsStopwatch/>,
           title: 'Time tracker',
           isCollapsible: false,
+          link: '/times',
         },
         {
           icon: <FiDatabase/>,

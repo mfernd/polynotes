@@ -9,6 +9,7 @@ import { AfterVerificationPage } from '@pages/verify-email/AfterVerificationPage
 import { BeforeVerificationPage } from '@pages/verify-email/BeforeVerificationPage';
 import { ContentNotFound } from '@pages/errors/ContentNotFound';
 import { CguPage } from '@pages/CguPage';
+import { TrackerHomePage } from '@pages/time-tracker/TrackerHomePage';
 import { useApi } from '@hooks/useApi';
 
 export const AppRoutes = () => {
@@ -42,6 +43,10 @@ export const AppRoutes = () => {
       path: '/pages/:pageId',
       element: <ProtectedRoute needsAuth elsePath={'/login'} children={<EditorPage/>}/>,
       loader: ({ params }) => apiFindPage(params.pageId ?? ''),
+    },
+    {
+      path: '/times',
+      element: <ProtectedRoute needsAuth elsePath={'/login'} children={<TrackerHomePage/>}/>,
     },
     {
       path: '/errors/content-not-found',
