@@ -5,6 +5,7 @@ use crate::middlewares::auth_guard;
 use crate::users::handlers::find_all_projects_tags::find_all_tags_handler;
 use crate::users::handlers::find_time_by_uuid::find_time_by_uuid_handler;
 use crate::users::handlers::{
+    delete_time_by_uuid::delete_time_by_uuid_handler,
     find_all_projects_tags::find_all_projects_handler,
     find_recent_pages::find_recent_pages_handler, find_times_by_date::find_times_by_date_handler,
     find_user_by_email::find_user_by_email_handler, find_user_by_uuid::find_user_by_uuid_handler,
@@ -13,7 +14,7 @@ use crate::users::handlers::{
 use crate::users::models::user::User;
 use crate::AppState;
 use axum::middleware::from_fn_with_state;
-use axum::routing::{get, put};
+use axum::routing::{delete, get, put};
 use axum::Router;
 use bson::doc;
 use mongodb::options::IndexOptions;
@@ -37,6 +38,10 @@ pub fn routes(state: &AppState) -> Router<AppState> {
         .route(
             "/:user_uuid/times/:time_uuid",
             get(find_time_by_uuid_handler),
+        )
+        .route(
+            "/:user_uuid/times/:time_uuid",
+            delete(delete_time_by_uuid_handler),
         )
         .route("/:user_uuid/times", put(insert_or_update_time_handler))
         .route("/:user_uuid/projects", get(find_all_projects_handler))

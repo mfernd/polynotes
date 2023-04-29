@@ -1,3 +1,4 @@
+pub mod delete_time_by_uuid;
 pub mod find_all_projects_tags;
 pub mod find_all_users;
 pub mod find_recent_pages;
