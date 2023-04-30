@@ -187,7 +187,7 @@ export function useApi() {
       apiAllTags: () => {
         if (undefined === apiState || undefined === apiState.userInfo) throw 'Not connected';
 
-        return fetchWrapper<{ projects: string[]; }>({
+        return fetchWrapper<{ tags: string[]; }>({
           endpoint: `/users/${apiState.userInfo.uuid}/tags`,
           secure: true,
         });

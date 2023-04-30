@@ -15,7 +15,7 @@
 
 html,
 body {
-  background-color: unset!important;
+  background-color: unset !important;
 }
 
 body {
@@ -33,24 +33,28 @@ small {
 
 /* ANCHOR */
 .nav-link {
-  color: #202124!important;
-  font-weight: bolder!important;
-  text-decoration: underline!important;
-  text-decoration-color: #fe0096!important;
-  text-decoration-thickness: 3px!important;
+  color: #202124 !important;
+  font-weight: bolder !important;
+  text-decoration: underline !important;
+  text-decoration-color: #fe0096 !important;
+  text-decoration-thickness: 3px !important;
 }
 
 .nav-link:hover {
-  text-decoration: underline!important;
-  text-decoration-color: #e40087!important;
-  text-decoration-thickness: 3px!important;
-  background-color: rgba(324 100 89 / 5%)!important;
+  text-decoration: underline !important;
+  text-decoration-color: #e40087 !important;
+  text-decoration-thickness: 3px !important;
+  background-color: rgba(324 100 89 / 5%) !important;
 }
 
 .tooltip .avatar {
-  background-color: lightpink!important;
+  background-color: lightpink !important;
 }
 
 .tooltip .avatar-text {
-  font-size: 1.25rem!important;
+  font-size: 1.25rem !important;
+}
+
+.rs-picker-menu {
+  z-index: 2000 !important;
 }
