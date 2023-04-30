@@ -1,10 +1,12 @@
 import { FiChevronRight } from 'react-icons/all';
+import { Badge } from '@geist-ui/core';
 import { css } from '@emotion/react';
 
 type ItemProps = {
   isCollapsible?: boolean;
   icon?: JSX.Element;
   title: string;
+  isNew?: boolean;
 };
 
 export const Item = (props: ItemProps) => {
@@ -17,6 +19,7 @@ export const Item = (props: ItemProps) => {
       <span css={css`
         ${center};
         flex-grow: 1;`}>{props.title}</span>
+      {props.isNew ? <Badge css={newBadgeCss} style={{ backgroundColor: '#fe0096' }} scale={2/3}>new</Badge> : null}
     </div>
   );
 };
@@ -24,6 +27,7 @@ export const Item = (props: ItemProps) => {
 const center = css`display: flex;`;
 
 const itemCss = css`
+  position: relative;
   cursor: pointer;
   min-height: 27px;
   padding: 3px 10px 3px 10px;
@@ -47,4 +51,11 @@ const collapsibleCss = css`
   background-color: transparent;
   padding: 0;
   border: none;
+`;
+
+const newBadgeCss = css`
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
 `;

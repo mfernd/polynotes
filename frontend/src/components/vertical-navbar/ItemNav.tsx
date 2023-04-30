@@ -10,6 +10,7 @@ type ItemNavProps = {
     isCollapsible: boolean;
     link?: string;
     onClick?: MouseEventHandler<HTMLLIElement>;
+    isNew?: boolean;
   }[];
 };
 
@@ -21,9 +22,15 @@ export const ItemNav = (props: ItemNavProps) => {
           <li key={`item-${index}`} onClick={item.onClick}>
             {item.link ?
               <NavLink to={item.link}>
-                <Item icon={item.icon} title={item.title} isCollapsible={item.isCollapsible}/>
+                <Item icon={item.icon}
+                      title={item.title}
+                      isCollapsible={item.isCollapsible}
+                      isNew={item.isNew}/>
               </NavLink>
-              : <Item icon={item.icon} title={item.title} isCollapsible={item.isCollapsible}/>}
+                : <Item icon={item.icon}
+                        title={item.title}
+                        isCollapsible={item.isCollapsible}
+                        isNew={item.isNew}/>}
           </li>)}
       </ul>
     </nav>

@@ -41,6 +41,7 @@ export const VerticalNavbar = () => {
           title: 'Time tracker',
           isCollapsible: false,
           link: '/times',
+          isNew: true,
         },
         {
           icon: <FiDatabase/>,
