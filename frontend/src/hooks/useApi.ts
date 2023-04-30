@@ -5,7 +5,7 @@ import { redirect } from 'react-router-dom';
 import { Node } from '@/typings/editor.type';
 import { v4 as uuidv4 } from 'uuid';
 import { Page, ShortPage } from '@/typings/page.type';
-import { Time } from '@/typings/time.type';
+import { ProjectStat, Time } from '@/typings/time.type';
 import moment from 'moment';
 
 const BASE_API = import.meta.env.VITE_BASE_API;
@@ -189,6 +189,14 @@ export function useApi() {
 
         return fetchWrapper<{ tags: string[]; }>({
           endpoint: `/users/${apiState.userInfo.uuid}/tags`,
+          secure: true,
+        });
+      },
+      apiProjectStats: () => {
+        if (undefined === apiState || undefined === apiState.userInfo) throw 'Not connected';
+
+        return fetchWrapper<ProjectStat[]>({
+          endpoint: `/users/${apiState.userInfo.uuid}/stats/projects`,
           secure: true,
         });
       },

@@ -18,7 +18,7 @@ const TabValues = {
 export const TrackerHomePage = () => {
   const [modalVisibility, setModalVisibility] = useState(false);
 
-  const [selectedTab, setSelectedTab] = useState(TabValues.list);
+  const [selectedTab, setSelectedTab] = useState(TabValues.metrics);
   let selectedPage: JSX.Element;
   switch (selectedTab) {
     case TabValues.metrics:
