@@ -4,12 +4,14 @@ import { css } from '@emotion/react';
 import { Time } from '@/typings/time.type';
 import { FetchError, useApi } from '@hooks/useApi';
 import { useCallback } from 'react';
+import moment from 'moment';
 
 type TimeCardProps = {
   time: Time;
+  hasChanged: (timeUuid: string) => void;
 };
 
-export const TimeCard = ({ time }: TimeCardProps) => {
+export const TimeCard = ({ time, hasChanged }: TimeCardProps) => {
   const { setToast } = useToasts();
   const { times: { apiDeleteTime } } = useApi();
 
@@ -24,6 +26,7 @@ export const TimeCard = ({ time }: TimeCardProps) => {
           type: 'success',
           text: `Temps du projet "${time.project}" d'un durée de ${time.duration / 60} minutes supprimé avec succès`,
         }))
+        .then(() => time.uuid && hasChanged(time.uuid))
         .catch(({ error }: FetchError) => setToast({ type: 'error', text: error }));
   }, [time.uuid]);
 
@@ -38,6 +41,7 @@ export const TimeCard = ({ time }: TimeCardProps) => {
 
         <div css={footerCss}>
           <div css={datesCss}>{dateFormat.formatRange(dateFrom, dateTo)}</div>
+          <div css={datesCss}>Durée&nbsp;: <i>{moment.duration(time.duration, 'seconds').humanize()}</i></div>
           <div css={actionsCss}>
             <Button type={'error'}
                     auto scale={1 / 2}
@@ -60,11 +64,12 @@ const cardCss = css`
   flex-direction: column;
   border: 1px solid #ccc;
   border-radius: 10px;
+  width: 400px;
   min-width: 300px;
   font-weight: normal;
 
   .content {
-	flex: 1;
+    flex: 1;
   }
 `;
 
@@ -73,6 +78,7 @@ const contentCss = css`
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  text-align: justify;
 `;
 
 const footerCss = css`

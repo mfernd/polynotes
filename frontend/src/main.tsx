@@ -7,13 +7,13 @@ import { AppRoutes } from '@/AppRoutes';
 import { store } from '@/store';
 import '@assets/main.css';
 import moment from 'moment';
-import 'moment/locale/fr';
+import 'moment/dist/locale/fr';
 
 export const appName = 'Polynotes';
+moment.locale('fr');
 
 const App = () => {
   const routes = AppRoutes();
-  moment.locale('fr');
 
   return (
     <StrictMode>

@@ -16,25 +16,26 @@ export const ListModePage = () => {
   const { times: { apiGetTimesFromRange } } = useApi();
   const [times, setTimes] = useState<Time[]>([]);
 
-  const [datesRange, setDatesRange] = useState<[Date, Date]>([
+  const [dates, setDates] = useState<[Date, Date]>([
     moment().startOf('isoWeek').toDate(),
     moment().endOf('isoWeek').toDate(),
   ]);
 
-  const fetchTimesFromRange = useCallback((weekStart: Date, weekEnd: Date) => {
+  const fetchTimesFromRange = useCallback(([weekStart, weekEnd]: [Date, Date]) => {
     return apiGetTimesFromRange(weekStart, weekEnd)
         .then((times) => setTimes(times))
         .catch(({ error }: FetchError) => setToast({ type: 'error', text: error }));
   }, [setTimes]);
 
   useEffect(() => {
-    fetchTimesFromRange(datesRange[0], datesRange[1]);
-  }, [datesRange]);
+    fetchTimesFromRange(dates);
+  }, [dates]);
 
-  const onRangeChange = useCallback((range: DateRange | null) => {
-    if (null === range) return;
-    setDatesRange(range);
-    fetchTimesFromRange(range[0], range[1]);
+  // DateRangePicker onChange handler
+  const onRangeChange = useCallback((dateRange: DateRange | null) => {
+    if (null === dateRange) return;
+    setDates(dateRange);
+    fetchTimesFromRange(dateRange);
   }, []);
 
   return (
@@ -44,7 +45,7 @@ export const ListModePage = () => {
           <DateRangePicker isoWeek cleanable={false}
                            format={'dd LLL. yyyy'}
                            locale={frFR.DateRangePicker}
-                           value={datesRange}
+                           value={dates}
                            onChange={onRangeChange}/>
         </div>
 
@@ -57,15 +58,15 @@ export const ListModePage = () => {
             <Button type={'default'}
                     title={'Rafraîchir'}
                     auto scale={1 / 3}
-                    font={'12px'} onClick={() => fetchTimesFromRange(datesRange[0], datesRange[1])}>
+                    font={'12px'} onClick={() => fetchTimesFromRange(dates)}>
               <FiRefreshCcw/>
             </Button>
           </div>
           {times.length > 0
               ? (
-                  <Grid.Container gap={1} justify={'flex-start'} height={'100%'}>
+                  <Grid.Container gap={3} justify={'flex-start'} height={'100%'}>
                     {times.map((time, i) => (
-                        <Grid key={i}><TimeCard time={time}/></Grid>))}
+                        <Grid key={i}><TimeCard time={time} hasChanged={() => fetchTimesFromRange(dates)}/></Grid>))}
                   </Grid.Container>)
               : (
                   <Card cardContentCss={noPagesCss}>
@@ -79,6 +80,7 @@ export const ListModePage = () => {
 
 const containerCss = css`
   margin-top: 1rem;
+  margin-bottom: 100px;
   display: flex;
   flex-direction: column;
   align-items: start;
