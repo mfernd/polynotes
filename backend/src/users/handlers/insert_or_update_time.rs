@@ -32,6 +32,16 @@ pub async fn insert_or_update_time_handler(
         )
     })?;
 
+    let _ = state
+        .database
+        .get_collection::<User>("users")
+        .update_one(
+            doc! { "uuid": user_uuid },
+            doc! { "$pull": { "timeTracker.times": { "uuid": time.uuid } } },
+            None,
+        )
+        .await;
+
     let update = doc! {
         "$addToSet": {
             "timeTracker.projects": time.project.as_str(),
