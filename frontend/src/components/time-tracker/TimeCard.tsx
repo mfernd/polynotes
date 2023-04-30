@@ -33,9 +33,11 @@ export const TimeCard = ({ time, hasChanged }: TimeCardProps) => {
   return (
       <div css={cardCss}>
         <div css={contentCss}>
-          <h3>{time.project}</h3>
+          {time.project !== ''
+              ? <h3>{time.project}</h3>
+              : <Text h3 type={'secondary'}>Projet par défaut</Text>}
           {time.description !== ''
-              ? (<div>{time.description}</div>)
+              ? <div>{time.description}</div>
               : <Text type={'secondary'} margin={0}>Pas de description...</Text>}
         </div>
 

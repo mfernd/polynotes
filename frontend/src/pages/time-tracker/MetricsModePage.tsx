@@ -26,7 +26,9 @@ export const MetricsModePage = () => {
           <Grid.Container gap={1} justify={'flex-start'}>
             {projects.map((project, i) =>
                 <Grid key={i}>
-                  <Badge scale={1.75} type={'success'}>{project}</Badge>
+                  {project !== ''
+                      ? <Badge scale={1.75} type={'success'}>{project}</Badge>
+                      : <Badge scale={1.75} type={'secondary'}>Projet par défaut</Badge>}
                 </Grid>)}
           </Grid.Container>
         </article>
