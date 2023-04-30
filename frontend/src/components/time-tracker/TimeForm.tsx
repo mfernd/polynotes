@@ -1,6 +1,6 @@
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { Input, Modal, Text, Textarea, useModal, useToasts } from '@geist-ui/core';
-import { useCallback, useState } from 'react';
+import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { AutoComplete, Modal, Text, Textarea, useModal, useToasts } from '@geist-ui/core';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { FetchError, useApi } from '@hooks/useApi';
 import { DateRangePicker } from 'rsuite';
@@ -14,17 +14,34 @@ type TimeFormProps = {
 export const TimeForm = (props: TimeFormProps) => {
   const { setVisible, bindings } = useModal(props.isVisible);
   const { setToast } = useToasts();
-  const { times: { apiUpsertTime } } = useApi();
+  const { times: { apiUpsertTime, apiAllProjects } } = useApi();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm();
   const [dates, setDates] = useState<[Date, Date]>([
     new Date(),
     moment().add(1, 'hours').toDate(),
   ]);
+
+  // All projects for autocomplete
+  const [allProjects, setAllProjects] = useState<{ label: string; value: string }[]>([]);
+  useEffect(() => {
+    apiAllProjects()
+        .then(({ projects }) => projects.map((project) => ({ label: project, value: project })))
+        .then((projects) => setAllProjects(projects))
+        .catch(({ error }: FetchError) => setToast({ type: 'warning', text: error }));
+  }, [setAllProjects]);
+
+  // Autocomplete search handler
+  const [options, setOptions] = useState<{ label: string; value: string }[]>([]);
+  const searchHandler = useCallback((currentValue: string) => {
+    if (!currentValue) return setOptions(allProjects);
+    setOptions(allProjects.filter(project => project.label.includes(currentValue)));
+  }, [options]);
 
   const onSubmit: SubmitHandler<FieldValues> = useCallback((data) => {
     const dateFrom = moment(dates[0]);
@@ -56,8 +73,18 @@ export const TimeForm = (props: TimeFormProps) => {
           <form css={formCss}>
             <label>
               <div>Nom du projet</div>
-              <Input width={'100%'}
-                     {...register('project', { maxLength: 32 })}/>
+              <Controller control={control}
+                          name={'project'}
+                          rules={{ maxLength: 32 }}
+                          render={({ field: { onChange, onBlur, value, ref } }) => (
+                              <AutoComplete options={options}
+                                            clearable
+                                            onChange={onChange}
+                                            onSearch={searchHandler}
+                                            onBlur={onBlur}
+                                            value={value}
+                                            ref={ref}/>
+                          )}/>
               <Text small type={'error'}>
                 {errors.project
                     ? <>Ce champ doit être inférieur à 32 caractères.</>
