@@ -5,8 +5,10 @@ import { css } from '@emotion/react';
 import { FetchError, useApi } from '@hooks/useApi';
 import { DateRangePicker } from 'rsuite';
 import moment from 'moment';
+import { Time } from '@/typings/time.type';
 
 type TimeFormProps = {
+  time?: Time;
   isVisible: boolean;
   onClosing: () => void;
 };
@@ -21,10 +23,19 @@ export const TimeForm = (props: TimeFormProps) => {
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      project: props.time?.project ?? '',
+      description: props.time?.description ?? '',
+    },
+  });
   const [dates, setDates] = useState<[Date, Date]>([
-    new Date(),
-    moment().add(1, 'hours').toDate(),
+    props.time
+        ? moment.unix(props.time.startingTime).toDate()
+        : new Date(),
+    props.time
+        ? moment.unix(props.time.startingTime).add(props.time.duration, 'seconds').toDate()
+        : moment().add(1, 'hours').toDate(),
   ]);
 
   // All projects for autocomplete
@@ -48,6 +59,7 @@ export const TimeForm = (props: TimeFormProps) => {
     const dateTo = moment(dates[1]);
 
     apiUpsertTime({
+      uuid: props.time?.uuid,
       project: data.project ?? '',
       description: data.description ?? '',
       startingTime: dateFrom.unix(),
@@ -68,7 +80,7 @@ export const TimeForm = (props: TimeFormProps) => {
 
   return (
       <Modal {...bindings}>
-        <Modal.Title>Créer un temps</Modal.Title>
+        <Modal.Title>{props.time ? `Temps du projet "${props.time.project}"` : 'Créer un temps'}</Modal.Title>
         <Modal.Content>
           <form css={formCss}>
             <label>
@@ -97,6 +109,7 @@ export const TimeForm = (props: TimeFormProps) => {
               <Textarea width={'100%'}
                         rows={4}
                         resize={'vertical'}
+                        placeholder={'Quoi de neuf ?'}
                         {...register('description', { maxLength: 280 })}/>
               <Text small type={'error'}>
                 {errors.description
@@ -116,7 +129,7 @@ export const TimeForm = (props: TimeFormProps) => {
           </form>
         </Modal.Content>
         <Modal.Action passive onClick={onCancel}>Annuler</Modal.Action>
-        <Modal.Action onClick={handleSubmit(onSubmit)}>Créer</Modal.Action>
+        <Modal.Action onClick={handleSubmit(onSubmit)}>{props.time ? 'Sauvegarder' : 'Créer'}</Modal.Action>
       </Modal>
   );
 };
@@ -125,4 +138,9 @@ const formCss = css`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  input,
+  textarea {
+	  font-weight: normal;
+  }
 `;

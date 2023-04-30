@@ -3,8 +3,9 @@ import { AiOutlineEdit, FaTrash } from 'react-icons/all';
 import { css } from '@emotion/react';
 import { Time } from '@/typings/time.type';
 import { FetchError, useApi } from '@hooks/useApi';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import moment from 'moment';
+import { TimeForm } from '@components/time-tracker/TimeForm';
 
 type TimeCardProps = {
   time: Time;
@@ -14,6 +15,7 @@ type TimeCardProps = {
 export const TimeCard = ({ time, hasChanged }: TimeCardProps) => {
   const { setToast } = useToasts();
   const { times: { apiDeleteTime } } = useApi();
+  const [modalVisibility, setModalVisibility] = useState(false);
 
   const dateFormat = new Intl.DateTimeFormat('fr', { dateStyle: 'medium', timeStyle: 'medium' });
   const dateFrom = new Date(time.startingTime * 1000);
@@ -33,6 +35,7 @@ export const TimeCard = ({ time, hasChanged }: TimeCardProps) => {
   return (
       <div css={cardCss}>
         <div css={contentCss}>
+          <small>{time.uuid}</small>
           {time.project !== ''
               ? <h3>{time.project}</h3>
               : <Text h3 type={'secondary'}>Projet par défaut</Text>}
@@ -45,19 +48,31 @@ export const TimeCard = ({ time, hasChanged }: TimeCardProps) => {
           <div css={datesCss}>{dateFormat.formatRange(dateFrom, dateTo)}</div>
           <div css={datesCss}>Durée&nbsp;: <i>{moment.duration(time.duration, 'seconds').humanize()}</i></div>
           <div css={actionsCss}>
-            <Button type={'error'}
-                    auto scale={1 / 2}
-                    font={'12px'}
-                    icon={<FaTrash/>}
-                    onClick={deleteTime}
-            >Supprimer</Button>
             <Button type={'success'}
                     auto scale={1 / 2}
                     font={'12px'}
                     icon={<AiOutlineEdit/>}
-            >Modifier</Button>
+                    onClick={() => setModalVisibility(true)}>
+              Modifier
+            </Button>
+            <Button type={'error'}
+                    auto scale={1 / 2}
+                    font={'12px'}
+                    icon={<FaTrash/>}
+                    onClick={deleteTime}>
+              Supprimer
+            </Button>
           </div>
         </div>
+        {/* Modal time update form */}
+        {modalVisibility
+            ? <TimeForm time={time}
+                        isVisible={modalVisibility}
+                        onClosing={() => {
+                          setModalVisibility(false);
+                          if (time.uuid) hasChanged(time.uuid);
+                        }}/>
+            : null}
       </div>);
 };
 
@@ -71,7 +86,7 @@ const cardCss = css`
   font-weight: normal;
 
   .content {
-    flex: 1;
+	flex: 1;
   }
 `;
 
