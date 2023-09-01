@@ -10,7 +10,7 @@ import { getEditorNodeFromType } from '@/utils/getEditorNodeFromType';
 import { useCommandManager } from '@hooks/useCommandManager';
 
 type EditorNodeProps = {
-  block: Node;
+  node: Node;
   isLastNode?: boolean;
   onChange?: () => void;
 };
@@ -27,20 +27,20 @@ export const EditorNode = (props: EditorNodeProps) => {
 
     if (e.key === 'Enter' && !commandManager.show) {
       e.preventDefault();
-      dispatch(addBottomNode(props.block.uuid));
+      dispatch(addBottomNode(props.node.uuid));
     } else if (['Backspace', 'Delete'].includes(e.key) && editor.isEmpty) {
       e.preventDefault();
-      dispatch(deleteNode(props.block.uuid));
+      dispatch(deleteNode(props.node.uuid));
     } else if (e.key === 'ArrowUp' && selection?.isCollapsed && !commandManager.show) {
       e.preventDefault();
-      dispatch(onArrow({ orientation: 'up', cursorIndex: selection.anchorOffset }));
+      dispatch(onArrow({ nodeId: props.node.uuid, orientation: 'up', cursorIndex: selection.anchorOffset }));
     } else if (e.key === 'ArrowDown' && selection?.isCollapsed && !commandManager.show) {
       e.preventDefault();
-      dispatch(onArrow({ orientation: 'down', cursorIndex: selection.anchorOffset }));
+      dispatch(onArrow({ nodeId: props.node.uuid, orientation: 'down', cursorIndex: selection.anchorOffset }));
     } else if (e.key === 'ArrowLeft' && selection?.isCollapsed && selection?.anchorOffset === 0) {
-      dispatch(onArrow({ orientation: 'up', cursorIndex: 'end' }));
+      dispatch(onArrow({ nodeId: props.node.uuid, orientation: 'up', cursorIndex: 'end' }));
     } else if (e.key === 'ArrowRight' && selection?.isCollapsed && selection?.anchorOffset === editor.getText().length) {
-      dispatch(onArrow({ orientation: 'down', cursorIndex: 'start' }));
+      dispatch(onArrow({ nodeId: props.node.uuid, orientation: 'down', cursorIndex: 'start' }));
     }
   }, [commandManager]);
 
@@ -53,30 +53,30 @@ export const EditorNode = (props: EditorNodeProps) => {
     if (commandManager.commands.length > 0) {
       if (e.key === 'ArrowUp') commandManager.goUpOneCommand();
       if (e.key === 'ArrowDown') commandManager.goDownOneCommand();
-      if (e.key === 'Enter') commandManager.chooseCommand(props.block.uuid);
+      if (e.key === 'Enter') commandManager.chooseCommand(props.node.uuid);
     }
 
     const htmlData = editor?.getHTML();
-    if (htmlData) dispatch(updateData(htmlData));
+    if (htmlData) dispatch(updateData({ nodeId: props.node.uuid, newData: htmlData }));
     if (props.onChange) props.onChange();
   }, [commandManager]);
 
   return (
-    <div data-node-id={props.block.uuid}
+    <div data-node-id={props.node.uuid}
          css={nodeContainerCss}
          onFocus={() => setFocused(true)}
          onBlur={() => setFocused(false)}
          onMouseEnter={() => setFocused(true)}
          onMouseLeave={() => setFocused(false)}>
       {/* Node */}
-      {getEditorNodeFromType(props.block, props.isLastNode, beforeInput, afterInput)}
+      {getEditorNodeFromType(props.node, props.isLastNode, beforeInput, afterInput)}
       {/* ---- */}
-      <DragHandle nodeId={props.block.uuid} show={focused}/>
+      <DragHandle nodeId={props.node.uuid} show={focused}/>
       {commandManager.show
-        ? <CommandManager nodeId={props.block.uuid}
+        ? <CommandManager nodeId={props.node.uuid}
                           commands={commandManager.commands}
                           selected={commandManager.selectedIndex}
-                          onCommandClick={(newType) => commandManager.chooseCommand(props.block.uuid, newType)}/>
+                          onCommandClick={(newType) => commandManager.chooseCommand(props.node.uuid, newType)}/>
         : null}
     </div>
   );
@@ -87,12 +87,9 @@ const nodeContainerCss = css`
   //background-color: rgba(0 0 0 / 2%);
   //border-bottom: 1px solid #505050;
   //border-radius: .5rem;
+  margin: 3px 7px;
 
-  .ProseMirror {
-    padding: 3px 7px;
-
-    &:focus {
-      outline: none;
-    }
+  .ProseMirror:focus {
+    outline: none;
   }
 `;

@@ -9,6 +9,8 @@ RUN cargo build --release
 # Stage 2: Start app
 FROM debian:bullseye-slim
 
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /api
 COPY --from=builder /api/target/release/polynotes-backend /api/polynotes-api
 RUN ls /api

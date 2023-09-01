@@ -1,0 +1,71 @@
+[
+  {
+	"uuid": {
+	  "$binary": {
+		"base64": "GhaT9WR8Rrm0fem+io3amw==",
+		"subType": "04"
+	  }
+	},
+	"username": "test",
+	"email": "test@example.com",
+	"password": "$argon2i$v=19$m=4096,t=3,p=1$Q0hBTkdFTUU$bRDA4F/pI18Z2vYkyKtN0kO8oA6jldIpc8FHs4uyoGM",
+	"role": "User",
+	"isVerified": true,
+	"nonce": null,
+	"timeTracker": {
+	  "times": [
+		{
+		  "uuid": {
+			"$binary": {
+			  "base64": "B8A6LZfnRAKw82I2QOmTog==",
+			  "subType": "04"
+			}
+		  },
+		  "project": "Projet 1",
+		  "description": "#coucou, vive #rust",
+		  "startingTime": 1682858643,
+		  "duration": 3600
+		},
+		{
+		  "uuid": {
+			"$binary": {
+			  "base64": "B8A6LZfnRAKw82I2QPmTog==",
+			  "subType": "04"
+			}
+		  },
+		  "project": "Projet 2",
+		  "description": "une description, #montpellier #mtp",
+		  "startingTime": 1682862830,
+		  "duration": 5000
+		},
+		{
+		  "uuid": {
+			"$binary": {
+			  "base64": "SwVr6sHmRZCIkd3dP64iYQ==",
+			  "subType": "04"
+			}
+		  },
+		  "project": "Projet 3",
+		  "description": "Something I did in react.",
+		  "startingTime": {
+			"$numberLong": "1680300000"
+		  },
+		  "duration": {
+			"$numberLong": "862920"
+		  }
+		}
+	  ],
+	  "projects": [
+		"Projet 1",
+		"Projet 2",
+		"Projet 3"
+	  ],
+	  "tags": [
+		"rust",
+		"mtp",
+		"montpellier",
+		"coucou"
+	  ]
+	}
+  }
+]

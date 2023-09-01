@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { css } from '@emotion/react';
-import { FiClock, FiDatabase, FiPlus, FiStar, FiTrash2, MdPeopleAlt, MdWorkspaces } from 'react-icons/all';
+import { BsStopwatch, FiClock, FiDatabase, FiPlus, FiStar, FiTrash2, MdWorkspaces } from 'react-icons/all';
 import { useToasts } from '@geist-ui/core';
 import { Button } from '@components/ui/Button';
 import { ItemNav } from '@components/vertical-navbar/ItemNav';
@@ -33,18 +33,20 @@ export const VerticalNavbar = () => {
         {
           icon: <MdWorkspaces/>,
           title: 'Mon espace de travail',
-          isCollapsible: true,
+          isCollapsible: false,
           link: '/workspace',
         },
         {
-          icon: <MdPeopleAlt/>,
-          title: 'Partagé avec moi',
-          isCollapsible: true,
+          icon: <BsStopwatch/>,
+          title: 'Time tracker',
+          isCollapsible: false,
+          link: '/times',
+          isNew: true,
         },
         {
           icon: <FiDatabase/>,
           title: 'Bases de données',
-          isCollapsible: true,
+          isCollapsible: false,
         },
         {
           icon: <FiPlus/>,

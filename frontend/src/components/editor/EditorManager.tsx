@@ -13,7 +13,7 @@ export const EditorManager = ({ onChange }: EditorManagerProps) => {
     <>
       {editor.nodes.map((node, index) => (
         <EditorNode key={index}
-                    block={node}
+                    node={node}
                     isLastNode={index === editor.nodes.length - 1}
                     onChange={onChange}/>
       ))}

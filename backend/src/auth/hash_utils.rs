@@ -5,7 +5,7 @@ use dotenvy::var;
 use once_cell::sync::Lazy;
 
 static PASSWORD_SALT: Lazy<String> = Lazy::new(|| {
-    var("PASSWORD_SALT").expect("PASSWORD_SALT must be provided in the .env.locale file")
+    var("PASSWORD_SALT").expect("PASSWORD_SALT must be provided in the .env file")
 });
 
 pub fn hash(password: String) -> Result<String, ApiError> {

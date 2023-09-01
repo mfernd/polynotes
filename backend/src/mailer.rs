@@ -13,11 +13,11 @@ pub struct LettreMailer {
 impl LettreMailer {
     pub async fn new() -> Self {
         let smtp_host =
-            var("SMTP_HOST").expect("SMTP_HOST must be provided in the .env.locale file");
+            var("SMTP_HOST").expect("SMTP_HOST must be provided in the .env file");
 
         let creds = Credentials::new(
-            var("SMTP_USERNAME").expect("SMTP_USERNAME must be provided in the .env.locale file"),
-            var("SMTP_PASSWORD").expect("SMTP_PASSWORD must be provided in the .env.locale file"),
+            var("SMTP_USERNAME").expect("SMTP_USERNAME must be provided in the .env file"),
+            var("SMTP_PASSWORD").expect("SMTP_PASSWORD must be provided in the .env file"),
         );
 
         let mailer = AsyncSmtpTransport::<Tokio1Executor>::relay(&smtp_host)
@@ -38,7 +38,7 @@ impl LettreMailer {
         LettreMailer {
             mailer,
             default_from: var("DEFAULT_SENDER")
-                .expect("DEFAULT_SENDER must be provided in the .env.locale file"),
+                .expect("DEFAULT_SENDER must be provided in the .env file"),
         }
     }
 

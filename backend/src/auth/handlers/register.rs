@@ -96,7 +96,7 @@ pub async fn register_handler(
     Ok((
         StatusCode::CREATED,
         Json(RegisterResponse {
-            message: "verification email sent".to_owned(),
+            message: "Verification email sent".to_owned(),
         }),
     ))
 }

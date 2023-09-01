@@ -25,7 +25,7 @@ export const EditorPage = () => {
     dispatch(initEditor({
       focusedNode: page.nodes[0].uuid,
       cursorIndex: 'end',
-      nodes: page.nodes,
+      nodes: page.nodes.map((node) => ({...node, settingsOpen: false })),
     }));
   }, []);
 
@@ -43,7 +43,7 @@ export const EditorPage = () => {
 
   return (
     <MainFrame titlePage={pageTitle === '' ? 'Sans titre' : pageTitle}>
-      <div css={css`padding-left: 2.5rem;`}>
+      <div css={pageContainerCss}>
         <EditorToolbar uuid={page.uuid} isSaving={isSaving}/>
 
         <div css={pageTitleCss}>
@@ -60,6 +60,12 @@ export const EditorPage = () => {
     </MainFrame>
   );
 };
+
+const pageContainerCss = css`
+  width: 100%;
+  max-width: 700px;
+  align-self: center;
+`;
 
 const pageTitleCss = css`
   cursor: text;

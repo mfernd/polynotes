@@ -1,10 +1,9 @@
 import { KeyboardEvent } from 'react';
 import { Editor } from '@tiptap/react';
+import { PageNode } from '@/typings/page.type';
 
-export type Node = {
-  uuid: string;
-  type: NodeType;
-  data: string;
+export type Node = PageNode & {
+  settingsOpen: boolean;
 };
 
 export type NodeType =

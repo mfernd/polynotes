@@ -23,50 +23,50 @@ export const MainFrame = ({ titlePage, children }: MainFrameProps) => {
 
   const logout = useCallback(() => {
     apiLogout()
-      .then(() => {
-        setToast({ type: 'success', text: 'Déconnecté avec succès 👍' });
-        navigate('/login');
-      })
-      .catch((data: FetchError) => setToast({ type: 'error', text: data.error }));
+        .then(() => {
+          setToast({ type: 'success', text: 'Déconnecté avec succès 👍' });
+          navigate('/login');
+        })
+        .catch((data: FetchError) => setToast({ type: 'error', text: data.error }));
   }, [apiState]);
 
-  const userDropdown = (
-    <>
-      <Popover.Item css={popoverItemCss}>
-        <BsFillPersonFill/>
-        <span>Profil</span>
-      </Popover.Item>
-      <Popover.Item line/>
-      <Popover.Item onClick={logout} css={popoverItemCss}>
-        <FaSignOutAlt/>
-        <span>Se{' '}déconnecter</span>
-      </Popover.Item>
-    </>
-  );
+  // @ts-ignore: wtf, typescript is dying without this...
+  const userDropdown: (ReactNode & string) = (
+      <>
+        <Popover.Item css={popoverItemCss}>
+          <BsFillPersonFill/>
+          <span>Profil</span>
+        </Popover.Item>
+        <Popover.Item line/>
+        <Popover.Item onClick={logout} css={popoverItemCss}>
+          <FaSignOutAlt/>
+          <span>Se{' '}déconnecter</span>
+        </Popover.Item>
+      </>);
 
   return (
-    <div css={containerCss}>
-      <VerticalNavbar/>
+      <div css={containerCss}>
+        <VerticalNavbar/>
 
-      <div css={frameCss}>
-        <header css={headerNavbarCss}>
-          <div className={'left-column'}>
-            <SearchBar/>
-          </div>
-          <div className={'right-column'}>
-            <Popover hideArrow
-                     placement={'bottomEnd'}
-                     content={userDropdown}>
-              <Avatar width={'50px'} height={'50px'}
-                      text={apiState?.userInfo?.username!.substring(0, 3).toUpperCase() ?? ''}/>
-            </Popover>
-          </div>
-        </header>
-        <main css={mainCss}>
-          {children}
-        </main>
+        <div css={frameCss}>
+          <header css={headerNavbarCss}>
+            <div className={'left-column'}>
+              <SearchBar/>
+            </div>
+            <div className={'right-column'}>
+              <Popover hideArrow
+                       placement={'bottomEnd'}
+                       content={userDropdown}>
+                <Avatar width={'50px'} height={'50px'}
+                        text={apiState?.userInfo?.username!.substring(0, 3).toUpperCase() ?? ''}/>
+              </Popover>
+            </div>
+          </header>
+          <main css={mainCss}>
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
   );
 };
 
