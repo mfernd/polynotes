@@ -13,7 +13,7 @@
     "@emotion/react": "^11.10.5",
     "@geist-ui/core": "^2.3.8",
     "@reduxjs/toolkit": "^1.9.3",
-    "@tiptap/extension-placeholder": "^2.0.0-beta.220",
+    "@tiptap/extension-placeholder": "^2.1.13",
     "@tiptap/extension-typography": "^2.0.0-beta.220",
     "@tiptap/pm": "^2.0.0-beta.220",
     "@tiptap/react": "^2.0.0-beta.220",
